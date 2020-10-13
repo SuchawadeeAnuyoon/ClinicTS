@@ -44,48 +44,52 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="6" md="6">
+              <v-col cols="12" sm="6" md="7">
                 <v-text-field
                   label="ชื่อยาทางการแพทย์"
                   required
-                  v-model="form_data.last"
+                  v-model="form_data.medical_name"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6" md="6">
+
+              <v-col cols="12" sm="6" md="5">
                 <v-text-field
                   label="ชื่อยาสามัญ"
                   required
-                  v-model="form_data.last"
+                  v-model="form_data.name"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6" md="6">
+
+              <v-col cols="12" sm="6" md="2">
                 <v-text-field
                   label="จำนวน"
                   required
-                  v-model="form_data.last"
+                  v-model="form_data.amount"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="2">
+
+              <v-col cols="12" sm="6" md="2">
                 <v-select
                   :items="['เม็ด', 'แผง', 'กระปุก', 'ขวด', 'ซอง']"
                   label="หน่วย"
                   required
-                  v-model="form_data.title"
+                  v-model="form_data.unit"
                 ></v-select>
               </v-col>
+
               <v-col cols="12" sm="6" md="4">
                 <v-menu
                   ref="menu"
                   v-model="menu"
                   :close-on-content-click="false"
-                  :return-value.sync="form_data.birth"
+                  :return-value.sync="date.add"
                   transition="scale-transition"
                   offset-y
                   min-width="290px"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="form_data.birth"
+                      v-model="date.add"
                       label="วัน/เดือน/ปีเข้าคลัง"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -93,7 +97,12 @@
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="form_data.birth" no-title scrollable locale="th">
+                  <v-date-picker
+                    v-model="date.add"
+                    no-title
+                    scrollable
+                    locale="th"
+                  >
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       ยกเลิก
@@ -101,40 +110,26 @@
                     <v-btn
                       text
                       color="primary"
-                      @click="$refs.menu.save(form_data.birth)"
+                      @click="$refs.menu.save(date.add)"
                     >
                       ตกลง
                     </v-btn>
                   </v-date-picker>
                 </v-menu>
-                <v-col cols="12" sm="6" md="6">
-                <v-text-field
-                  label="แหล่งที่มา"
-                  required
-                  v-model="form_data.last"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="6">
-                <v-text-field
-                  label="ราคาต่อหน่วย"
-                  required
-                  v-model="form_data.last"
-                ></v-text-field>
-              </v-col>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-menu
-                  ref="menu"
-                  v-model="menu"
+                  ref="menu2"
+                  v-model="menu2"
                   :close-on-content-click="false"
-                  :return-value.sync="form_data.birth"
+                  :return-value.sync="date.expire"
                   transition="scale-transition"
                   offset-y
                   min-width="290px"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="form_data.birth"
+                      v-model="date.expire"
                       label="วัน/เดือน/ปีหมดอายุ"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -142,21 +137,41 @@
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="form_data.birth" no-title scrollable locale="th">
+                  <v-date-picker
+                    v-model="date.expire"
+                    no-title
+                    scrollable
+                    locale="th"
+                  >
                     <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
+                    <v-btn text color="primary" @click="menu2 = false">
                       ยกเลิก
                     </v-btn>
                     <v-btn
                       text
                       color="primary"
-                      @click="$refs.menu.save(form_data.birth)"
+                      @click="$refs.menu2.save(date.expire)"
                     >
                       ตกลง
                     </v-btn>
                   </v-date-picker>
                 </v-menu>
-              </v-col>              
+              </v-col>
+              <v-col cols="12" sm="6" md="5">
+                <v-text-field
+                  label="แหล่งที่มา"
+                  required
+                  v-model="form_data.from"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="2">
+                <v-text-field
+                  label="ราคาต่อหน่วย"
+                  required
+                  v-model="form_data.price_for_unit"
+                ></v-text-field>
+              </v-col>
+              
             </v-row>
           </v-container>
         </v-card-text>
@@ -193,7 +208,12 @@ export default {
       data_list: [],
       dialog_add: false,
       menu: false,
-      form_data: {}
+      menu2: false,
+      form_data: {},
+      date: {
+        add: null,
+        expire: null
+      }
     };
   },
   mounted() {
@@ -202,9 +222,9 @@ export default {
   methods: {
     async fetch() {
       this.data_list = [];
-      const response = await MedicalSupplies.getAllMedicalSupplies()
-      const res = await response.data.data
-      let i = 0
+      const response = await MedicalSupplies.getAllMedicalSupplies();
+      const res = await response.data.data;
+      let i = 0;
       await res.forEach(e => {
         this.data_list.push({
           no: ++i,
@@ -213,10 +233,23 @@ export default {
           unit: e.unit,
           date_add: moment.format_local(e.date_add),
           date_expire: moment.format_local(e.expire)
-        })
+        });
       });
     },
     async add() {
+      this.form_data.date_add = moment.format(this.date.add);
+      this.form_data.expire = moment.format(this.date.expire);
+      
+      const response = await MedicalSupplies.newMedicalSupply(this.form_data)
+
+      if(response.data.success == false) {
+        alert(response.data.errMessage)
+      } else {
+        this.fetch()
+        this.dialog_add = false
+        this.form_data = {}
+      }
+      
     }
   }
 };
