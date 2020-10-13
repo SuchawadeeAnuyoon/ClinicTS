@@ -1,0 +1,14 @@
+html div {
+    font-family: 'Sarabun', sans-serif;
+}
+
+.v-main__wrap {
+    background-color: #eeeeee;
+}
+
+.name-hospital {
+    font-size: 22px;
+}
+.menu {
+    font-size: 16px;
+}
