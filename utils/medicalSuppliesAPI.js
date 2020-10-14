@@ -1,4 +1,3 @@
-import { from } from "core-js/fn/array";
 import { request } from '../plugins/api'
 
 export function getAllMedicalSupplies() {
