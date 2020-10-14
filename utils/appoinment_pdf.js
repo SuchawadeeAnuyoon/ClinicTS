@@ -18,13 +18,38 @@ const Appoinment=(data) => {
 
   // หัวเอกสาร
   doc.setFontSize(20)
-  // doc.setFontStyle("bold")
   doc.setFont('THSarabunNew','bold')
-  if (!data.header) {
-    doc.text('..............................', 250, 36)
+    doc.text('ท่าซุงคลินิกเวชกรรม', 250, 70)
+    doc.text('Tha Sung Medical Clinic ', 230, 85)
+  doc.line(20, 90, 575, 90)
+  doc.text('ใบนัด', 290, 110)
+
+  // เนื้อหา
+  doc.setFontSize(16)
+  doc.setFont('THSarabunNew','normal')
+  doc.text('คำนำหน้าชื่อ', 150, 130)
+  if(!data.title) {
+    doc.text('..........................', 170, 130)
   } else {
-    doc.text(data.header, 250, 36)
+    doc.text(data.title, 150, 130)
   }
+
+  doc.text('ชื่อ', 220, 130)
+  if(!data.name) {
+    doc.text('..........................', 240, 130)
+  } else {
+    doc.text(data.name, 220, 130)
+  }
+  
+  doc.text('นามสกุล', 270, 130)
+  if(!data.last) {
+    doc.text('..........................', 290, 130)
+  } else {
+    doc.text(data.last, 270, 130)
+  }
+
+  
+  
 
   doc.output('dataurlnewwindow')
 }
