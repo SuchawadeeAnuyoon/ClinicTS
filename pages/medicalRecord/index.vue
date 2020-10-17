@@ -10,8 +10,6 @@
           >
         </v-toolbar>
 
-        <v-divider></v-divider>
-
         <template>
           <v-data-table
             :headers="headers"
@@ -192,13 +190,6 @@
                   label="ประวัติแพ้ยา"
                   required
                   v-model="form_data.drug_allergy"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="12">
-                <v-text-field
-                  label="อาการเบื้องต้น"
-                  required
-                  v-model="form_data.symptom"
                 ></v-text-field>
               </v-col>
             </v-row>
