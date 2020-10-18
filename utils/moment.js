@@ -1,14 +1,19 @@
 import moment from 'moment'
 
 let format = date => {
-    return moment(date).format()
+    return moment(date).locale('th').format()
 }
 
 let format_local = date => {
-    return moment(date).locale('th').format('Do MMMM  YYYY')
+    return moment(date).locale('th').format('Do MMMM YYYY')
+}
+
+let format_local_time = date => {
+    return moment(date).locale('th').format('Do/MM/YY HH:mm:ss')
 }
 
 export default {
     format,
-    format_local
+    format_local,
+    format_local_time
 }
