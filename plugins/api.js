@@ -11,7 +11,7 @@ let getToken=() => {
   }
 }
 
-export async function request(method, url, data, auth = false) {
+export async function request(method, url, data, auth = false, params) {
   const headers = {}
   if (auth == 'auth') {
     headers['Authorization'] = getToken()
@@ -25,7 +25,8 @@ export async function request(method, url, data, auth = false) {
       method,
       url,
       data,
-      headers
+      headers,
+      params
     })
     return response
   } catch (error) {

@@ -12,8 +12,13 @@ let format_local_time = date => {
     return moment(date).locale('th').format('Do/MM/YY HH:mm:ss')
 }
 
+let fotmat_to_calendar = date => {
+    return moment(date).locale('th').format('YYYY-MM-DD hh:mm')
+}
+
 export default {
     format,
     format_local,
-    format_local_time
+    format_local_time,
+    fotmat_to_calendar
 }

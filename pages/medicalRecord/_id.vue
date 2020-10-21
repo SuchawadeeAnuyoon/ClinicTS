@@ -7,6 +7,10 @@
             <v-icon>mdi-chevron-left </v-icon>
           </v-btn>
           <v-toolbar-title>ข้อมูลเวรระเบียน</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn small color="blue lighten-2" @click="dialog_symotom = true"
+            >เพิ่มคิว</v-btn
+          >
         </v-toolbar>
 
         <div v-if="loading" class="mx-auto text-center ma-16 pb-12">
@@ -160,11 +164,48 @@
         </div>
       </v-card>
     </v-container>
+
+    <!-- Dialog -->
+    <v-dialog
+      v-model="dialog_symotom"
+      persistent
+      :overlay="false"
+      max-width="50%"
+      transition="dialog-transition"
+    >
+      <v-card>
+        <v-card-title>
+          <div>เพิ่มคิว</div>
+        </v-card-title>
+        <v-card-text>
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12" md="12">
+                <v-text-field
+                  label="อาการเบื้องต้น"
+                  v-model="initial"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" text @click="dialog_symotom = false">
+            ยกเลิก
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="add">
+            บันทึก
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import * as MedicalRecordAPI from "../../utils/medicalRecordAPI";
+import * as SympyomAPI from '../../utils/symptomAPI'
 import moment from "../../utils/moment";
 export default {
   layout: "dashboard",
@@ -181,8 +222,10 @@ export default {
       contact: "",
       phone: "",
       symptom: [],
+      initial: "",
 
-      loading: true
+      loading: true,
+      dialog_symotom: false
     };
   },
   mounted() {
@@ -203,7 +246,7 @@ export default {
           this.symptom.push({
             initial: e.initial,
             create_at: moment.format_local_time(e.create_at),
-            name_create: e.name_create,
+            name_create: e.name_create
           });
         } else {
           this.symptom.push({
@@ -220,6 +263,16 @@ export default {
     },
     back() {
       this.$router.push({ path: "/medicalrecord" });
+    },
+    async add() {
+      let data = {
+        medicalRecord_id: {
+          _id: this.id
+        },
+        initial: this.initial
+      }
+
+      const response = await SympyomAPI.createSymptom(data)
     }
   }
 };

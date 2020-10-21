@@ -4,6 +4,17 @@
       <v-card>
         <v-toolbar color="white">
           <v-toolbar-title>ข้อมูลเวชระเบียน</v-toolbar-title>
+          <v-flex class="mt-4 ml-10" md3>
+            <v-text-field
+              label="ค้นหาด้วยหมายเลขบัตรประชาชน"
+              v-model="citizen"
+              dense
+              clearable
+            ></v-text-field>
+          </v-flex>
+          <v-btn color="blue lighten-2 ml-3" small @click="search"
+            >ค้นหา</v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn color="blue lighten-2" @click.stop="dialog_add = true"
             >เพิ่มข้อมูลเวชระเบียน</v-btn
@@ -99,7 +110,12 @@
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="form_data.birth" no-title scrollable locale="th">
+                  <v-date-picker
+                    v-model="form_data.birth"
+                    no-title
+                    scrollable
+                    locale="th"
+                  >
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       ยกเลิก
@@ -226,7 +242,9 @@ export default {
       data_list: [],
       dialog_add: false,
       menu: false,
-      form_data: {}
+      form_data: {},
+      citizen: "",
+      filter: {}
     };
   },
   mounted() {
@@ -235,7 +253,14 @@ export default {
   methods: {
     async fetch() {
       this.data_list = [];
-      await MedicalRecordAPI.getAllMedicalRecord().then(response => {
+      this.filter = {}
+      if (this.citizen) {
+        this.filter.citizen_id = this.citizen;
+      }
+
+      console.log(this.filter);
+
+      await MedicalRecordAPI.getAllMedicalRecord(this.filter).then(response => {
         let i = 0;
         let res = response.data.data;
 
@@ -256,9 +281,12 @@ export default {
       if (response.data.success == false) {
         alert(response.data.errMessage);
       } else {
-        this.fetch()
-        this.dialog_add = false
+        this.fetch();
+        this.dialog_add = false;
       }
+    },
+    search() {
+      this.fetch()
     }
   }
 };

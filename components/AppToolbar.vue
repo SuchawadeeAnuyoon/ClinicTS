@@ -99,9 +99,10 @@ export default {
 
       const response = await QueueApi.getAllQueue();
       let data_q = await response.data.data;
-      data_q.forEach(e => {
-        if (e.approve == false) {
-          this.queue.push(e);
+      await data_q.forEach(async e => {
+
+        if (e.approve == 'false') {
+          await this.queue.push(e);
         }
       });
 
@@ -119,13 +120,13 @@ export default {
         if (amount <= 20 || ex <= 30) {
           if (amount <= 20 && ex > 30) {
             n.push({
-              name: e.name,
+              name: e.medical_name,
               msg: `จะหมดคลัง เหลือ ${e.amount} ${e.unit}`
             });
             // console.log(unit);
           } else if (ex <= 30 && amount > 20) {
             n.push({
-              name: e.name,
+              name: e.medical_name,
               msg: `จะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
                 e.expire
               )}`
@@ -133,7 +134,7 @@ export default {
             // console.log(ex);
           } else {
             n.push({
-              name: e.name,
+              name: e.medical_name,
               msg: `จะหมดคลัง เหลือ ${e.amount} ${
                 e.unit
               } และจะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
@@ -156,7 +157,7 @@ export default {
         const response = await QueueApi.getAllQueue();
         let data_q = await response.data.data;
         data_q.forEach(e => {
-          if (e.approve == false) {
+          if (e.approve == 'false') {
             q.push(e);
           }
         });
@@ -180,13 +181,13 @@ export default {
           if (amount <= 20 || ex <= 30) {
             if (amount <= 20 && ex > 30) {
               n.push({
-                name: e.name,
+                name: e.medical_name,
                 msg: `จะหมดคลัง เหลือ ${e.amount} ${e.unit}`
               });
               // console.log(unit);
             } else if (ex <= 30 && amount > 20) {
               n.push({
-                name: e.name,
+                name: e.medical_name,
                 msg: `จะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
                   e.expire
                 )}`
@@ -194,7 +195,7 @@ export default {
               // console.log(ex);
             } else {
               n.push({
-                name: e.name,
+                name: e.medical_name,
                 msg: `จะหมดคลัง เหลือ ${e.amount} ${
                   e.unit
                 } และจะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
