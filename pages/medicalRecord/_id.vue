@@ -1,7 +1,13 @@
 <template>
   <div>
     <v-container fluid>
-      <v-card>
+      <div v-if="loading" class="mx-auto text-center ma-16 pb-12">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div>
+      <v-card v-if="!loading">
         <v-toolbar>
           <v-btn icon @click="back">
             <v-icon>mdi-chevron-left </v-icon>
@@ -13,14 +19,7 @@
           >
         </v-toolbar>
 
-        <div v-if="loading" class="mx-auto text-center ma-16 pb-12">
-          <v-progress-circular
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
-        </div>
-
-        <div v-if="!loading">
+        <div>
           <template>
             <v-container>
               <v-col>
@@ -205,7 +204,7 @@
 
 <script>
 import * as MedicalRecordAPI from "../../utils/medicalRecordAPI";
-import * as SympyomAPI from '../../utils/symptomAPI'
+import * as SympyomAPI from "../../utils/symptomAPI";
 import moment from "../../utils/moment";
 export default {
   layout: "dashboard",
@@ -270,9 +269,9 @@ export default {
           _id: this.id
         },
         initial: this.initial
-      }
+      };
 
-      const response = await SympyomAPI.createSymptom(data)
+      const response = await SympyomAPI.createSymptom(data);
     }
   }
 };

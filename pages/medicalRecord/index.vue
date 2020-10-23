@@ -7,14 +7,11 @@
           <v-flex class="mt-4 ml-10" md3>
             <v-text-field
               label="ค้นหาด้วยหมายเลขบัตรประชาชน"
-              v-model="citizen"
+              v-model="search"
               dense
               clearable
             ></v-text-field>
           </v-flex>
-          <v-btn color="blue lighten-2 ml-3" small @click="search"
-            >ค้นหา</v-btn
-          >
           <v-spacer></v-spacer>
           <v-btn color="blue lighten-2" @click.stop="dialog_add = true"
             >เพิ่มข้อมูลเวชระเบียน</v-btn
@@ -24,7 +21,7 @@
         <template>
           <v-data-table
             :headers="headers"
-            :items="data_list"
+            :items="listFilter"
             :items-per-page="10"
             disable-sort
           >
@@ -243,9 +240,16 @@ export default {
       dialog_add: false,
       menu: false,
       form_data: {},
-      citizen: "",
-      filter: {}
+      search:''
     };
+  },
+  computed: {
+    listFilter () {
+      let text = this.search.trim()
+      return this.data_list.filter(item => {
+        return item.citizen_id.indexOf(text) > -1
+      })
+    }
   },
   mounted() {
     this.fetch();
@@ -253,14 +257,8 @@ export default {
   methods: {
     async fetch() {
       this.data_list = [];
-      this.filter = {}
-      if (this.citizen) {
-        this.filter.citizen_id = this.citizen;
-      }
 
-      console.log(this.filter);
-
-      await MedicalRecordAPI.getAllMedicalRecord(this.filter).then(response => {
+      await MedicalRecordAPI.getAllMedicalRecord().then(response => {
         let i = 0;
         let res = response.data.data;
 
@@ -285,9 +283,6 @@ export default {
         this.dialog_add = false;
       }
     },
-    search() {
-      this.fetch()
-    }
   }
 };
 </script>

@@ -49,7 +49,7 @@
 
       <v-list>
         <v-list-item v-for="item in queue" :key="item.id">
-          <v-list-item-title>คิวที่ : {{ item.queue }}</v-list-item-title>
+          <v-list-item-title>{{ item.queue }}: {{item.medicalRecode.first}} {{item.medicalRecode.last}}</v-list-item-title>
           <v-list-item-action class="mr-8">
             <v-btn color="indigo" dark>เรียกดู</v-btn>
           </v-list-item-action>
@@ -101,7 +101,7 @@ export default {
       let data_q = await response.data.data;
       await data_q.forEach(async e => {
 
-        if (e.approve == 'false') {
+        if (e.approve == 'wait') {
           await this.queue.push(e);
         }
       });
@@ -114,17 +114,17 @@ export default {
         let supply_expire = await moment(e.expire, "YYY-MM-DD");
         let check = await moment(this.expire, "YYY-MM-DD");
 
-        let amount = await e.amount;
+        let total = await e.total;
         let ex = await supply_expire.diff(check, "days");
 
-        if (amount <= 20 || ex <= 30) {
-          if (amount <= 20 && ex > 30) {
+        if (total <= 20 || ex <= 30) {
+          if (total <= 20 && ex > 30) {
             n.push({
               name: e.medical_name,
-              msg: `จะหมดคลัง เหลือ ${e.amount} ${e.unit}`
+              msg: `จะหมดคลัง เหลือ ${e.total} ${e.unit}`
             });
             // console.log(unit);
-          } else if (ex <= 30 && amount > 20) {
+          } else if (ex <= 30 && total > 20) {
             n.push({
               name: e.medical_name,
               msg: `จะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
@@ -135,7 +135,7 @@ export default {
           } else {
             n.push({
               name: e.medical_name,
-              msg: `จะหมดคลัง เหลือ ${e.amount} ${
+              msg: `จะหมดคลัง เหลือ ${e.total} ${
                 e.unit
               } และจะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
                 e.expire
@@ -157,7 +157,7 @@ export default {
         const response = await QueueApi.getAllQueue();
         let data_q = await response.data.data;
         data_q.forEach(e => {
-          if (e.approve == 'false') {
+          if (e.approve == 'wait') {
             q.push(e);
           }
         });
@@ -175,17 +175,17 @@ export default {
           let supply_expire = await moment(e.expire, "YYY-MM-DD");
           let check = await moment(this.expire, "YYY-MM-DD");
 
-          let amount = await e.amount;
+          let total = await e.total;
           let ex = await supply_expire.diff(check, "days");
 
-          if (amount <= 20 || ex <= 30) {
-            if (amount <= 20 && ex > 30) {
+          if (total <= 20 || ex <= 30) {
+            if (total <= 20 && ex > 30) {
               n.push({
                 name: e.medical_name,
-                msg: `จะหมดคลัง เหลือ ${e.amount} ${e.unit}`
+                msg: `จะหมดคลัง เหลือ ${e.total} ${e.unit}`
               });
               // console.log(unit);
-            } else if (ex <= 30 && amount > 20) {
+            } else if (ex <= 30 && total > 20) {
               n.push({
                 name: e.medical_name,
                 msg: `จะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
@@ -196,7 +196,7 @@ export default {
             } else {
               n.push({
                 name: e.medical_name,
-                msg: `จะหมดคลัง เหลือ ${e.amount} ${
+                msg: `จะหมดคลัง เหลือ ${e.total} ${
                   e.unit
                 } และจะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
                   e.expire

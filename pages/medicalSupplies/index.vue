@@ -4,8 +4,16 @@
       <v-card>
         <v-toolbar color="white">
           <v-toolbar-title>ข้อมูลเวชภัณฑ์</v-toolbar-title>
+          <v-flex class="mt-4 ml-10" md3>
+            <v-text-field
+              label="ค้นหา"
+              v-model="search"
+              dense
+              clearable
+            ></v-text-field>
+          </v-flex>
           <v-spacer></v-spacer>
-          <v-btn color="blue lighten-2" @click.stop="dialog_add = true"
+          <v-btn color="blue lighten-2" @click="dialog_add = true"
             >เพิ่มข้อมูลเวชภัณฑ์</v-btn
           >
         </v-toolbar>
@@ -15,13 +23,13 @@
         <template>
           <v-data-table
             :headers="headers"
-            :items="data_list"
+            :items="listFilter"
             :items-per-page="10"
             disable-sort
           >
-            <template v-slot:[`item.citizen_id`]="{ item }">
-              <nuxt-link :to="`/medicalrecord/${item.id}`">{{
-                item.citizen_id
+            <template v-slot:[`item.medical_name`]="{ item }">
+              <nuxt-link :to="`/medicalsupplies/${item.id}`">{{
+                item.medical_name
               }}</nuxt-link>
             </template>
           </v-data-table>
@@ -64,7 +72,7 @@
                 <v-text-field
                   label="จำนวน"
                   required
-                  v-model="form_data.amount"
+                  v-model="form_data.total"
                 ></v-text-field>
               </v-col>
 
@@ -171,7 +179,7 @@
                   v-model="form_data.price_for_unit"
                 ></v-text-field>
               </v-col>
-              
+
             </v-row>
           </v-container>
         </v-card-text>
@@ -186,6 +194,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-snackbar
+      :timeout="5000"
+      v-model="snackbar.bool"
+      :color="snackbar.color"
+      absolute
+      right
+      rounded="pill"
+      top
+    >
+      {{snackbar.msg}}
+    </v-snackbar>
   </div>
 </template>
 
@@ -200,7 +220,7 @@ export default {
       headers: [
         { text: "ลำดับที่", value: "no" },
         { text: "ชื่อยาสามัญ", value: "medical_name" },
-        { text: "จำนวน", value: "amount" },
+        { text: "จำนวน", value: "total" },
         { text: "หน่วย", value: "unit" },
         { text: "วัน/เดือน/ปีเข้าคลัง", value: "date_add" },
         { text: "วัน/เดือน/ปีหมดอายุ", value: "date_expire" }
@@ -213,8 +233,22 @@ export default {
       date: {
         add: null,
         expire: null
-      }
+      },
+      snackbar: {
+        bool: false,
+        color: '',
+        msg: ''
+      },
+      search:''
     };
+  },
+  computed: {
+    listFilter () {
+      let text = this.search.trim()
+      return this.data_list.filter(item => {
+        return item.medical_name.indexOf(text) > -1
+      })
+    }
   },
   mounted() {
     this.fetch();
@@ -227,9 +261,10 @@ export default {
       let i = 0;
       await res.forEach(e => {
         this.data_list.push({
+          id: e._id,
           no: ++i,
           medical_name: e.medical_name,
-          amount: e.amount,
+          total: e.total,
           unit: e.unit,
           date_add: moment.format_local(e.date_add),
           date_expire: moment.format_local(e.expire)
@@ -239,7 +274,7 @@ export default {
     async add() {
       this.form_data.date_add = moment.format(this.date.add);
       this.form_data.expire = moment.format(this.date.expire);
-      
+
       const response = await MedicalSupplies.newMedicalSupply(this.form_data)
 
       if(response.data.success == false) {
@@ -248,8 +283,10 @@ export default {
         this.fetch()
         this.dialog_add = false
         this.form_data = {}
+        this.snackbar.bool = true;
+        this.snackbar.color = 'green',
+        this.snackbar.msg = 'เพิ่มข้อมูลสำเร็จ'
       }
-      
     }
   }
 };

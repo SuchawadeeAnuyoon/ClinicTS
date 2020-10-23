@@ -1,8 +1,8 @@
 import { request } from '../plugins/api'
 
-export function getAllMedicalRecord(params) {
+export function getAllMedicalRecord() {
     const URL = '/api/v1/medicalRecord'
-    return request('get', URL, {}, 'auth' ,params)
+    return request('get', URL, {}, 'auth')
 }
 
 export function newMedicalRecord(data) {

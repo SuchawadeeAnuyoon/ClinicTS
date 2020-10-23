@@ -16,9 +16,14 @@ let fotmat_to_calendar = date => {
     return moment(date).locale('th').format('YYYY-MM-DD hh:mm')
 }
 
+let format_datepicker = date => {
+    return moment(date).local('th').format('YYYY-MM-DD')
+}
+
 export default {
     format,
     format_local,
     format_local_time,
-    fotmat_to_calendar
+    fotmat_to_calendar,
+    format_datepicker
 }

@@ -20,6 +20,11 @@ export function updateMidicalSupply(data, id) {
     return request('put', URL, data, 'auth')
 }
 
+export function updateAmountMidicalSupply(data, id) {
+    const URL = `/api/v1/medicalSupplies/addAmount/${id}`
+    return request('put', URL, data, 'auth')
+}
+
 export function deleteMidicalSupply(id) {
     const URL = `/api/v1/medicalSupplies/${id}`
     return request('delete', URL, {}, 'auth')
