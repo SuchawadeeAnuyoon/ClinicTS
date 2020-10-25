@@ -103,7 +103,7 @@
             </template>
 
             <template>
-              <v-list-item ripple="ripple" to="/setting/user.setting">
+              <v-list-item ripple="ripple" to="/setting/user.setting" v-if="me.role == 'super'">
                 <v-list-item-title
                   ><div class="menu">จัดการผู้ใช้</div></v-list-item-title
                 >
@@ -158,8 +158,13 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.fetch()
+  },
   methods: {
+    async fetch() {
+      this.me = await this.$auth.user.data;
+    },
     logout() {
       this.$auth.logout();
     }
