@@ -23,14 +23,22 @@
           <template>
             <v-container>
               <v-col>
-                <div>ข้อมูลคนไข้</div>
+                <v-row>
+                  <div class="mr-5">ข้อมูลเวชภัณฑ์</div>
+                  <div class="text-right">
+                    <v-btn v-if="readonly" small color="blue lighten-2" @click="edit('edit')">แก้ไข</v-btn>
+                    <v-btn v-if="!readonly" small color="green lighten-2" @click="edit('save')">บันทึก</v-btn>
+                    <v-btn v-if="!readonly" small color="red" @click="edit('delete')">ลบบัญชี</v-btn>
+                    <v-btn v-if="!readonly" small color="grey" @click="edit('cancel')">ยกเลิก</v-btn>
+                  </div>
+                </v-row>
                 <v-divider class="my-3"></v-divider>
                 <v-row>
                   <v-col cols="12" sm="2" md="2">
                     <v-text-field
                       label="คำนำหน้า"
                       v-model="medical_record_data.title"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -39,7 +47,7 @@
                     <v-text-field
                       label="ชื่อ"
                       v-model="medical_record_data.first"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -48,7 +56,7 @@
                     <v-text-field
                       label="นามสกุล"
                       v-model="medical_record_data.last"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -57,7 +65,7 @@
                     <v-text-field
                       label="หมายเลขบัตรประชาชน"
                       v-model="medical_record_data.citizen_id"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -66,7 +74,7 @@
                     <v-text-field
                       label="วัน เดือน ปีเกิด"
                       v-model="birth"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -75,7 +83,7 @@
                     <v-text-field
                       label="เพศ"
                       v-model="medical_record_data.sex"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -84,7 +92,7 @@
                     <v-text-field
                       label="สัญชาติ"
                       v-model="medical_record_data.nationality"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -93,7 +101,7 @@
                     <v-text-field
                       label="กรุ๊ปเลือด"
                       v-model="medical_record_data.blood"
-                      readonly
+                      :readonly="readonly"
                       dense
                     ></v-text-field>
                   </v-col>
@@ -102,8 +110,86 @@
                 <div>ข้อมูลติดต่อ</div>
                 <v-divider class="my-3"></v-divider>
 
-                <div>{{ contact }}</div>
-                <div>{{ phone }}</div>
+                <div v-if="!readonly">
+                  <v-row>
+                    <v-col cols="12" sm="4">
+                      <v-text-field
+                        label="ที่อยู่"
+                        v-model="medical_record_data.address"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="2">
+                      <v-text-field
+                        label="หมู่"
+                        v-model="medical_record_data.moo"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                      <v-text-field
+                        label="ถนน"
+                        v-model="medical_record_data.road"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                      <v-text-field
+                        label="ซอย"
+                        v-model="medical_record_data.soi"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                      <v-text-field
+                        label="ตำบล"
+                        v-model="medical_record_data.tambon"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                      <v-text-field
+                        label="อำเภอ"
+                        v-model="medical_record_data.distric"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                      <v-text-field
+                        label="จังหวัด"
+                        v-model="medical_record_data.province"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                      <v-text-field
+                        label="รหัสไปรษณีย์"
+                        v-model="medical_record_data.zip"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                      <v-text-field
+                        label="เอบร์โทรศัพท์"
+                        v-model="medical_record_data.phone"
+                        dense
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </div>
+
+                <div v-if="readonly">
+                  <div>{{ contact }}</div>
+                  <div>{{ phone }}</div>
+                </div>
 
                 <div class="mt-7">
                   ข้อมูลโรคประจำตัว ประวัติการแพ้ยา และประวัติการรักษา
@@ -114,7 +200,7 @@
                   <v-col cols="12" sm="12" md="12">
                     <v-text-field
                       label="โรคประจำตัว"
-                      readonly
+                      :readonly="readonly"
                       flat
                       v-model="medical_record_data.disease"
                       dense
@@ -124,7 +210,7 @@
                   <v-col cols="12" sm="12" md="12">
                     <v-text-field
                       label="ประวัติการแพ้ยา"
-                      readonly
+                      :readonly="readonly"
                       flat
                       v-model="medical_record_data.drug_allergy"
                       dense
@@ -150,8 +236,8 @@
                           <td>{{ list.create_at }}</td>
                           <td>{{ list.name_create }}</td>
                           <td>{{ list.predicate }}</td>
-                          <td>{{ list.name_predicate }}</td>
                           <td>{{ list.predicate_at }}</td>
+                          <td>{{ list.name_predicate }}</td>
                         </tr>
                       </tbody>
                     </v-simple-table>
@@ -199,6 +285,33 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="dialog_load" width="200">
+      <v-card width="200" height="200" flat class="text-center">
+        <v-card-subtitle>กำลังอัพโหลดข้อมูล</v-card-subtitle>
+        <v-progress-circular
+          align-center
+          class="my-4"
+          centered
+          indeterminate
+          color="primary"
+          :size="100"
+          :width="10"
+        ></v-progress-circular>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar
+      :timeout="5000"
+      v-model="snackbar.bool"
+      :color="snackbar.color"
+      absolute
+      right
+      rounded="pill"
+      top
+    >
+      {{snackbar.msg}}
+    </v-snackbar>
   </div>
 </template>
 
@@ -222,9 +335,16 @@ export default {
       phone: "",
       symptom: [],
       initial: "",
+      readonly: true,
+      btn_edit: {
+        text: "แก้ไข",
+        color: "blue lighten-2"
+      },
 
       loading: true,
-      dialog_symotom: false
+      dialog_symotom: false,
+      dialog_load: false,
+      snackbar: {}
     };
   },
   mounted() {
@@ -235,19 +355,20 @@ export default {
       const response = await MedicalRecordAPI.getOneMedicalRecord(this.id);
       this.medical_record_data = await response.data.data;
       this.birth = await moment.format_local(this.medical_record_data.birth);
-      this.contact = await `${this.medical_record_data.address} หมู่ที่ ${this.medical_record_data.moo} ซอย ${this.medical_record_data.soi} ถนน ${this.medical_record_data.road} ตำบล ${this.medical_record_data.tambon} อำเภอ ${this.medical_record_data.distric} จังหวัด ${this.medical_record_data.province}`;
+      this.contact = await `${this.medical_record_data.address} หมู่ที่ ${this.medical_record_data.moo} ถนน ${this.medical_record_data.road} ซอย ${this.medical_record_data.soi} ตำบล ${this.medical_record_data.tambon} อำเภอ ${this.medical_record_data.distric} จังหวัด ${this.medical_record_data.province}`;
       this.phone = await `เบอร์ติดต่อ ${this.medical_record_data.phone}`;
 
       // Symptom
       this.symptom = [];
       await this.medical_record_data.SymptomPush.forEach(e => {
-        if (!e.predicate) {
-          this.symptom.push({
-            initial: e.initial,
-            create_at: moment.format_local_time(e.create_at),
-            name_create: e.name_create
-          });
-        } else {
+        // if (!e.predicate) {
+        //   this.symptom.push({
+        //     initial: e.initial,
+        //     create_at: moment.format_local_time(e.create_at),
+        //     name_create: e.name_create
+        //   });
+        // } else {
+          // console.log(e)
           this.symptom.push({
             initial: e.initial,
             create_at: moment.format_local_time(e.create_at),
@@ -256,7 +377,7 @@ export default {
             name_predicate: e.name_predicate,
             predicate_at: moment.format_local_time(e.predicate_at)
           });
-        }
+        // }
       });
       this.loading = await false;
     },
@@ -264,6 +385,7 @@ export default {
       this.$router.push({ path: "/medicalrecord" });
     },
     async add() {
+      this.dialog_load = await true
       let data = {
         medicalRecord_id: {
           _id: this.id
@@ -272,6 +394,54 @@ export default {
       };
 
       const response = await SympyomAPI.createSymptom(data);
+
+      await this.fecth()
+      this.dialog_load = await false
+      this.dialog_symotom = await false
+
+      this.snackbar = await {
+        bool: true,
+        msg: 'เพิ่มอาการเบื้องต้นและคิวเรียบร้อย',
+        color: 'green'
+      }
+
+    },
+    edit(bool) {
+      if (bool == 'edit') {
+        this.readonly = false;
+        this.btn_edit = {
+          text: "บันทึก",
+          color: "green lighten-2"
+        };
+      }
+      if (bool == "cancel") {
+        this.readonly = true;
+        this.btn_edit = {
+          text: "แก้ไข",
+          color: "blue lighten-2"
+        };
+      }
+      if (bool == 'save') {
+        this.dialog_load = true
+        this.update()
+      }
+    },
+    async update() {
+      const response = await MedicalRecordAPI.updateMedicalRecord(this.medical_record_data, this.id)
+
+      if (response.data.sucess == true) {
+        this.readonly = await true
+        this.fecth()
+        this.dialog_load = await false
+        this.snackbar = await {
+          bool: true,
+          msg: 'แก้ไขข้อมูลเสร็จสิ้น',
+          color: 'green'
+        }
+      }
+      else {
+        alert(response.data.errMessage)
+      }
     }
   }
 };

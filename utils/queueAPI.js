@@ -12,5 +12,5 @@ export function getQueue(id) {
 
 export function updateQueue(id, data) {
   const URL = `/api/v1/queue/${id}`
-  return request('get', URL, data, 'auth')
+  return request('put', URL, data, 'auth')
 }

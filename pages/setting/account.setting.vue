@@ -2,9 +2,10 @@
   <div>
     <v-container fluid>
       <v-card>
-        <v-card-title>ตั้งค่าบัญชี</v-card-title>
-        <v-card-text>
-          <div class="text-right">
+        <v-card-title>
+          <div>ตั้งค่าบัญชี</div>
+          <v-spacer></v-spacer>
+          <div>
             <v-btn
               v-if="read"
               small
@@ -21,14 +22,14 @@
               @click="edit('cancel')"
               >ยกเลิก</v-btn
             >
-            <v-btn
+            <!-- <v-btn
               v-if="!read"
               small
               outlined
               color="red"
               @click="edit('delete')"
               >ลบบัญชี</v-btn
-            >
+            > -->
             <v-btn
               v-if="!read"
               small
@@ -38,6 +39,8 @@
               >บันทึก</v-btn
             >
           </div>
+        </v-card-title>
+        <v-card-text>
 
           <v-divider class="my-3"></v-divider>
 

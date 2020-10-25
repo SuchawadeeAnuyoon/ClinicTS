@@ -21,10 +21,7 @@
 
       <v-list>
         <v-list-item v-for="item in noti" :key="item.id">
-          <!-- <v-list-item-title>{{ item.name }}</v-list-item-title>
-          <v-list-item-subtitle>{{ item.msg }}</v-list-item-subtitle> -->
           <v-card flat width="250">
-            <!-- <v-card-title>{{ item.name }}</v-card-title> -->
             <v-card-text>{{ item.name }} {{ item.msg }}</v-card-text>
           </v-card>
         </v-list-item>
@@ -51,7 +48,7 @@
         <v-list-item v-for="item in queue" :key="item.id">
           <v-list-item-title>{{ item.queue }}: {{item.medicalRecode.first}} {{item.medicalRecode.last}}</v-list-item-title>
           <v-list-item-action class="mr-8">
-            <v-btn color="indigo" dark>เรียกดู</v-btn>
+            <v-btn v-if="role" color="indigo" dark :to="`/symptom/${item._id}`">เรียกดู</v-btn>
           </v-list-item-action>
         </v-list-item>
       </v-list>
@@ -71,6 +68,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      role: null,
       name: "",
       queue: [],
       val: null,
@@ -96,6 +94,12 @@ export default {
       let me = await this.$auth.user.data;
       // console.log(this.me)
       this.name = `${me.title} ${me.first} ${me.last}`;
+
+      if (me.role == 'nurse') {
+        this.role = false
+      } else {
+        this.role = true
+      }
 
       const response = await QueueApi.getAllQueue();
       let data_q = await response.data.data;
@@ -127,7 +131,7 @@ export default {
           } else if (ex <= 30 && total > 20) {
             n.push({
               name: e.medical_name,
-              msg: `จะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
+              msg: `จะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
                 e.expire
               )}`
             });
@@ -137,7 +141,7 @@ export default {
               name: e.medical_name,
               msg: `จะหมดคลัง เหลือ ${e.total} ${
                 e.unit
-              } และจะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
+              } และจะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
                 e.expire
               )}`
             });
@@ -208,7 +212,7 @@ export default {
         });
         this.noti = n;
       }, 60 * 1000);
-    }
+    },
   }
 };
 </script>
