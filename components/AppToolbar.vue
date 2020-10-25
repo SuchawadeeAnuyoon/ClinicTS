@@ -1,68 +1,151 @@
 <template>
-  <v-app-bar elevation="3" fixed app color="white" dense>
-    <v-app-bar-nav-icon @click.stop="toggleDrawer()" />
+  <div>
+    <v-app-bar elevation="3" fixed app color="white" dense>
+      <v-app-bar-nav-icon @click.stop="toggleDrawer()" />
 
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
-    <v-menu offset-y fixed left>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on">
-          <v-badge
-            :value="noti.length"
-            color="red"
-            overlap
-            bordered
-            :content="noti.length"
-          >
-            <v-icon>mdi-bell</v-icon>
-          </v-badge>
-        </v-btn>
-      </template>
+      <v-menu offset-y fixed left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-badge
+              :value="wait.length"
+              color="red"
+              overlap
+              bordered
+              :content="wait.length"
+            >
+              <v-icon>mdi-pill</v-icon>
+            </v-badge>
+          </v-btn>
+        </template>
 
-      <v-list>
-        <v-list-item v-for="item in noti" :key="item.id">
-          <v-card flat width="250">
-            <v-card-text>{{ item.name }} {{ item.msg }}</v-card-text>
-          </v-card>
-        </v-list-item>
-        <v-divider></v-divider>
-      </v-list>
-    </v-menu>
+        <v-list>
+          <v-list-item v-for="item in wait" :key="item.id">
+            <v-list-item-title>{{ item.queue }}: {{item.medicalRecode.first}} {{item.medicalRecode.last}}</v-list-item-title>
+            <v-list-item-action class="mr-8">
+              <v-btn color="indigo" dark small @click="view(item._id)">เรียกดู</v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
-    <v-menu offset-y fixed left>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on">
-          <v-badge
-            :value="queue.length"
-            color="red"
-            overlap
-            bordered
-            :content="queue.length"
-          >
-            <v-icon>mdi-human-queue</v-icon>
-          </v-badge>
-        </v-btn>
-      </template>
+      <v-menu offset-y fixed left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-badge
+              :value="noti.length"
+              color="red"
+              overlap
+              bordered
+              :content="noti.length"
+            >
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
+          </v-btn>
+        </template>
 
-      <v-list>
-        <v-list-item v-for="item in queue" :key="item.id">
-          <v-list-item-title>{{ item.queue }}: {{item.medicalRecode.first}} {{item.medicalRecode.last}}</v-list-item-title>
-          <v-list-item-action class="mr-8">
-            <v-btn v-if="role" color="indigo" dark :to="`/symptom/${item._id}`">เรียกดู</v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+        <v-list>
+          <v-list-item v-for="item in noti" :key="item.id">
+            <v-card flat width="250">
+              <v-card-text>{{ item.name }} {{ item.msg }}</v-card-text>
+            </v-card>
+          </v-list-item>
+          <v-divider></v-divider>
+        </v-list>
+      </v-menu>
 
-    <v-card flat class="ml-4">
-      <div>{{ name }}</div>
-    </v-card>
-  </v-app-bar>
+      <v-menu offset-y fixed left>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-badge
+              :value="queue.length"
+              color="red"
+              overlap
+              bordered
+              :content="queue.length"
+            >
+              <v-icon>mdi-human-queue</v-icon>
+            </v-badge>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item v-for="item in queue" :key="item.id">
+            <v-list-item-title>{{ item.queue }}: {{item.medicalRecode.first}} {{item.medicalRecode.last}}</v-list-item-title>
+            <v-list-item-action class="mr-8">
+              <v-btn v-if="role" color="indigo" small dark :to="`/symptom/${item._id}`">เรียกดู</v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <v-card flat class="ml-4">
+        <div>{{ name }}</div>
+      </v-card>
+    </v-app-bar>
+
+    <v-dialog
+      v-model="dialog_drug"
+      scrollable
+      persistent
+      :overlay="false"
+      max-width="50%"
+      transition="dialog-transition"
+    >
+      <v-card>
+        <v-card-text>
+          <v-simple-table>
+            <thead>
+              <tr>
+                <th>ชื่อยา</th>
+                <th>จำนวน</th>
+                <th>สั่งโดย</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="list in drug_list" :key="list._id">
+                <th>{{list.name_drug}}</th>
+                <th>{{list.amount}}</th>
+                <th>{{list.order_by_name}}</th>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="grey darken-1" @click="dialog_drug = false">
+            ยกเลิก
+          </v-btn>
+          <v-btn color="blue darken-1" @click="save()">
+            บันทึก
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="loading" width="200">
+      <v-card width="200" height="200" flat class="text-center">
+        <v-card-subtitle>กำลังอัพโหลดข้อมูล</v-card-subtitle>
+        <v-progress-circular
+          align-center
+          class="my-4"
+          centered
+          indeterminate
+          color="primary"
+          :size="100"
+          :width="10"
+        ></v-progress-circular>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
 import * as QueueApi from ".././utils/queueAPI";
 import * as MedicalSuppliesAPI from ".././utils/medicalSuppliesAPI";
+import * as SymptomAPI from ".././utils/symptomAPI";
+import * as DrugListAPI from ".././utils/drugListAPI";
 import momentFormat from ".././utils/moment";
 import moment from "moment";
 export default {
@@ -71,17 +154,14 @@ export default {
       role: null,
       name: "",
       queue: [],
+      wait: [],
       val: null,
-      items: [
-        { key: "test" },
-        { key: "test" },
-        { key: "test" },
-        { key: "test" },
-        { key: "test" },
-        { key: "test" }
-      ],
       expire: momentFormat.format(new Date()),
-      noti: []
+      noti: [],
+      dialog_drug: false,
+      drug_list: [],
+      loading: false,
+      q_id: null
     };
   },
   mounted() {
@@ -107,6 +187,9 @@ export default {
 
         if (e.approve == 'wait') {
           await this.queue.push(e);
+        }
+        if (e.approve == 'await_drug') {
+          await this.wait.push(e)
         }
       });
 
@@ -158,14 +241,19 @@ export default {
     getQueue() {
       setInterval(async () => {
         let q = [];
+        let w = [];
         const response = await QueueApi.getAllQueue();
         let data_q = await response.data.data;
         data_q.forEach(e => {
           if (e.approve == 'wait') {
             q.push(e);
           }
+          if (e.approve == 'await_drug') {
+            w.push(e);
+          }
         });
-        this.queue = q;
+        this.queue = await q;
+        this.wait = await w
       }, 30 * 1000);
     },
     async suppliesNoti() {
@@ -213,6 +301,38 @@ export default {
         this.noti = n;
       }, 60 * 1000);
     },
+
+    async view(id) {
+      this.q_id = await id
+      this.loading = await true
+      const res_q = await QueueApi.getQueue(id)
+      // this.dialog_drug = await true
+      const response = await SymptomAPI.getSymptom(res_q.data.data.symptom)
+
+      this.drug_list = response.data.data.drugPush
+
+      this.loading = await false
+
+      this.dialog_drug = await true
+
+      // console.log(this.drug_list)
+    },
+    async save() {
+      this.loading = await true
+      let form = await {
+        approve: 'success'
+      }
+
+      this.drug_list.forEach(async e => {
+        await DrugListAPI.paidDrugList(e._id)
+
+      })
+
+      await QueueApi.updateQueue(this.q_id, form)
+      this.loading = await false
+      this.dialog_drug = await false
+
+    }
   }
 };
 </script>
