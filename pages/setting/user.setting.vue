@@ -224,7 +224,7 @@
           <v-btn color="grey darken-3" text @click="dialog_delete = false">
             ยกเลิก
           </v-btn>
-          <v-btn color="red" text @click="Delete(id)">
+          <v-btn color="red" text @click="Delete_user()">
              ตกลง
           </v-btn>
         </v-card-actions>
@@ -279,7 +279,8 @@ export default {
       view_name: "",
       view_loading: false,
       dialog_delete: false,
-      user_name: ''
+      user_name: '',
+      user_id: null
     };
   },
   computed: {
@@ -354,9 +355,17 @@ export default {
 
     },
     async Delete(id, name) {
+      this.user_id = await id
       this.user_name = await name;
-      this.view_loading = await true
       this.dialog_delete = await true;
+    },
+    async Delete_user() {
+      this.dialog_load = await true
+      const response = await UserApi.deleteUser(this.user_id)
+
+      await this.fetch()
+      this.dialog_delete = await false
+      this.dialog_load = await false
     }
   }
 };

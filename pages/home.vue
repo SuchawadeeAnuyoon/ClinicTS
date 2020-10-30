@@ -27,13 +27,13 @@
                 {{ $refs.calendar.title }}
               </v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn
+              <!-- <v-btn
                 color="blue lighten-1"
                 outlined
                 class="mx-3"
                 @click.stop="dialog_add = true"
                 >เพิ่ม</v-btn
-              >
+              > -->
               <v-menu bottom right>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -87,19 +87,16 @@
             >
               <v-card color="grey lighten-4" min-width="350px" flat>
                 <v-toolbar :color="selectedEvent.color" dark>
-                  <v-btn icon>
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
                   <v-toolbar-title
                     v-html="selectedEvent.name"
                   ></v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                  <span>{{ selectedEvent }}</span>
+                  <span>{{ selectedEvent.description }}</span>
                 </v-card-text>
                 <v-card-actions>
                   <v-btn text color="secondary" @click="selectedOpen = false">
-                    Cancel
+                    ยกเลิก
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -347,7 +344,8 @@ export default {
           name: e.name,
           start: moment.fotmat_to_calendar(e.start),
           end: moment.fotmat_to_calendar(e.end),
-          color: e.color
+          color: e.color,
+          description: e.description
         });
       });
 
