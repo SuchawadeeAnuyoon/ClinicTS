@@ -6,7 +6,7 @@
           <v-toolbar-title>ข้อมูลเวชภัณฑ์</v-toolbar-title>
           <v-flex class="mt-4 ml-10" md3>
             <v-text-field
-              label="ค้นหา"
+              label="ค้นหาเวชภัณฑ์"
               v-model="search"
               dense
               clearable
@@ -57,6 +57,7 @@
                   label="ชื่อยาทางการแพทย์"
                   required
                   v-model="form_data.medical_name"
+                  hide-details="true"
                 ></v-text-field>
               </v-col>
 
@@ -65,6 +66,7 @@
                   label="ชื่อยาสามัญ"
                   required
                   v-model="form_data.name"
+                  hide-details="true"
                 ></v-text-field>
               </v-col>
 
@@ -73,6 +75,7 @@
                   label="จำนวน"
                   required
                   v-model="form_data.total"
+                  hide-details="true"
                 ></v-text-field>
               </v-col>
 
@@ -82,6 +85,7 @@
                   label="หน่วย"
                   required
                   v-model="form_data.unit"
+                  hide-details="true"
                 ></v-select>
               </v-col>
 
@@ -103,6 +107,7 @@
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      hide-details="true"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -143,6 +148,7 @@
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      hide-details="true"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -165,21 +171,53 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="12" sm="6" md="5">
-                <v-text-field
-                  label="แหล่งที่มา"
-                  required
-                  v-model="form_data.from"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="2">
+
+              <v-col cols="12" sm="6" md="3">
                 <v-text-field
                   label="ราคาต่อหน่วย"
                   required
                   v-model="form_data.price_for_unit"
+                  hide-details="true"
                 ></v-text-field>
               </v-col>
 
+              <v-col cols="12" sm="6">
+                <v-checkbox
+                  dense
+                  v-model="form_data.type4"
+                  label="วัตถุออกฤทธิ์ประเภทที่ 3 หรือ 4"
+                  hide-details="true"
+                ></v-checkbox>
+              </v-col>
+            </v-row>
+
+            <v-row v-if="form_data.type4 == true">
+              <v-col cols="12" sm="6" md="6">
+                <v-text-field
+                  label="เลขที่รุ่นที่/ครั้งที่ผลิด"
+                  required
+                  v-model="form_data.number"
+                  hide-details="true"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" sm="6" md="6">
+                <v-text-field
+                  label="ชื่อผู้ผลิต และแหล่งผลิต"
+                  required
+                  v-model="form_data.creator"
+                  hide-details="true"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" sm="6" md="12">
+                <v-text-field
+                  label="แหล่งที่มา"
+                  required
+                  v-model="form_data.from"
+                  hide-details="true"
+                ></v-text-field>
+              </v-col>
             </v-row>
           </v-container>
         </v-card-text>
@@ -204,7 +242,7 @@
       rounded="pill"
       top
     >
-      {{snackbar.msg}}
+      {{ snackbar.msg }}
     </v-snackbar>
   </div>
 </template>
@@ -236,18 +274,19 @@ export default {
       },
       snackbar: {
         bool: false,
-        color: '',
-        msg: ''
+        color: "",
+        msg: ""
       },
-      search:''
+      search: ""
     };
   },
   computed: {
-    listFilter () {
-      let text = this.search.trim()
+    listFilter() {
+      let text = this.search.trim();
       return this.data_list.filter(item => {
-        return item.medical_name.indexOf(text) > -1
-      })
+        let text2 = item.medical_name.toLowerCase()
+        return text2.indexOf(text) > -1;
+      });
     }
   },
   mounted() {
@@ -275,17 +314,17 @@ export default {
       this.form_data.date_add = moment.format(this.date.add);
       this.form_data.expire = moment.format(this.date.expire);
 
-      const response = await MedicalSupplies.newMedicalSupply(this.form_data)
+      const response = await MedicalSupplies.newMedicalSupply(this.form_data);
 
-      if(response.data.success == false) {
-        alert(response.data.errMessage)
+      if (response.data.success == false) {
+        alert(response.data.errMessage);
       } else {
-        this.fetch()
-        this.dialog_add = false
-        this.form_data = {}
+        this.fetch();
+        this.dialog_add = false;
+        this.form_data = {};
         this.snackbar.bool = true;
-        this.snackbar.color = 'green',
-        this.snackbar.msg = 'เพิ่มข้อมูลสำเร็จ'
+        (this.snackbar.color = "green"),
+          (this.snackbar.msg = "เพิ่มข้อมูลสำเร็จ");
       }
     }
   }

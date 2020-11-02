@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar elevation="3" fixed app color="white" dense>
+    <v-app-bar elevation="3" fixed app color="white" height="60">
       <v-app-bar-nav-icon @click.stop="toggleDrawer()" />
 
       <v-spacer></v-spacer>
@@ -214,7 +214,7 @@ export default {
           } else if (ex <= 30 && total > 20) {
             n.push({
               name: e.medical_name,
-              msg: `จะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
+              msg: `จะหมดอายุในอีก ${ex + 1} วัน คือ ${momentFormat.format_local(
                 e.expire
               )}`
             });
@@ -240,8 +240,8 @@ export default {
     },
     getQueue() {
       setInterval(async () => {
-        let q = [];
-        let w = [];
+        let q = await [];
+        let w = await [];
         const response = await QueueApi.getAllQueue();
         let data_q = await response.data.data;
         data_q.forEach(e => {
@@ -276,7 +276,6 @@ export default {
                 name: e.medical_name,
                 msg: `จะหมดคลัง เหลือ ${e.total} ${e.unit}`
               });
-              // console.log(unit);
             } else if (ex <= 30 && total > 20) {
               n.push({
                 name: e.medical_name,
@@ -284,7 +283,6 @@ export default {
                   e.expire
                 )}`
               });
-              // console.log(ex);
             } else {
               n.push({
                 name: e.medical_name,
@@ -294,7 +292,6 @@ export default {
                   e.expire
                 )}`
               });
-              // console.log(`${unit} and ${ex}`);
             }
           }
         });
@@ -305,17 +302,24 @@ export default {
     async view(id) {
       this.q_id = await id
       this.loading = await true
+      this.drug_list = await []
       const res_q = await QueueApi.getQueue(id)
       // this.dialog_drug = await true
       const response = await SymptomAPI.getSymptom(res_q.data.data.symptom)
 
-      this.drug_list = response.data.data.drugPush
+      await response.data.data.drugPush.forEach(async e => {
+        if (e.status != true) {
+          // console.log(e.status)
+          await this.drug_list.push(e)
+        } else {
+          this.drug_list = await []
+        }
+      })
 
       this.loading = await false
 
       this.dialog_drug = await true
 
-      // console.log(this.drug_list)
     },
     async save() {
       this.loading = await true
@@ -328,10 +332,14 @@ export default {
 
       })
 
-      await QueueApi.updateQueue(this.q_id, form)
+      const response = await QueueApi.updateQueue(this.q_id, form)
       this.loading = await false
       this.dialog_drug = await false
 
+      // console.log(response.data.data)
+      if (response.data.success == true) {
+        this.$router.push({path: `/medicalrecord/${response.data.data.medicalRecode}`})
+      }
     }
   }
 };

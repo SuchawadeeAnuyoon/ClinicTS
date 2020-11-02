@@ -65,18 +65,18 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="6" md="3">
+                  <v-col cols="12" sm="6" md="2">
                     <v-text-field
                       :append-outer-icon="!readonly ? 'mdi-plus' : ''"
                       @click:append-outer="dialog_add_amount = true"
                       label="จำนวน"
-                      :readonly="readonly"
+                      readonly
                       v-model="medical_supply_data.total"
                       dense
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="6" md="3">
+                  <v-col cols="12" sm="6" md="2">
                     <v-select
                       :items="['เม็ด', 'แผง', 'กระปุก', 'ขวด', 'ซอง']"
                       label="หน่วย"
@@ -173,16 +173,7 @@
                     </v-menu>
                   </v-col>
 
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      label="แหล่งที่มา"
-                      :readonly="readonly"
-                      v-model="medical_supply_data.from"
-                      dense
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12" sm="6" md="2">
                     <v-text-field
                       label="ราคาต่อหน่วย"
                       :readonly="readonly"
@@ -191,6 +182,49 @@
                     ></v-text-field>
                   </v-col>
 
+                  <v-col cols="12" sm="6">
+                    <v-checkbox
+                      dense
+                      v-model="medical_supply_data.type4"
+                      label="วัตถุออกฤทธิ์ประเภทที่ 3 หรือ 4"
+                      :readonly="readonly"
+                    ></v-checkbox>
+                  </v-col>
+
+
+                </v-row>
+
+                <v-row v-if="medical_supply_data.type4 == true">
+
+                  <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="เลขที่รุ่นที่/ครั้งที่ผลิด"
+                    required
+                    dense
+                    v-model="medical_supply_data.number"
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="ชื่อผู้ผลิตและแหล่งผลิต"
+                    required
+                    dense
+                    v-model="medical_supply_data.creator"
+                  ></v-text-field>
+                </v-col>
+
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      label="แหล่งที่มา"
+                      :readonly="readonly"
+                      v-model="medical_supply_data.from"
+                      dense
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+
+                <v-row>
                   <v-col cols="12" sm="12" md="12">
                     <div>ประวัติ</div>
                     <v-divider class=""></v-divider>

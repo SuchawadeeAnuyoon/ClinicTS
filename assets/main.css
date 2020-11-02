@@ -12,3 +12,14 @@ html div {
 .menu {
     font-size: 16px;
 }
+
+.bg {
+    height: 100%;
+    background-image: url('/bg.jpg');
+    background-size: cover;
+    
+}
+.bg-color {
+    height: 100%;
+    background-color: rgba(191, 228, 243, 0.5);
+}

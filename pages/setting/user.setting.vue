@@ -6,7 +6,7 @@
           <v-toolbar-title>ข้อมูลผู้ใช้</v-toolbar-title>
           <v-flex class="mt-4 ml-10" md3>
             <v-text-field
-              label="ค้นหา"
+              label="ค้นหาบัญชีผู้ใช้"
               v-model="search"
               dense
               clearable
@@ -14,7 +14,7 @@
           </v-flex>
           <v-spacer></v-spacer>
           <v-btn color="blue lighten-2" @click="dialog_add = true"
-            >เพิ่มผู้ใช้</v-btn
+            >เพิ่มบัญชีผู้ใช้</v-btn
           >
         </v-toolbar>
 
@@ -66,7 +66,7 @@
     >
       <v-card>
         <v-card-title>
-          <div>เพิ่มข้อมูลเวชระเบียน</div>
+          <div>เพิ่มบัญชีผู้ใช้</div>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -79,7 +79,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="6" md="5">
+              <v-col cols="12" sm="6" md="3">
                 <v-text-field
                   label="ชื่อ"
                   required
@@ -87,7 +87,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="6" md="5">
+              <v-col cols="12" sm="6" md="3">
                 <v-text-field
                   label="นามสกุล"
                   required
@@ -103,7 +103,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="3">
                 <v-text-field
                   label="Email"
                   required
@@ -111,7 +111,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="3">
                 <v-text-field
                   label="เบอร์โทร"
                   required
@@ -119,9 +119,9 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" sm="3">
+              <v-col cols="12" sm="2">
                 <v-select
-                  :items="['doctor', 'nurse']"
+                  :items="['แพทย์', 'ผู้ช่วยแพทย์']"
                   label="สิทธิ์"
                   required
                   v-model="form_data.role"

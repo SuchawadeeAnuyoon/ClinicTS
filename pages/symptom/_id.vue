@@ -9,7 +9,7 @@
       </div>
       <v-card v-if="!loading">
         <v-card-title>บันทึกอาการ
-          <v-btn small class="mx-3" color="green" @click="save()">บันทึก</v-btn>
+          <v-btn small class="mx-3" color="green" @click="save()" :disabled="dis_btn">บันทึก</v-btn>
         </v-card-title>
 
         <v-card-text>
@@ -126,7 +126,7 @@
       </v-card>
 
       <v-card class="mt-3" v-if="!loading">
-        <v-container fluid>
+        <v-container fluid v-if="!dis_btn">
           <v-row>
           <v-col cols="12" sm="1">
             <div class="mt-3">ยา</div>
@@ -162,6 +162,7 @@
                   <v-btn
                     small
                     color="blue"
+                    :disabled="item.status == true"
                     @click="
                       add_drug(item._id, item.medical_name, item.drug_amount)
                     "
@@ -196,6 +197,21 @@
         </v-container>
       </v-card>
     </v-container>
+
+     <v-dialog v-model="dialog_loading" width="200">
+      <v-card width="200" height="200" flat class="text-center">
+        <v-card-subtitle>กำลังอัพโหลดข้อมูล</v-card-subtitle>
+        <v-progress-circular
+          align-center
+          class="my-4"
+          centered
+          indeterminate
+          color="primary"
+          :size="100"
+          :width="10"
+        ></v-progress-circular>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -238,7 +254,9 @@ export default {
         if (parseInt(v)) return true;
         return "กรุณากรอกตัวเลข";
       },
-      search: ''
+      search: '',
+      dis_btn: null,
+      dialog_loading: false
     };
   },computed: {
     listFilter () {
@@ -263,8 +281,14 @@ export default {
       this.medical_data.birth = await moment.format_local(
         this.medical_data.birth
       );
+
+
+      if (res_queue.data.data.approve == 'success' ) {
+        this.dis_btn = await true
+      } else {
+        this.dis_btn = await false
+      }
       this.drug_data = await this.symptom_data.drugPush
-      console.log(this.drug_data)
 
       const res_supplies = await MedicalSupplies.getAllMedicalSupplies();
       this.supplies_data = await res_supplies.data.data;
@@ -279,13 +303,13 @@ export default {
         symptom_id: this.symptom_data.id
       };
 
-      // console.log(form_data)
 
       const response = await DrugListAPI.createDrugList(form_data);
 
       if (response.data.success == false) {
         alert(response.data.errMessage)
       }
+
       await this.fetch()
     },
     async drugDelete(id) {
@@ -294,6 +318,7 @@ export default {
       await this.fetch()
     },
     async save() {
+      this.dialog_loading = await true
       let form = await {
         approve: 'await_drug'
       }
@@ -301,6 +326,7 @@ export default {
       await SymptomAPI.updateSymptom(this.symptom_data.id, this.symptom_data)
 
       await this.fetch()
+      this.dialog_loading = await false
     }
   }
 };

@@ -27,13 +27,13 @@
                 {{ $refs.calendar.title }}
               </v-toolbar-title>
               <v-spacer></v-spacer>
-              <!-- <v-btn
+              <v-btn
                 color="blue lighten-1"
                 outlined
                 class="mx-3"
                 @click.stop="dialog_add = true"
                 >เพิ่ม</v-btn
-              > -->
+              >
               <v-menu bottom right>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -72,12 +72,12 @@
               color="primary"
               locale="th"
               :events="events"
-              :event-color="events.color"
+              :event-color="getEventColor"
               :type="type"
               @click:event="showEvent"
               @click:more="viewDay"
               @click:date="viewDay"
-              @change="updateRange"
+              @change="fetch"
             ></v-calendar>
             <v-menu
               v-model="selectedOpen"
@@ -98,6 +98,13 @@
                   <v-btn text color="secondary" @click="selectedOpen = false">
                     ยกเลิก
                   </v-btn>
+                  <v-btn
+                    text
+                    color="red"
+                    @click="deleteEvent(selectedEvent.id)"
+                  >
+                    ลบการนัด
+                  </v-btn>
                 </v-card-actions>
               </v-card>
             </v-menu>
@@ -116,16 +123,25 @@
     >
       <v-card>
         <v-card-title>
-          <div>เพิ่มข้อมูลเวชภัณฑ์</div>
+          <div>เพิ่มข้อมูลการนัดหมาย</div>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="12" md="12">
+              <v-col cols="12" sm="12" md="6">
                 <v-text-field
-                  label="ชื่องาน"
+                  label="หมายเหตุการนัด"
                   required
                   v-model="form_data.name"
+                  dense
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" sm="12" md="6">
+                <v-text-field
+                  label="ชื่อคนไข้"
+                  required
+                  v-model="form_data.medical_name"
                   dense
                 ></v-text-field>
               </v-col>
@@ -141,14 +157,14 @@
 
               <v-col cols="12" sm="12" md="12">
                 <v-radio-group v-model="form_data.color" row>
-                  <v-radio label="red" color="red" value="red"></v-radio>
+                  <v-radio label="สีแดง" color="red" value="red"></v-radio>
                   <v-radio
-                    label="indigo"
+                    label="สีน้ำเงิน"
                     color="indigo"
                     value="indigo"
                   ></v-radio>
                   <v-radio
-                    label="orange"
+                    label="สีส้ม"
                     color="orange"
                     value="orange"
                   ></v-radio>
@@ -172,6 +188,7 @@
                       label="วันเวลาเริ่ม"
                       type="text"
                       placeholder
+                      v-model="form_data.start"
                       readonly
                       v-on="on"
                     ></v-text-field>
@@ -179,6 +196,7 @@
 
                   <div class="white">
                     <v-layout row wrap>
+                      <v-flex class="text-center">
                         <v-date-picker
                           v-model="date.start"
                           width="260"
@@ -186,68 +204,87 @@
                           color="primary"
                           locale="th"
                         ></v-date-picker>
+                      </v-flex>
+
+                      <v-flex class="text-center">
                         <v-time-picker
                           v-model="time.start"
                           color="primary"
                           width="260"
                           format="24hr"
                         ></v-time-picker>
+                      </v-flex>
 
                       <v-flex xs12 class="text-center">
                         <v-btn small @click="menu = false" color="red"
                           >ยกเลิก</v-btn
                         >
-                        <!-- <v-btn flat small @click="setDate">ตกลง</v-btn> -->
+                        <v-btn small @click="setDateStart" color="green">ตกลง</v-btn>
                       </v-flex>
                     </v-layout>
                   </div>
                 </v-menu>
               </v-col>
 
-              <!-- <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="6">
                 <v-menu
-                  ref="menu2"
+                  ref="menu"
                   v-model="menu2"
                   :close-on-content-click="false"
-                  :return-value.sync="date.expire"
-                  transition="scale-transition"
+                  :nudge-right="40"
+                  lazy
                   offset-y
-                  min-width="290px"
+                  full-width
+                  color="primary"
                 >
-                  <template v-slot:activator="{ on, attrs }">
+                  <template v-slot:activator="{ on }">
                     <v-text-field
-                      v-model="date.expire"
-                      label="วัน/เดือน/ปีหมดอายุ"
-                      prepend-icon="mdi-calendar"
+                      name="date"
+                      label="วันเวลาสิ้นสุด"
+                      type="text"
+                      placeholder
+                      v-model="form_data.end"
                       readonly
-                      v-bind="attrs"
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker
-                    v-model="date.expire"
-                    no-title
-                    scrollable
-                    locale="th"
-                  >
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu2 = false">
-                      ยกเลิก
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.menu2.save(date.expire)"
-                    >
-                      ตกลง
-                    </v-btn>
-                  </v-date-picker>
+
+                  <div class="white">
+                    <v-layout row wrap>
+                      <v-flex class="text-center">
+                        <v-date-picker
+                          v-model="date.end"
+                          width="260"
+                          height="400"
+                          color="primary"
+                          locale="th"
+                        ></v-date-picker>
+                      </v-flex>
+
+                      <v-flex class="text-center">
+                        <v-time-picker
+                          v-model="time.end"
+                          color="primary"
+                          width="260"
+                          format="24hr"
+                        ></v-time-picker>
+                      </v-flex>
+
+                      <v-flex xs12 class="text-center">
+                        <v-btn small @click="menw2 = false" color="red"
+                          >ยกเลิก</v-btn
+                        >
+                        <v-btn small @click="setDateend" color="green">ตกลง</v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </div>
                 </v-menu>
-              </v-col> -->
+              </v-col>
+            
             </v-row>
           </v-container>
         </v-card-text>
-        <!-- <v-card-actions>
+        <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="dialog_add = false">
             ยกเลิก
@@ -255,7 +292,7 @@
           <v-btn color="blue darken-1" text @click="add">
             บันทึก
           </v-btn>
-        </v-card-actions> -->
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -281,6 +318,8 @@ export default {
     selectedOpen: false,
     events: [],
 
+    appointment_data: [],
+
     dialog_add: false,
     form_data: {},
     date: {
@@ -291,12 +330,30 @@ export default {
       start: null,
       end: null
     },
-    menu: false
+    menu: false,
+    menu2: false
   }),
   mounted() {
     this.$refs.calendar.checkChange();
   },
   methods: {
+    async fetch() {
+      this.form_data = await {}
+      const events = [];
+      const response = await AppointmentAPI.getAllAppointment();
+      await response.data.data.forEach(async e => {
+        await events.push({
+          id: e._id,
+          name: e.name,
+          start: moment.fotmat_to_calendar(e.start),
+          end: moment.fotmat_to_calendar(e.end),
+          color: e.color,
+          description: e.description
+        });
+      });
+
+      this.events = await events;
+    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
@@ -332,24 +389,38 @@ export default {
       nativeEvent.stopPropagation();
     },
     async updateRange({ start, end }) {
-      const events = [];
-
       const min = new Date(`${start.date}T00:00:00`);
       const max = new Date(`${end.date}T23:59:59`);
       const days = (max.getTime() - min.getTime()) / 86400000;
+    },
+    async add() {
+      // console.log(this.form_data)
+      this.form_data.start = await new Date(
+        moment.format(this.form_data.start)
+      );
+      this.form_data.end = await new Date(moment.format(this.form_data.end));
+      const respone = await AppointmentAPI.newAppoinrment(this.form_data);
 
-      const response = await AppointmentAPI.getAllAppointment();
-      await response.data.data.forEach(async e => {
-        await events.push({
-          name: e.name,
-          start: moment.fotmat_to_calendar(e.start),
-          end: moment.fotmat_to_calendar(e.end),
-          color: e.color,
-          description: e.description
-        });
-      });
+      if (respone.data.success == true) {
+        this.dialog_add = await false;
+        await this.fetch();
+      }
+    },
+    setDateStart() {
+      this.form_data.start = `${this.date.start} ${this.time.start}`;
+      this.menu = false;
+    },
+    setDateend() {
+      this.form_data.end = `${this.date.end} ${this.time.end}`;
+      this.menu2 = false;
+    },
+    async deleteEvent(id) {
+      const respone = await AppointmentAPI.deleteAppoinrment(id);
 
-      this.events = await events;
+      if (respone.data.success == true) {
+        this.selectedOpen = await false;
+        await this.fetch();
+      }
     }
   }
 };

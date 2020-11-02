@@ -7,14 +7,14 @@
     app
     width="270"
   >
-    <v-toolbar elevation="3" color="white" dense>
+    <v-toolbar elevation="3" color="white" height="60">
       <v-row class="text-center mx-auto">
-        <v-avatar size="avatarSize" color="primary">
-          <img src="" alt />
+        <v-avatar size="36" color="white">
+          <img src="/logo.jpg" alt />
         </v-avatar>
         <v-spacer></v-spacer>
         <div>
-          <h1 class="text-center name-hospital">ท่าซุงคลินิคเวชกรรม</h1>
+          <h1 class="text-center name-hospital">ท่าซุงคลินิกเวชกรรม</h1>
         </div>
       </v-row>
     </v-toolbar>
@@ -62,6 +62,7 @@
 
           <!-- Group Hardware -->
           <v-list-group
+            :value="true"
             no-action="no-action"
             prepend-icon="mdi-file-document-multiple"
           >
@@ -95,7 +96,7 @@
           </v-list-group>
 
           <!-- Group Hardware -->
-          <v-list-group no-action="no-action" prepend-icon="mdi-cog-sync">
+          <v-list-group no-action="no-action" prepend-icon="mdi-cog-sync" :value="true">
             <template v-slot:activator>
               <v-list-item-title
                 ><div class="menu">ตั้งค่า</div></v-list-item-title
