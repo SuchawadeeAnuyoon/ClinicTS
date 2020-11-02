@@ -32,7 +32,7 @@
                 outlined
                 class="mx-3"
                 @click.stop="dialog_add = true"
-                >เพิ่ม</v-btn
+                >เพิ่มการนัดหมาย</v-btn
               >
               <v-menu bottom right>
                 <template v-slot:activator="{ on, attrs }">
