@@ -12,11 +12,12 @@
           <v-btn icon @click="back">
             <v-icon>mdi-chevron-left </v-icon>
           </v-btn>
-          <v-toolbar-title>ข้อมูลเวชระเบียน</v-toolbar-title>
+          <v-toolbar-title
+            >ข้อมูลเวชระเบียน: {{ medical_record_data.first }}
+            {{ medical_record_data.last }}
+          </v-toolbar-title>
+
           <v-spacer></v-spacer>
-          <v-btn small color="blue lighten-2" @click="dialog_symotom = true"
-            >เพิ่มคิว</v-btn
-          >
         </v-toolbar>
 
         <div>
@@ -25,36 +26,6 @@
               <v-col>
                 <v-row>
                   <div class="mr-5">ข้อมูลเวชระเบียน</div>
-                  <div class="text-right">
-                    <v-btn
-                      v-if="readonly"
-                      small
-                      color="blue lighten-2"
-                      @click="edit('edit')"
-                      >แก้ไข</v-btn
-                    >
-                    <v-btn
-                      v-if="!readonly"
-                      small
-                      color="green lighten-2"
-                      @click="edit('save')"
-                      >บันทึก</v-btn
-                    >
-                    <v-btn
-                      v-if="!readonly"
-                      small
-                      color="red"
-                      @click="edit('delete')"
-                      >ลบบัญชี</v-btn
-                    >
-                    <v-btn
-                      v-if="!readonly"
-                      small
-                      color="grey"
-                      @click="edit('cancel')"
-                      >ยกเลิก</v-btn
-                    >
-                  </div>
                 </v-row>
                 <v-divider class="my-3"></v-divider>
                 <v-row>
@@ -87,7 +58,7 @@
 
                   <v-col cols="12" sm="6" md="5">
                     <v-text-field
-                      label="หมายเลขบัตรประชาชน"
+                      label="เลขประจำตัวประชาชน"
                       v-model="medical_record_data.citizen_id"
                       :readonly="readonly"
                       dense
@@ -121,14 +92,7 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="3" md="2">
-                    <v-text-field
-                      label="กรุ๊ปเลือด"
-                      v-model="medical_record_data.blood"
-                      :readonly="readonly"
-                      dense
-                    ></v-text-field>
-                  </v-col>
+                  
                 </v-row>
 
                 <div>ข้อมูลติดต่อ</div>
@@ -282,28 +246,59 @@
                       dense
                     ></v-text-field>
                   </v-col>
+                  <v-col cols="12" sm="12" class="text-center">
+                    <v-btn
+                      v-if="readonly"
+                      small
+                      color="blue lighten-2"
+                      @click="edit('edit')"
+                      >แก้ไข</v-btn
+                    >
+                    <v-btn
+                      v-if="!readonly"
+                      small
+                      color="green lighten-2"
+                      @click="edit('save')"
+                      >บันทึก</v-btn
+                    >
+
+                    <v-btn
+                      v-if="!readonly"
+                      small
+                      color="grey"
+                      @click="edit('cancel')"
+                      >ยกเลิก</v-btn
+                    >
+                    <v-btn
+                      small
+                      class="mx-1"
+                      color="blue lighten-2"
+                      @click="dialog_symotom = true"
+                      >เพิ่มคิว</v-btn
+                    >
+                  </v-col>
 
                   <v-col cols="12" sm="12" md="12">
                     <div>ประวัติการรักษา</div>
                     <v-simple-table>
                       <thead>
                         <tr>
-                          <th>อาการเบื้องต้น</th>
                           <th>วัน เวลาบันทึก</th>
-                          <th>บันทึกโดย</th>
+                          <th>อาการเบื้องต้น</th>
                           <th>อาการที่วินิจฉัย</th>
                           <th>วัน เวลาที่วินิจฉัย</th>
-                          <th>วินิจฉัยโดย</th>
+                          <th>ยาที่ได้รับ</th>
+                          <th>บันทึกโดย</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr v-for="list in symptom" :key="list.id">
-                          <td>{{ list.initial }}</td>
                           <td>{{ list.create_at }}</td>
-                          <td>{{ list.name_create }}</td>
+                          <td>{{ list.initial }}</td>
                           <td>{{ list.predicate }}</td>
                           <td>{{ list.predicate_at }}</td>
                           <td>{{ list.name_predicate }}</td>
+                          <td>{{ list.name_create }}</td>
                         </tr>
                       </tbody>
                     </v-simple-table>
@@ -418,7 +413,7 @@ export default {
       province: Province,
       district: [],
       tambon: [],
-      test: 'test'
+      test: "test"
     };
   },
   mounted() {
@@ -482,7 +477,7 @@ export default {
     async checkProvince() {
       await this.province.forEach(async e => {
         if (this.medical_record_data.province == e.PROVINCE_NAME) {
-          await this.checkDistrict(e.PROVINCE_CODE)
+          await this.checkDistrict(e.PROVINCE_CODE);
         }
       });
     },
@@ -493,7 +488,7 @@ export default {
         if (district_code == province_code) {
           districts.push(e);
           if (this.medical_record_data.distric == e.DISTRICT_NAME) {
-            await this.checkSubDistrict(e.DISTRICT_CODE)
+            await this.checkSubDistrict(e.DISTRICT_CODE);
           }
         }
       });
@@ -513,7 +508,7 @@ export default {
     edit(bool) {
       if (bool == "edit") {
         this.readonly = false;
-        this.checkProvince()
+        this.checkProvince();
         this.btn_edit = {
           text: "บันทึก",
           color: "green lighten-2"

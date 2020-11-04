@@ -73,7 +73,7 @@
 
                 <v-col cols="12" sm="4">
                   <v-text-field
-                    label="หมายเลขประจำตัวแพทย์"
+                    label="เลขที่ใบประกอบวิชาชีพเวชกรรม"
                     v-model="me.doctor_id"
                     :readonly="read"
                   ></v-text-field>
@@ -81,7 +81,7 @@
 
                 <v-col cols="12" sm="4">
                   <v-text-field
-                    label="Email"
+                    label="อีเมล"
                     v-model="me.email"
                     :readonly="read"
                   ></v-text-field>

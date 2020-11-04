@@ -121,7 +121,7 @@
 
               <v-col cols="12" sm="2">
                 <v-select
-                  :items="['แพทย์', 'ผู้ช่วยแพทย์']"
+                  :items="['doctor', 'nurse']"
                   label="สิทธิ์"
                   required
                   v-model="form_data.role"
@@ -261,9 +261,9 @@ export default {
       list_user: [],
       header_user: [
         { text: "ชื่อ-นามสกุล", value: "name" },
-        { text: "หมายเลขประจำตัวแพทย์", value: "doctor_id" },
+        { text: "เลขที่ใบประกอบวิชาชีพเวชกรรม", value: "doctor_id" },
         { text: "สิทธิ์", value: "role" },
-        { text: "Email", value: "email" },
+        { text: "อีเมล", value: "email" },
         { text: "วันเวลาที่สร้าง", value: "time" },
         { text: "จัดการ", value: "edit" }
       ],
@@ -298,6 +298,7 @@ export default {
     async fetch() {
       const response = await UserApi.getAllUser();
       let list = await [];
+      this.form_data = await {}
 
       await response.data.data.forEach(async e => {
         await list.push({

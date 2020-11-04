@@ -103,7 +103,7 @@
                     color="red"
                     @click="deleteEvent(selectedEvent.id)"
                   >
-                    ลบการนัด
+                    ลบการนัดหมาย
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -128,16 +128,8 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="12" md="6">
-                <v-text-field
-                  label="หมายเหตุการนัด"
-                  required
-                  v-model="form_data.name"
-                  dense
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" sm="12" md="6">
+              
+              <v-col cols="12" sm="12" md="3">
                 <v-text-field
                   label="ชื่อคนไข้"
                   required
@@ -145,30 +137,37 @@
                   dense
                 ></v-text-field>
               </v-col>
-
-              <v-col cols="12" sm="12" md="12">
-                <v-text-field
-                  label="รายละเอียด"
-                  required
-                  v-model="form_data.description"
-                  dense
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" sm="12" md="12">
+              <v-col cols="12" sm="12" md="9">
                 <v-radio-group v-model="form_data.color" row>
-                  <v-radio label="สีแดง" color="red" value="red"></v-radio>
                   <v-radio
-                    label="สีน้ำเงิน"
+                    label="แพทย์ประจำโรงพยาบาล"
+                    color="green"
+                    value="green"
+                  ></v-radio>
+                  <v-radio
+                    label="นัดติดตามอาการ"
                     color="indigo"
                     value="indigo"
                   ></v-radio>
                   <v-radio
-                    label="สีส้ม"
+                    label="นัดฉีดวัคซีน"
                     color="orange"
                     value="orange"
                   ></v-radio>
+                  <v-radio
+                    label="อื่นๆ"
+                    color="red"
+                    value="red"
+                  ></v-radio>
                 </v-radio-group>
+              </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <v-text-field
+                  label="รายละเอียดการนัดหมาย"
+                  required
+                  v-model="form_data.description"
+                  dense
+                ></v-text-field>
               </v-col>
 
               <v-col cols="12" sm="6" md="6">
@@ -185,7 +184,7 @@
                   <template v-slot:activator="{ on }">
                     <v-text-field
                       name="date"
-                      label="วันเวลาเริ่ม"
+                      label="วัน เวลาเริ่ม"
                       type="text"
                       placeholder
                       v-model="form_data.start"
@@ -219,7 +218,9 @@
                         <v-btn small @click="menu = false" color="red"
                           >ยกเลิก</v-btn
                         >
-                        <v-btn small @click="setDateStart" color="green">ตกลง</v-btn>
+                        <v-btn small @click="setDateStart" color="green"
+                          >ตกลง</v-btn
+                        >
                       </v-flex>
                     </v-layout>
                   </div>
@@ -240,7 +241,7 @@
                   <template v-slot:activator="{ on }">
                     <v-text-field
                       name="date"
-                      label="วันเวลาสิ้นสุด"
+                      label="วัน เวลาสิ้นสุด"
                       type="text"
                       placeholder
                       v-model="form_data.end"
@@ -274,13 +275,14 @@
                         <v-btn small @click="menw2 = false" color="red"
                           >ยกเลิก</v-btn
                         >
-                        <v-btn small @click="setDateend" color="green">ตกลง</v-btn>
+                        <v-btn small @click="setDateend" color="green"
+                          >ตกลง</v-btn
+                        >
                       </v-flex>
                     </v-layout>
                   </div>
                 </v-menu>
               </v-col>
-            
             </v-row>
           </v-container>
         </v-card-text>
@@ -338,7 +340,7 @@ export default {
   },
   methods: {
     async fetch() {
-      this.form_data = await {}
+      this.form_data = await {};
       const events = [];
       const response = await AppointmentAPI.getAllAppointment();
       await response.data.data.forEach(async e => {

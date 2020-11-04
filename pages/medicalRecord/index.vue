@@ -241,14 +241,7 @@
                   v-model="form_data.phone"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="4">
-                <v-select
-                  :items="['A', 'B', 'AB', 'O', 'ไม่ทราบหมู่เลือด']"
-                  label="หมู่เลือด"
-                  required
-                  v-model="form_data.blood"
-                ></v-select>
-              </v-col>
+              
               <v-col cols="12" sm="6" md="12">
                 <v-text-field
                   label="โรคประจำตัว"
@@ -258,7 +251,7 @@
               </v-col>
               <v-col cols="12" sm="6" md="12">
                 <v-text-field
-                  label="ประวัติแพ้ยา"
+                  label="ประวัติการแพ้ยา"
                   required
                   v-model="form_data.drug_allergy"
                 ></v-text-field>
@@ -344,15 +337,15 @@ export default {
     },
     async add() {
       this.form_data.birth = await moment.format(this.form_data.birth);
-      // const response = await MedicalRecordAPI.newMedicalRecord(this.form_data);
-      // if (response.data.success == false) {
-      //   alert(response.data.errMessage);
-      // } else {
-      //   this.fetch();
-      //   this.dialog_add = false;
-      // }
+      const response = await MedicalRecordAPI.newMedicalRecord(this.form_data);
+      if (response.data.success == false) {
+        alert(response.data.errMessage);
+      } else {
+        this.fetch();
+        this.dialog_add = false;
+      }
 
-      console.log(this.form_data)
+      // console.log(this.form_data)
     },
     onlynumber($event) {
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;
