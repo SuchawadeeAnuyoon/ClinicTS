@@ -1,6 +1,7 @@
 import jspdf from 'jspdf'
 
 import fontUtils from './font'
+import fontUtils2 from './fontBold'
 
 const Appoinment=(data) => {
   var doc = new jspdf('l','pt','a5')
@@ -11,7 +12,7 @@ const Appoinment=(data) => {
   doc.addFont('THSarabunNew.ttf','THSarabunNew','normal')
   doc.setFont('THSarabunNew')
 
-  doc.addFileToVFS("THSarabunNewBold.ttf",fontUtils.THSarabunNewBold)
+  doc.addFileToVFS("THSarabunNewBold.ttf",fontUtils2.THSarabunNewBold)
   doc.addFont('THSarabunNewBold.ttf','THSarabunNew','bold')
 
   doc.setProperties({
@@ -42,7 +43,7 @@ const Appoinment=(data) => {
   } else {
     doc.text(data.name, 260, 180)
   }
-  
+
   doc.text('นามสกุล', 350, 180)
   if(!data.last) {
     doc.text('..........................', 390, 180)
@@ -72,7 +73,7 @@ const Appoinment=(data) => {
   } else {
     doc.text(data.moo, 320, 210)
   }
-  
+
   doc.text('ตำบล', 340, 210)
   if(!data.tambon) {
     doc.text('............................', 365, 210)
@@ -137,7 +138,7 @@ const Appoinment=(data) => {
   doc.setFont('THSarabunNew','normal')
   doc.text('***กรุณานำใบนัดมาด้วยทุกครั้ง***', pageWidth / 2, 340, 'center')
   doc.text('13-15 ถนนณรงค์วิถี ตำบลอุทัยใหม่ อำเภอเมือง จังหวัดอุทัยธานี เบอร์โทรติดต่อ 05-651-2500', pageWidth / 2, 355, 'center')
-  
+
 
 
   doc.output('dataurlnewwindow')

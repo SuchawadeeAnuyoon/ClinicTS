@@ -11,7 +11,7 @@
               {{ item }}
             </v-tab>
           </v-tabs>
-          <!-- 
+          <!--
           <v-tabs-items v-model="tab">
             <v-tab-item v-for="item in items" :key="item"> -->
           <!-- ใบรับรองแพทย์ -->
@@ -44,7 +44,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_doc.title"
+                      v-model="form_doc.medicalRecord_id.title"
                     ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
@@ -53,7 +53,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_doc.name"
+                      v-model="form_doc.medicalRecord_id.first"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
@@ -62,7 +62,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_doc.last"
+                      v-model="form_doc.medicalRecord_id.last"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="2">
@@ -71,7 +71,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_doc.address"
+                      v-model="form_doc.medicalRecord_id.address"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="1">
@@ -80,7 +80,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_doc.moo"
+                      v-model="form_doc.medicalRecord_id.moo"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
@@ -89,7 +89,7 @@
                       :filter="customFilterP"
                       item-text="PROVINCE_NAME"
                       item-value="PROVINCE_NAME"
-                      v-model="form_doc.province"
+                      v-model="form_doc.medicalRecord_id.province"
                       label="จังหวัด"
                       dense
                       hide-details="true"
@@ -110,7 +110,7 @@
                       :filter="customFilterD"
                       item-text="DISTRICT_NAME"
                       item-value="DISTRICT_NAME"
-                      v-model="form_doc.district"
+                      v-model="form_doc.medicalRecord_id.distric"
                       label="อำเภอ"
                       dense
                       hide-details="true"
@@ -131,7 +131,7 @@
                       :filter="customFilterS"
                       item-text="SUB_DISTRICT_NAME"
                       item-value="SUB_DISTRICT_NAME"
-                      v-model="form_doc.tambon"
+                      v-model="form_doc.medicalRecord_id.tambon"
                       label="ตำบล"
                       dense
                       hide-details="true"
@@ -146,7 +146,7 @@
                       maxlength="13"
                       @keypress="onlynumber"
                       hide-details="true"
-                      v-model="form_doc.id"
+                      v-model="form_doc.medicalRecord_id.citizen_id"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
@@ -160,7 +160,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="form_doc.date"
+                          :value="setMoment"
                           dense
                           hide-details="true"
                           label="วันที่ตรวจ"
@@ -179,12 +179,12 @@
                   </v-col>
                   <v-col cols="12" sm="3" md="3">
                     <v-select
-                      :items="['นพ.ชัยโรจน์ ขุมมงคล']"
+                      :items="['นพ. ชัยโรจน์ ขุมมงคล']"
                       label="แพทย์ผู้ตรวจ"
                       required
                       dense
                       hide-details="true"
-                      v-model="form_doc.titleDoc"
+                      v-model="form_doc.name_predicate"
                     ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
@@ -195,7 +195,7 @@
                       maxlength="10"
                       @keypress="onlynumber"
                       hide-details="true"
-                      v-model="form_doc.idDoc"
+                      v-model="form_doc.doctor_id"
                     ></v-text-field>
                   </v-col>
 
@@ -260,7 +260,7 @@
                         required
                         dense
                         hide-details="true"
-                        v-model="form_doc.deseat_detail"
+                        v-model="form_doc.medicalRecord_id.disease"
                       ></v-text-field>
                     </v-radio-group>
                   </v-col>
@@ -378,7 +378,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_sick.titleDoc"
+                      v-model="form_sick.name_predicate"
                     ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="2">
@@ -389,7 +389,7 @@
                       maxlength="10"
                       @keypress="onlynumber"
                       hide-details="true"
-                      v-model="form_sick.num"
+                      v-model="form_sick.doctor_id"
                     ></v-text-field>
                   </v-col>
                   <!-- <v-col cols="12" sm="3" md="4">
@@ -409,7 +409,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_sick.title"
+                      v-model="form_sick.medicalRecord_id.title"
                     ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="2">
@@ -418,7 +418,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_sick.name"
+                      v-model="form_sick.medicalRecord_id.first"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
@@ -427,7 +427,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_sick.last"
+                      v-model="form_sick.medicalRecord_id.last"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="1">
@@ -438,7 +438,7 @@
                       maxlength="3"
                       @keypress="onlynumber"
                       hide-details="true"
-                      v-model="form_sick.age"
+                      v-model="form_sick.medicalRecord_id.age"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="2">
@@ -447,7 +447,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_sick.address"
+                      v-model="form_sick.medicalRecord_id.address"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="1">
@@ -456,7 +456,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_sick.moo"
+                      v-model="form_sick.medicalRecord_id.moo"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
@@ -465,7 +465,7 @@
                       :filter="customFilterP"
                       item-text="PROVINCE_NAME"
                       item-value="PROVINCE_NAME"
-                      v-model="form_sick.province"
+                      v-model="form_sick.medicalRecord_id.province"
                       label="จังหวัด"
                       dense
                       hide-details="true"
@@ -486,7 +486,7 @@
                       :filter="customFilterD"
                       item-text="DISTRICT_NAME"
                       item-value="DISTRICT_NAME"
-                      v-model="form_sick.district"
+                      v-model="form_sick.medicalRecord_id.distric"
                       label="อำเภอ"
                       dense
                       hide-details="true"
@@ -507,7 +507,7 @@
                       :filter="customFilterS"
                       item-text="SUB_DISTRICT_NAME"
                       item-value="SUB_DISTRICT_NAME"
-                      v-model="form_sick.tambon"
+                      v-model="form_sick.medicalRecord_id.tambon"
                       label="ตำบล"
                       dense
                       hide-details="true"
@@ -520,7 +520,7 @@
                       required
                       dense
                       hide-details="true"
-                      v-model="form_sick.road"
+                      v-model="form_sick.medicalRecord_id.road"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
@@ -531,7 +531,7 @@
                       maxlength="13"
                       @keypress="onlynumber"
                       hide-details="true"
-                      v-model="form_sick.id"
+                      v-model="form_sick.medicalRecord_id.citizen_id"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="3">
@@ -545,7 +545,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="form_sick.date"
+                          :value="setMoment2"
                           dense
                           hide-details="true"
                           label="วันที่ตรวจ"
@@ -599,22 +599,31 @@
 </template>
 
 <script>
-import Certificate_pdf from "../../utils/certificate_pdf";
-import Province from "../../utils/province.json";
-import District from "../../utils/district.json";
-import Tambon from "../../utils/tambon.json";
-import moment from "../../utils/moment";
+import Certificate_pdf from "../../../utils/certificate_pdf";
+import Province from "../../../utils/province.json";
+import District from "../../../utils/district.json";
+import Tambon from "../../../utils/tambon.json";
+import moment from "../../../utils/moment";
+import * as SymptomAPI from "../../../utils/symptomAPI";
 export default {
   layout: "dashboard",
   middleware: "auth",
+  asyncData({ params }) {
+    return {
+      id: params.id
+    };
+  },
   data() {
     return {
       items: ["ใบรับรองแพทย์", "ใบรับรองป่วย"],
       tab: null,
       form_doc: {
+        medicalRecord_id: {},
         body: true
       },
-      form_sick: {},
+      form_sick: {
+        medicalRecord_id: {},
+      },
       date: new Date().toISOString().substr(0, 10),
       menu2: false,
       m2: false,
@@ -623,8 +632,31 @@ export default {
       tambon: []
     };
   },
-  mounted() {},
+  computed: {
+    setMoment() {
+      return this.form_doc.date
+        ? moment.format_local_PS(this.form_doc.date)
+        : "";
+    },
+    setMoment2() {
+      return this.form_sick.date
+        ? moment.format_local_PS(this.form_sick.date)
+        : "";
+    }
+  },
+  mounted() {
+    this.fetch();
+  },
   methods: {
+    async fetch() {
+      if (this.id != undefined) {
+        const response = await SymptomAPI.getSymptom(this.id);
+
+        this.form_doc = await response.data.data;
+        this.form_sick = await response.data.data;
+        this.checkProvince();
+      }
+    },
     onlyForCurrency($event) {
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;
 
@@ -714,6 +746,37 @@ export default {
       this.district = await districts;
     },
     async setSubDistrict(district_code) {
+      let tambons = [];
+      await Tambon.forEach(async e => {
+        let tambon_code = await `${e.SUB_DISTRICT_CODE[0]}${e.SUB_DISTRICT_CODE[1]}${e.SUB_DISTRICT_CODE[2]}${e.SUB_DISTRICT_CODE[3]}`;
+        if (tambon_code == district_code) {
+          await tambons.push(e);
+        }
+      });
+      this.tambon = await tambons;
+    },
+    async checkProvince() {
+      await this.province.forEach(async e => {
+        if (this.form_doc.medicalRecord_id.province == e.PROVINCE_NAME) {
+          await this.checkDistrict(e.PROVINCE_CODE);
+        }
+      });
+    },
+    async checkDistrict(province_code) {
+      let districts = [];
+      await District.forEach(async e => {
+        let district_code = await `${e.DISTRICT_CODE[0]}${e.DISTRICT_CODE[1]}`;
+        if (district_code == province_code) {
+          districts.push(e);
+          if (this.form_doc.medicalRecord_id.distric == e.DISTRICT_NAME) {
+            await this.checkSubDistrict(e.DISTRICT_CODE);
+          }
+        }
+      });
+
+      this.district = await districts;
+    },
+    async checkSubDistrict(district_code) {
       let tambons = [];
       await Tambon.forEach(async e => {
         let tambon_code = await `${e.SUB_DISTRICT_CODE[0]}${e.SUB_DISTRICT_CODE[1]}${e.SUB_DISTRICT_CODE[2]}${e.SUB_DISTRICT_CODE[3]}`;

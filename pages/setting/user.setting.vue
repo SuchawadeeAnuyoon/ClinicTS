@@ -314,7 +314,7 @@ export default {
           role: e.role,
           doctor_id: e.doctor_id,
           email: e.email,
-          time: moment.format_local_time(e.create_at)
+          time: moment.format_local_time_PS(e.create_at)
         });
       });
 

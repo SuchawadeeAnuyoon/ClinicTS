@@ -24,7 +24,7 @@
                   required
                   dense
                   hide-details="true"
-                  v-model="form.name"
+                  v-model="form.first"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="3">
@@ -142,7 +142,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="form.date"
+                      :value="setMoment"
                       dense
                       hide-details="true"
                       label="วันนัด"
@@ -204,7 +204,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" dark @click="add">
+          <v-btn color="success" dark @click="add_doc">
             ออกใบนัด
           </v-btn>
           <v-spacer></v-spacer>
@@ -215,17 +215,27 @@
 </template>
 
 <script>
-import Appoinment_pdf from "../../utils/appoinment_pdf";
-import Province from "../../utils/province.json";
-import District from "../../utils/district.json";
-import Tambon from "../../utils/tambon.json";
-import moment from "../../utils/moment";
+import Appoinment_pdf from "../../../utils/appoinment_pdf";
+import Province from "../../../utils/province.json";
+import District from "../../../utils/district.json";
+import Tambon from "../../../utils/tambon.json";
+import moment from "../../../utils/moment";
+import * as SymptomAPI from "../../../utils/symptomAPI";
+// var week = new Date()
 export default {
   layout: "dashboard",
   middleware: "auth",
+  asyncData({ params }) {
+    return {
+      id: params.id
+    };
+  },
   data() {
     return {
-      form: {},
+      form: {
+        date: moment.format_datepicker_appo(new Date()),
+        time: '08:00'
+      },
       province: Province,
       district: [],
       tambon: [],
@@ -234,8 +244,40 @@ export default {
       menu3: false
     };
   },
-  mounted() {},
+  computed: {
+    setMoment() {
+      return this.form.date
+        ? moment.format_local_PS(this.form.date)
+        : "";
+    },
+  },
+  mounted() {
+    this.fetch();
+  },
   methods: {
+    async fetch() {
+
+      if (this.id != undefined) {
+        let res = {}
+        const response = await SymptomAPI.getSymptom(this.id);
+        res = await response.data.data
+        this.form = await {
+          title: res.medicalRecord_id.title,
+          name: res.medicalRecord_id.first,
+          last: res.medicalRecord_id.last,
+          id: res.medicalRecord_id.citizen_id,
+          address: res.medicalRecord_id.address,
+          moo: res.medicalRecord_id.moo,
+          tambon: res.medicalRecord_id.tambon,
+          district: res.medicalRecord_id.distric,
+          province: res.medicalRecord_id.province,
+          phone: res.medicalRecord_id.phone,
+          date: moment.format_datepicker_appo(new Date()),
+          time: '08:00'
+        }
+        this.checkProvince();
+      }
+    },
     onlynumber($event) {
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;
       if (keyCode < 48 || keyCode > 57) {
@@ -243,7 +285,7 @@ export default {
         $event.preventDefault();
       }
     },
-    add() {
+    add_doc() {
       this.form.day = moment.format_local_doc(this.form.date);
       Appoinment_pdf.Appoinment(this.form);
     },
@@ -277,6 +319,37 @@ export default {
       this.district = await districts;
     },
     async setSubDistrict(district_code) {
+      let tambons = [];
+      await Tambon.forEach(async e => {
+        let tambon_code = await `${e.SUB_DISTRICT_CODE[0]}${e.SUB_DISTRICT_CODE[1]}${e.SUB_DISTRICT_CODE[2]}${e.SUB_DISTRICT_CODE[3]}`;
+        if (tambon_code == district_code) {
+          await tambons.push(e);
+        }
+      });
+      this.tambon = await tambons;
+    },
+    async checkProvince() {
+      await this.province.forEach(async e => {
+        if (this.form.province == e.PROVINCE_NAME) {
+          await this.checkDistrict(e.PROVINCE_CODE);
+        }
+      });
+    },
+    async checkDistrict(province_code) {
+      let districts = [];
+      await District.forEach(async e => {
+        let district_code = await `${e.DISTRICT_CODE[0]}${e.DISTRICT_CODE[1]}`;
+        if (district_code == province_code) {
+          districts.push(e);
+          if (this.form.district == e.DISTRICT_NAME) {
+            await this.checkSubDistrict(e.DISTRICT_CODE);
+          }
+        }
+      });
+
+      this.district = await districts;
+    },
+    async checkSubDistrict(district_code) {
       let tambons = [];
       await Tambon.forEach(async e => {
         let tambon_code = await `${e.SUB_DISTRICT_CODE[0]}${e.SUB_DISTRICT_CODE[1]}${e.SUB_DISTRICT_CODE[2]}${e.SUB_DISTRICT_CODE[3]}`;

@@ -12,6 +12,8 @@
                 flat
                 :items="years"
                 v-model="currentYear"
+                item-text="name"
+                item-value="value"
                 @click="fetch"
                 dense
                 hide-details="true"
@@ -1061,7 +1063,10 @@ export default {
 
       for (let i = 0; i < 5; i++) {
         let y = new Date("2020").getFullYear() + i;
-        year.push(y);
+        year.push({
+          name: y + 543,
+          value: y
+        });
       }
 
       this.years = year;

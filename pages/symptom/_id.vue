@@ -10,6 +10,8 @@
       <v-card v-if="!loading">
         <v-card-title>บันทึกอาการ
           <v-btn small class="mx-3" color="green" @click="save()" :disabled="dis_btn">บันทึก</v-btn>
+          <v-btn small class="mx-1" color="blue" :to="{path: `../registration/certificate/${symptom_data.id}`}">ออกใบรับรองแพทย์</v-btn>
+          <v-btn small class="mx-1" color="blue" :to="{path: `../registration/appointment/${symptom_data.id}`}">ออกใบนัดหมาย</v-btn>
         </v-card-title>
 
         <v-card-text>
@@ -278,10 +280,9 @@ export default {
       const res_symptom = await SymptomAPI.getSymptom(symptom_id);
       this.symptom_data = await res_symptom.data.data;
       this.medical_data = await this.symptom_data.medicalRecord_id;
-      this.medical_data.birth = await moment.format_local(
+      this.medical_data.birth = await moment.format_local_PS(
         this.medical_data.birth
       );
-
 
       if (res_queue.data.data.approve == 'success' ) {
         this.dis_btn = await true

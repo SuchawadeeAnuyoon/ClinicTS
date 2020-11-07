@@ -100,7 +100,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date.add"
+                          :value="setMomentAdd"
                           label="วัน/เดือน/ปีเข้าคลัง"
                           prepend-icon="mdi-calendar"
                           readonly
@@ -143,7 +143,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date.expire"
+                          :value="setMomentExpire"
                           label="วัน/เดือน/ปีหมดอายุ"
                           prepend-icon="mdi-calendar"
                           readonly
@@ -390,6 +390,14 @@ export default {
       },
     };
   },
+  computed: {
+    setMomentAdd() {
+      return this.date.add ? moment.format_local_PS(this.date.add) : ''
+    },
+    setMomentExpire() {
+      return this.date.expire ? moment.format_local_PS(this.date.expire) : ''
+    }
+  },
   mounted() {
     this.fetch();
     this.fecthActivities();
@@ -428,7 +436,7 @@ export default {
             id: e._id,
             medical_name: e.data.medical_name,
             activities: e.activities,
-            time: moment.format_local_time(e.time),
+            time: moment.format_local_time_PS(e.time),
             activitor: `${e.act_by.title} ${e.act_by.first} ${e.act_by.last}`,
             amount: e.data.amount,
             unit: e.data.unit,

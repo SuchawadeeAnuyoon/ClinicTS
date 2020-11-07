@@ -8,12 +8,45 @@ let format_local = date => {
     return moment(date).locale('th').format('Do MMMM YYYY')
 }
 
+let format_local_PS = date => {
+
+    let y = moment(date).year() + 543
+    let m = moment(date).locale('th').format('MMMM')
+    let d = moment(date).locale('th').format('Do')
+    return `${d} ${m} ${y}`
+}
+
 let format_local_doc = date => {
-    return moment(date).locale('th').format('DD/MM/YYYY')
+    let y = moment(date).year() + 543
+    let m = moment(date).locale('th').format('MM')
+    let d = moment(date).locale('th').format('DD')
+    return `${d}/${m}/${y}`
 }
 
 let format_local_time = date => {
     return moment(date).locale('th').format('Do/MM/YY HH:mm:ss')
+}
+
+let format_local_full_PS = date => {
+    let y = moment(date).year() + 543
+    let m = moment(date).locale('th').format('MMMM')
+    let d = moment(date).locale('th').format('Do')
+    let time  = moment(date).locale('th').format('hh:mm:ss')
+    return `${d} ${m} ${y} ${time}`
+}
+
+let format_local_time_PS = date => {
+    let y = moment(date).year() + 543
+    let m = moment(date).locale('th').format('MMM')
+    let d = moment(date).locale('th').format('Do')
+    let time  = moment(date).locale('th').format('hh:mm:ss')
+    return `${d}/${m}/${y} ${time}`
+}
+
+let format_calendar_title = date => {
+    let m = moment(date, 'MMMM').isValid()
+    let y = moment(date).year() + 543
+    return `${m} ${y}`
 }
 
 let fotmat_to_calendar = date => {
@@ -22,6 +55,11 @@ let fotmat_to_calendar = date => {
 
 let format_datepicker = date => {
     return moment(date).local('th').format('YYYY-MM-DD')
+}
+
+let format_datepicker_appo = date => {
+
+    return moment(date).add(7, 'days').local('th').format('YYYY-MM-DD')
 }
 
 let getMonth = date => {
@@ -39,7 +77,8 @@ let getDate = date => {
 }
 
 let getYear = date => {
-    return moment(date).local('th').format('YYYY')
+    let y = moment(date).year() + 543
+    return `${y}`
 }
 export default {
     format,
@@ -51,5 +90,10 @@ export default {
     getYear,
     format_local_doc,
     getDate,
-    getMonthDoc
+    getMonthDoc,
+    format_local_PS,
+    format_local_time_PS,
+    format_local_full_PS,
+    format_calendar_title,
+    format_datepicker_appo
 }

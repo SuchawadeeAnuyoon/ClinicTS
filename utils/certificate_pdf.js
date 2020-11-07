@@ -48,67 +48,67 @@ const Certificate_doc = (data) => {
     doc.setFontSize(16)
     doc.setFont('THSarabunNew', 'normal')
     doc.text('คำนำหน้าชื่อ', 50, 110)
-    if (!data.title) {
+    if (!data.medicalRecord_id.title) {
         doc.text('..............', 105, 110)
     } else {
-        doc.text(data.title, 108, 110)
+        doc.text(data.medicalRecord_id.title, 108, 110)
     }
 
     doc.text('ชื่อ', 145, 110)
-    if (!data.name) {
+    if (!data.medicalRecord_id.first) {
         doc.text('.................................................................', 160, 110)
     } else {
-        doc.text(data.name, 200, 110)
+        doc.text(data.medicalRecord_id.first, 200, 110)
     }
 
     doc.text('นามสกุล', 330, 110)
-    if (!data.last) {
+    if (!data.medicalRecord_id.last) {
         doc.text('...................................................................', 370, 110)
     } else {
-        doc.text(data.last, 400, 110)
+        doc.text(data.medicalRecord_id.last, 400, 110)
     }
 
     doc.text('สถานที่อยู่ (ที่สามารถติดต่อได้)', 50, 130)
-    if (!data.address) {
+    if (!data.medicalRecord_id.address) {
         doc.text('...............', 180, 130)
     } else {
-        doc.text(data.address, 200, 130)
+        doc.text(data.medicalRecord_id.address, 200, 130)
     }
 
     doc.text('หมู่', 220, 130)
-    if (!data.moo) {
+    if (!data.medicalRecord_id.moo) {
         doc.text('...............', 230, 130)
     } else {
-        doc.text(data.moo, 240, 130)
+        doc.text(data.medicalRecord_id.moo, 240, 130)
     }
 
     doc.text('ตำบล', 270, 130)
-    if (!data.tambon) {
+    if (!data.medicalRecord_id.tambon) {
         doc.text('........................................', 295, 130)
     } else {
-        doc.text(data.tambon, 310, 130)
+        doc.text(data.medicalRecord_id.tambon, 310, 130)
     }
 
     doc.text('อำเภอ', 400, 130)
-    if (!data.district) {
+    if (!data.distric) {
         doc.text('............................................', 430, 130)
     } else {
-        doc.text(data.district, 440, 130)
+        doc.text(data.medicalRecord_id.distric, 440, 130)
     }
 
     //บรรทัดที่4
     doc.text('จังหวัด', 50, 150)
-    if (!data.province) {
+    if (!data.medicalRecord_id.province) {
         doc.text('..............................................', 80, 150)
     } else {
-        doc.text(data.province, 100, 150)
+        doc.text(data.medicalRecord_id.province, 100, 150)
     }
 
     doc.text('เลขประจำตัวประชาชน', 200, 150)
-    if (!data.id) {
+    if (!data.medicalRecord_id.citizen_id) {
         doc.text('...............................................', 300, 150)
     } else {
-        doc.text(data.id, 320, 150)
+        doc.text(data.medicalRecord_id.citizen_id, 320, 150)
     }
     doc.text('ข้าพเจ้าขอใบรับรองสุขภาพ โดยมีประวัติสุขภาพดังนี้', 50, 170)
 
@@ -117,7 +117,7 @@ const Certificate_doc = (data) => {
     if (!data.deseat) {
         doc.text('ไม่มี', 250, 190)
     } else {
-        doc.text(data.deseat_detail, 250, 190)
+        doc.text(data.medicalRecord_id.disease, 250, 190)
 
     }
 
@@ -194,16 +194,16 @@ const Certificate_doc = (data) => {
     }
 
     doc.text('(1) ข้าพเจ้า', 35, 370)
-    if (!data.titleDoc) {
+    if (!data.name_predicate) {
         doc.text('...............................................................', 85, 370)
     } else {
-        doc.text(data.titleDoc, 110, 370)
+        doc.text(data.name_predicate, 110, 370)
     }
     doc.text('ใบอนุญาตประกอบวิชาชีพเวชกรรมเลขที่', 250, 370)
-    if (!data.idDoc) {
+    if (!data.doctor_id) {
         doc.text('.................................................', 420, 370)
     } else {
-        doc.text(data.idDoc, 440, 370)
+        doc.text(data.doctor_id, 440, 370)
     }
     doc.text(' สถานพยาบาลชื่อ    ท่าซุงคลินิกเวชกรรม    ที่อยู่  13-15  ถนนณรงค์วิถี  ตำบลอุทัยใหม่  อำเภอเมือง  จังหวัดอุทัยธานี', 50, 390)
     doc.text(' ได้ตรวจร่างกาย คำนำหน้าชื่อ', 50, 410)
@@ -340,7 +340,7 @@ const Certificate_sick = (data) => {
     doc.addFont('THSarabunNew.ttf', 'THSarabunNew', 'normal')
     doc.setFont('THSarabunNew')
 
-    doc.addFileToVFS("THSarabunNewBold.ttf", fontUtils.THSarabunNewBold)
+    doc.addFileToVFS("THSarabunNewBold.ttf", fontUtils2.THSarabunNewBold)
     doc.addFont('THSarabunNewBold.ttf', 'THSarabunNew', 'bold')
 
     doc.setProperties({
@@ -356,17 +356,17 @@ const Certificate_sick = (data) => {
     doc.setFontSize(16)
     doc.setFont('THSarabunNew', 'normal')
     doc.text('แพทย์ผู้ตรวจ', 80, 140)
-    if (!data.titleDoc) {
+    if (!data.name_predicate) {
         doc.text('...............................................................', 135, 140)
     } else {
-        doc.text(data.titleDoc, 165, 140)
+        doc.text(data.name_predicate, 165, 140)
     }
 
     doc.text('ผู้ประกอบวิชาชีพเวชกรรมใบอนุญาตเลขที่', 300, 140)
-    if (!data.num) {
+    if (!data.doctor_id) {
         doc.text('............................', 475, 140)
     } else {
-        doc.text(data.num, 490, 140)
+        doc.text(data.doctor_id, 490, 140)
     }
 
     // เนื้อหาบรรทัดที่2
@@ -381,92 +381,92 @@ const Certificate_sick = (data) => {
     doc.setFontSize(16)
     doc.setFont('THSarabunNew', 'normal')
     doc.text('หนังสือรับรองฉบับนี้ ขอรับรองว่า ข้าพเจ้า', 80, 210)
-    if (!data.titleDoc) {
+    if (!data.name_predicate) {
         doc.text('....................................................', 255, 210)
     } else {
-        doc.text(data.titleDoc, 270, 210)
+        doc.text(data.name_predicate, 270, 210)
     }
     doc.text('ได้ทำการตรวจร่างกายบุคคลดังต่อไปนี้', 390, 210)
 
     // เนื้อหาบรรทัดที่5
     doc.text('คำนำหน้าชื่อ', 40, 230)
-    if (!data.title) {
+    if (!data.medicalRecord_id.title) {
         doc.text('.............', 95, 230)
     } else {
-        doc.text(data.title, 95, 230)
+        doc.text(data.medicalRecord_id.title, 95, 230)
     }
 
     doc.text('ชื่อ', 130, 230)
-    if (!data.name) {
+    if (!data.medicalRecord_id.first) {
         doc.text('............................', 145, 230)
     } else {
-        doc.text(data.name, 155, 230)
+        doc.text(data.medicalRecord_id.first, 155, 230)
     }
 
     doc.text('นามสกุล', 220, 230)
-    if (!data.last) {
+    if (!data.medicalRecord_id.last) {
         doc.text('...........................', 260, 230)
     } else {
-        doc.text(data.last, 265, 230)
+        doc.text(data.medicalRecord_id.last, 265, 230)
     }
 
     doc.text('อายุ', 330, 230)
-    if (!data.age) {
+    if (!data.medicalRecord_id.age) {
         doc.text('............', 350, 230)
     } else {
-        doc.text(data.age, 355, 230)
+        doc.text(data.medicalRecord_id.age, 355, 230)
     }
     doc.text('ปี', 380, 230)
 
     doc.text('สถานที่อยู่ บ้านเลขที่', 390, 230)
-    if (!data.address) {
+    if (!data.medicalRecord_id.address) {
         doc.text('...........................', 480, 230)
     } else {
-        doc.text(data.address, 490, 230)
+        doc.text(data.medicalRecord_id.address, 490, 230)
     }
 
     // เนื้อหาบรรทัดที่6
     doc.text('หมู่', 40, 250)
-    if (!data.moo) {
+    if (!data.medicalRecord_id.moo) {
         doc.text('.................', 55, 250)
     } else {
-        doc.text(data.moo, 70, 250)
+        doc.text(data.medicalRecord_id.moo, 70, 250)
     }
 
     doc.text('ถนน', 100, 250)
-    if (!data.road) {
+    if (!data.medicalRecord_id.road) {
         doc.text('............................', 120, 250)
     } else {
-        doc.text(data.road, 130, 250)
+        doc.text(data.medicalRecord_id.road, 130, 250)
     }
 
     doc.text('ตำบล', 195, 250)
-    if (!data.tambon) {
+    if (!data.medicalRecord_id.tambon) {
         doc.text('..................................', 220, 250)
     } else {
-        doc.text(data.tambon, 235, 250)
+        doc.text(data.medicalRecord_id.tambon, 235, 250)
     }
 
     doc.text('อำเภอ', 310, 250)
-    if (!data.district) {
+    if (!data.medicalRecord_id.district) {
         doc.text('................................', 340, 250)
     } else {
-        doc.text(data.district, 340, 250)
+        doc.text(data.medicalRecord_id.district, 340, 250)
     }
 
     doc.text('จังหวัด', 425, 250)
-    if (!data.province) {
+    if (!data.medicalRecord_id.province) {
         doc.text('.....................................', 455, 250)
     } else {
-        doc.text(data.province, 470, 250)
+        doc.text(data.medicalRecord_id.province, 470, 250)
     }
 
     // เนื้อหาบรรทัดที่7
     doc.text('เลขประจำตัวประชาชน', 40, 270)
-    if (!data.id) {
+    if (!data.medicalRecord_id.id) {
         doc.text('..................................', 140, 270)
     } else {
-        doc.text(data.id, 140, 270)
+        doc.text(data.medicalRecord_id.id, 140, 270)
     }
 
     doc.text('เมื่อวันที่', 230, 270)

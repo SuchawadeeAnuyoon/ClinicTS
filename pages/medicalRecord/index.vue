@@ -102,7 +102,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="form_data.birth"
+                      :value="setMoment"
                       label="วัน/เดือน/ปีเกิด"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -241,7 +241,7 @@
                   v-model="form_data.phone"
                 ></v-text-field>
               </v-col>
-              
+
               <v-col cols="12" sm="6" md="12">
                 <v-text-field
                   label="โรคประจำตัว"
@@ -310,7 +310,11 @@ export default {
       return this.data_list.filter(item => {
         return item.citizen_id.indexOf(text) > -1;
       });
-    }
+    },
+
+    setMoment() {
+      return this.form_data.birth ? moment.format_local_PS(this.form_data.birth) : ''
+    },
   },
   mounted() {
     this.fetch();

@@ -128,7 +128,7 @@
         <v-card-text>
           <v-container>
             <v-row>
-              
+
               <v-col cols="12" sm="12" md="3">
                 <v-text-field
                   label="ชื่อคนไข้"
@@ -346,7 +346,7 @@ export default {
       await response.data.data.forEach(async e => {
         await events.push({
           id: e._id,
-          name: e.name,
+          name: e.medical_name,
           start: moment.fotmat_to_calendar(e.start),
           end: moment.fotmat_to_calendar(e.end),
           color: e.color,

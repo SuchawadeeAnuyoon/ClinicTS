@@ -101,7 +101,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date.add"
+                      :value="setMomentAdd"
                       label="วัน/เดือน/ปีเข้าคลัง"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -142,7 +142,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date.expire"
+                      :value="setMomentExpire"
                       label="วัน/เดือน/ปีหมดอายุ"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -191,7 +191,7 @@
               </v-col>
             </v-row>
 
-            <v-row v-if="form_data.type4 == true">
+            <v-row>
               <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   label="เลขที่รุ่นที่/ครั้งที่ผลิด"
@@ -287,6 +287,12 @@ export default {
         let text2 = item.medical_name.toLowerCase()
         return text2.indexOf(text) > -1;
       });
+    },
+    setMomentAdd() {
+      return this.date.add ? moment.format_local_PS(this.date.add) : ''
+    },
+    setMomentExpire() {
+      return this.date.expire ? moment.format_local_PS(this.date.expire) : ''
     }
   },
   mounted() {
@@ -305,8 +311,8 @@ export default {
           medical_name: e.medical_name,
           total: e.total,
           unit: e.unit,
-          date_add: moment.format_local(e.date_add),
-          date_expire: moment.format_local(e.expire)
+          date_add: moment.format_local_PS(e.date_add),
+          date_expire: moment.format_local_PS(e.expire)
         });
       });
     },

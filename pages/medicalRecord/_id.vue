@@ -66,12 +66,46 @@
                   </v-col>
 
                   <v-col cols="12" sm="3" md="3">
-                    <v-text-field
-                      label="วัน เดือน ปีเกิด"
-                      v-model="birth"
-                      :readonly="readonly"
-                      dense
-                    ></v-text-field>
+                    <v-menu
+                      ref="menu"
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      :return-value.sync="birth"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                      :disabled="readonly"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          :value="setMoment"
+                          label="วัน/เดือน/ปีเกิด"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          dense
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="birth"
+                        no-title
+                        scrollable
+                        locale="th"
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="menu = false">
+                          ยกเลิก
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menu.save(birth)"
+                        >
+                          ตกลง
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
                   </v-col>
 
                   <v-col cols="12" sm="3" md="2">
@@ -91,8 +125,6 @@
                       dense
                     ></v-text-field>
                   </v-col>
-
-                  
                 </v-row>
 
                 <div>ข้อมูลติดต่อ</div>
@@ -413,8 +445,14 @@ export default {
       province: Province,
       district: [],
       tambon: [],
-      test: "test"
+      test: "test",
+      menu: false
     };
+  },
+  computed: {
+    setMoment() {
+      return this.birth ? moment.format_local_PS(this.birth) : "";
+    }
   },
   mounted() {
     this.fecth();
@@ -423,7 +461,7 @@ export default {
     async fecth() {
       const response = await MedicalRecordAPI.getOneMedicalRecord(this.id);
       this.medical_record_data = await response.data.data;
-      this.birth = await moment.format_local(this.medical_record_data.birth);
+      this.birth = await this.medical_record_data.birth;
       this.contact = await `${this.medical_record_data.address} หมู่ที่ ${this.medical_record_data.moo} ถนน ${this.medical_record_data.road} ซอย ${this.medical_record_data.soi} ตำบล ${this.medical_record_data.tambon} อำเภอ ${this.medical_record_data.distric} จังหวัด ${this.medical_record_data.province} รหัสไปรษณีย์ ${this.medical_record_data.zip}`;
       this.phone = await `เบอร์ติดต่อ ${this.medical_record_data.phone}`;
 
@@ -440,11 +478,11 @@ export default {
         // console.log(e)
         this.symptom.push({
           initial: e.initial,
-          create_at: moment.format_local_time(e.create_at),
+          create_at: moment.format_local_time_PS(e.create_at),
           name_create: e.name_create,
           predicate: e.predicate,
           name_predicate: e.name_predicate,
-          predicate_at: moment.format_local_time(e.predicate_at)
+          predicate_at: moment.format_local_time_PS(e.predicate_at)
         });
         // }
       });
