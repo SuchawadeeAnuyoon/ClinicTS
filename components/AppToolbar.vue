@@ -47,7 +47,7 @@
 
         <v-list>
           <v-list-item v-for="item in noti" :key="item.id">
-            <v-card flat width="250">
+            <v-card flat width="250" :to="`/medicalSupplies/${item.id}`">
               <v-card-text>{{ item.name }} {{ item.msg }}</v-card-text>
             </v-card>
           </v-list-item>
@@ -207,12 +207,14 @@ export default {
         if (total <= 20 || ex <= 30) {
           if (total <= 20 && ex > 30) {
             n.push({
+                id: e._id,
               name: e.medical_name,
               msg: `จะหมดคลัง เหลือ ${e.total} ${e.unit}`
             });
             // console.log(unit);
           } else if (ex <= 30 && total > 20) {
             n.push({
+                id: e._id,
               name: e.medical_name,
               msg: `จะหมดอายุในอีก ${ex + 1} วัน คือ ${momentFormat.format_local(
                 e.expire
@@ -221,6 +223,7 @@ export default {
             // console.log(ex);
           } else {
             n.push({
+                id: e._id,
               name: e.medical_name,
               msg: `จะหมดคลัง เหลือ ${e.total} ${
                 e.unit
@@ -273,11 +276,13 @@ export default {
           if (total <= 20 || ex <= 30) {
             if (total <= 20 && ex > 30) {
               n.push({
+                id: e.id,
                 name: e.medical_name,
                 msg: `จะหมดคลัง เหลือ ${e.total} ${e.unit}`
               });
             } else if (ex <= 30 && total > 20) {
               n.push({
+                id: e.id,
                 name: e.medical_name,
                 msg: `จะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
                   e.expire
@@ -285,6 +290,7 @@ export default {
               });
             } else {
               n.push({
+                id: e.id,
                 name: e.medical_name,
                 msg: `จะหมดคลัง เหลือ ${e.total} ${
                   e.unit

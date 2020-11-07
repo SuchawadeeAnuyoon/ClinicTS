@@ -121,9 +121,11 @@
 
               <v-col cols="12" sm="2">
                 <v-select
-                  :items="['doctor', 'nurse']"
+                  :items="role_item"
                   label="สิทธิ์"
                   required
+                  item-text="name"
+                  item-value="value"
                   v-model="form_data.role"
                 ></v-select>
               </v-col>
@@ -280,7 +282,12 @@ export default {
       view_loading: false,
       dialog_delete: false,
       user_name: '',
-      user_id: null
+      user_id: null,
+      role_item: [
+        {name: 'แพทย์', value: 'doctor'},
+        {name: 'พยาบาล', value: 'nurse'},
+        {name: 'ผู้ช่วยพยาบาล', value: 'assistant'},
+      ],
     };
   },
   computed: {

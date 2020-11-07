@@ -1,17 +1,17 @@
 import jspdf from 'jspdf'
 
 import fontUtils from './font'
+import fontUtils2 from './fontBold'
 
 const Certificate_doc = (data) => {
     var doc = new jspdf('p', 'pt', 'a4')
-    var pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
     var pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
 
     doc.addFileToVFS("THSarabunNew.ttf", fontUtils.THSarabunNew)
     doc.addFont('THSarabunNew.ttf', 'THSarabunNew', 'normal')
     doc.setFont('THSarabunNew')
 
-    doc.addFileToVFS("THSarabunNewBold.ttf", fontUtils.THSarabunNewBold)
+    doc.addFileToVFS("THSarabunNewBold.ttf", fontUtils2.THSarabunNewBold)
     doc.addFont('THSarabunNewBold.ttf', 'THSarabunNew', 'bold')
 
     doc.setProperties({
@@ -136,7 +136,7 @@ const Certificate_doc = (data) => {
         doc.text(data.heal_detail, 250, 230)
 
     }
-    
+
 
     doc.text('4.ประวัติอื่นที่สำคัญ', 50, 250)
     if (!data.note1) {
@@ -144,7 +144,7 @@ const Certificate_doc = (data) => {
     } else {
         doc.text(data.note1, 150, 250)
     }
-    
+
     doc.setFontSize(14)
     doc.setFont('THSarabunNew', 'normal')
     doc.text('ลงชื่อ.......................................', 250, 280)
@@ -298,7 +298,7 @@ const Certificate_doc = (data) => {
     } else {
         doc.text(data.opinion, 240, 630)
     }
-    
+
     doc.setFontSize(14)
     doc.setFont('THSarabunNew', 'normal')
     doc.text('ลงชื่อ.......................................', 250, 680)
@@ -460,7 +460,7 @@ const Certificate_sick = (data) => {
     } else {
         doc.text(data.province, 470, 250)
     }
-   
+
     // เนื้อหาบรรทัดที่7
     doc.text('เลขประจำตัวประชาชน', 40, 270)
     if (!data.id) {

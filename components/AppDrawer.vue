@@ -104,7 +104,7 @@
             </template>
 
             <template>
-              <v-list-item ripple="ripple" to="/setting/user.setting" v-if="me.role == 'super'">
+              <v-list-item ripple="ripple" to="/setting/user.setting" v-if="me.role == 'admin'">
                 <v-list-item-title
                   ><div class="menu">จัดการผู้ใช้</div></v-list-item-title
                 >
