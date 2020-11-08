@@ -13,9 +13,11 @@
             ></v-text-field>
           </v-flex>
           <v-spacer></v-spacer>
-          <v-btn color="blue lighten-2" @click="dialog_add = true"
-            >เพิ่มข้อมูลเวชภัณฑ์</v-btn
-          >
+          <!-- <div> -->
+            <v-btn v-if="role" color="blue lighten-2" @click="dialog_add = true"
+              >เพิ่มข้อมูลเวชภัณฑ์</v-btn
+            >
+          <!-- </div> -->
         </v-toolbar>
 
         <v-divider></v-divider>
@@ -279,6 +281,7 @@ export default {
         msg: ""
       },
       search: "",
+      role: false,
       rules: {
         medical_name: [],
         name: [],
@@ -289,7 +292,7 @@ export default {
         price_for_unit: [],
         number: [],
         creator: [],
-        from: []
+        from: [],
       }
     };
   },
@@ -313,6 +316,14 @@ export default {
   },
   methods: {
     async fetch() {
+      let me = await this.$auth.user.data;
+
+      // console.log(me.role)
+      if (me.role == "assistant") {
+        this.role = false;
+      } else {
+        this.role = true;
+      }
       this.data_list = [];
       const response = await MedicalSupplies.getAllMedicalSupplies();
       const res = await response.data.data;

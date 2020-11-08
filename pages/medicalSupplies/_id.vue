@@ -26,6 +26,7 @@
                 <v-row>
                   <div class="mr-5">ข้อมูลเวชภัณฑ์</div>
                   <v-btn
+                  v-if="me.role != 'assistant'"
                     small
                     :color="btn_edit.color"
                     @click="edit(readonly)"
@@ -388,6 +389,7 @@ export default {
         color: '',
         msg: ''
       },
+      me: {}
     };
   },
   computed: {
@@ -404,7 +406,7 @@ export default {
   },
   methods: {
     async fetch() {
-      // console.log(this.id)
+      this.me = await this.$auth.user.data;
       const response = await MedicalSuppliesAPI.getOneMidicalSupply(this.id);
 
       this.medical_supply_data = await response.data.data;
