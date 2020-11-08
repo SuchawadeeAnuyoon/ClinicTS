@@ -15,7 +15,8 @@
     "core-js": "^3.6.5",
     "jspdf": "^2.1.1",
     "moment": "^2.29.1",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "thai-id-card": "0.0.15"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.11.2"

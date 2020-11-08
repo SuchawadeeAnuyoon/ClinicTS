@@ -8,10 +8,16 @@
         ></v-progress-circular>
       </div>
       <v-card v-if="!loading">
-        <v-card-title>บันทึกอาการ
-          <v-btn small class="mx-3" color="green" @click="save()" :disabled="dis_btn">บันทึก</v-btn>
-          <v-btn small class="mx-1" color="blue" :to="{path: `../registration/certificate/${symptom_data.id}`}">ออกใบรับรองแพทย์</v-btn>
-          <v-btn small class="mx-1" color="blue" :to="{path: `../registration/appointment/${symptom_data.id}`}">ออกใบนัดหมาย</v-btn>
+        <v-card-title
+          >บันทึกอาการ
+          <v-btn
+            small
+            class="mx-3"
+            color="green"
+            @click="save()"
+            :disabled="dis_btn"
+            >บันทึก</v-btn
+          >
         </v-card-title>
 
         <v-card-text>
@@ -99,6 +105,22 @@
                   v-model="medical_data.nationality"
                 ></v-text-field>
               </v-col>
+
+              <v-col cols="12" sm="2">
+                <v-checkbox
+                  label="ใบรับรองแพทย์"
+                  dense
+                  v-model="symptom_data.certificate"
+                ></v-checkbox>
+              </v-col>
+
+              <v-col cols="12" sm="2">
+                <v-checkbox
+                  label="ใบนัด"
+                  dense
+                  v-model="symptom_data.appointment"
+                ></v-checkbox>
+              </v-col>
             </v-row>
 
             <div>ข้อมูลอาการ</div>
@@ -130,77 +152,82 @@
       <v-card class="mt-3" v-if="!loading">
         <v-container fluid v-if="!dis_btn">
           <v-row>
-          <v-col cols="12" sm="1">
-            <div class="mt-3">ยา</div>
-          </v-col>
-          <v-col cols="12" sm="3">
-            <v-text-field label="ค้นหา" v-model="search" dense hide-details clearable></v-text-field>
-          </v-col>
-        </v-row>
-        <v-divider class="mb-2"></v-divider>
-        <v-row>
-          <v-col cols="12" sm="6">
-            <template>
-              <v-data-table
-                :headers="supply_header"
-                :items="listFilter"
-                :items-per-page="5"
-                hide-default-footer
-                disable-sort
+            <v-col cols="12" sm="1">
+              <div class="mt-3">ยา</div>
+            </v-col>
+            <v-col cols="12" sm="3">
+              <v-text-field
+                label="ค้นหา"
+                v-model="search"
                 dense
-              >
-                <template v-slot:[`item.drug_amount`]="{ item }">
-                  <v-col cols="12" sm="12">
-                    <v-text-field
-                      dense
-                      outlined
-                      hide-details
-                      v-model="item.drug_amount"
-                      :rules="[rules]"
-                    ></v-text-field>
-                  </v-col>
-                </template>
-                <template v-slot:[`item.add`]="{ item }">
-                  <v-btn
-                    small
-                    color="blue"
-                    :disabled="item.status == true"
-                    @click="
-                      add_drug(item._id, item.medical_name, item.drug_amount)
-                    "
-                    >เพิ่ม</v-btn
-                  >
-                </template>
-              </v-data-table>
-            </template>
-          </v-col>
+                hide-details
+                clearable
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-divider class="mb-2"></v-divider>
+          <v-row>
+            <v-col cols="12" sm="6">
+              <template>
+                <v-data-table
+                  :headers="supply_header"
+                  :items="listFilter"
+                  :items-per-page="5"
+                  dense
+                  sort-by="medical_name"
+                >
+                  <template v-slot:[`item.drug_amount`]="{ item }">
+                    <v-col cols="12" sm="12">
+                      <v-text-field
+                        dense
+                        outlined
+                        hide-details
+                        v-model="item.drug_amount"
+                        :rules="[rules]"
+                      ></v-text-field>
+                    </v-col>
+                  </template>
+                  <template v-slot:[`item.add`]="{ item }">
+                    <v-btn
+                      small
+                      color="blue"
+                      :disabled="item.status == true"
+                      @click="
+                        add_drug(item._id, item.medical_name, item.drug_amount)
+                      "
+                      >เพิ่ม</v-btn
+                    >
+                  </template>
+                </v-data-table>
+              </template>
+            </v-col>
 
-          <v-divider vertical></v-divider>
+            <v-divider vertical></v-divider>
 
-          <v-col cols="12" sm="5">
-            <template>
-              <v-data-table
-                :headers="drug_header"
-                :items="drug_data"
-                :items-per-page="5"
-                hide-default-footer
-                disable-sort
-                dense
-              >
-                <template v-slot:[`item.delete`]="{ item }">
-                  <v-btn color="red" small icon @click="drugDelete(item._id)">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </template>
-              </v-data-table>
-            </template>
-          </v-col>
-        </v-row>
+            <v-col cols="12" sm="5">
+              <template>
+                <v-data-table
+                  :headers="drug_header"
+                  :items="drug_data"
+                  :items-per-page="5"
+                  hide-default-footer
+                  disable-sort
+                  dense
+                >
+                  <template v-slot:[`item.delete`]="{ item }">
+                    <v-btn color="red" small icon @click="drugDelete(item._id)">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </template>
+                </v-data-table>
+              </template>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card>
     </v-container>
 
-     <v-dialog v-model="dialog_loading" width="200">
+    <v-dialog v-model="dialog_loading" width="200">
       <v-card width="200" height="200" flat class="text-center">
         <v-card-subtitle>กำลังอัพโหลดข้อมูล</v-card-subtitle>
         <v-progress-circular
@@ -241,6 +268,7 @@ export default {
       supply_header: [
         { text: "ชื่อยาสามัญ", value: "medical_name" },
         { text: "คงเหลือ", value: "total" },
+        { text: "รุ่น", value: "number" },
         { text: "หน่วย", value: "unit" },
         { text: "จำนวน", value: "drug_amount", width: "100", align: "center" },
         { text: "", value: "add" }
@@ -249,23 +277,25 @@ export default {
       drug_header: [
         { text: "ชื่อยาสามัญ", value: "name_drug" },
         { text: "จำนวน", value: "amount" },
-        { text: "", value: "delete" },
+        { text: "", value: "delete" }
       ],
       drug_data: [],
       rules: v => {
         if (parseInt(v)) return true;
         return "กรุณากรอกตัวเลข";
       },
-      search: '',
+      search: "",
       dis_btn: null,
-      dialog_loading: false
+      dialog_loading: false,
+      symptom_id: ""
     };
-  },computed: {
-    listFilter () {
-      let text = this.search.trim()
+  },
+  computed: {
+    listFilter() {
+      let text = this.search.trim();
       return this.supplies_data.filter(item => {
-        return item.medical_name.indexOf(text) > -1
-      })
+        return item.medical_name.indexOf(text) > -1;
+      });
     }
   },
   mounted() {
@@ -275,24 +305,30 @@ export default {
   methods: {
     async fetch() {
       const res_queue = await QueueAPI.getQueue(this.id);
-      let symptom_id = await res_queue.data.data.symptom;
+      this.symptom_id = await res_queue.data.data.symptom;
 
-      const res_symptom = await SymptomAPI.getSymptom(symptom_id);
+      const res_symptom = await SymptomAPI.getSymptom(this.symptom_id);
       this.symptom_data = await res_symptom.data.data;
       this.medical_data = await this.symptom_data.medicalRecord_id;
       this.medical_data.birth = await moment.format_local_PS(
         this.medical_data.birth
       );
 
-      if (res_queue.data.data.approve == 'success' ) {
-        this.dis_btn = await true
+      if (res_queue.data.data.approve == "success") {
+        this.dis_btn = await true;
       } else {
-        this.dis_btn = await false
+        this.dis_btn = await false;
       }
-      this.drug_data = await this.symptom_data.drugPush
 
+      this.fetchDrug();
+    },
+    async fetchDrug() {
+      const res_symptom = await SymptomAPI.getSymptom(this.symptom_id);
+      let symptomData = await res_symptom.data.data;
       const res_supplies = await MedicalSupplies.getAllMedicalSupplies();
       this.supplies_data = await res_supplies.data.data;
+
+      this.drug_data = await symptomData.drugPush;
 
       this.loading = await false;
     },
@@ -303,31 +339,29 @@ export default {
         amount,
         symptom_id: this.symptom_data.id
       };
-
-
       const response = await DrugListAPI.createDrugList(form_data);
 
       if (response.data.success == false) {
-        alert(response.data.errMessage)
+        alert(response.data.errMessage);
       }
 
-      await this.fetch()
+      await this.fetchDrug();
     },
     async drugDelete(id) {
-      const response = await DrugListAPI.deleteDrugList(id)
+      const response = await DrugListAPI.deleteDrugList(id);
 
-      await this.fetch()
+      await this.fetchDrug();
     },
     async save() {
-      this.dialog_loading = await true
+      this.dialog_loading = await true;
       let form = await {
-        approve: 'await_drug'
-      }
-      await QueueAPI.updateQueue(this.id, form)
-      await SymptomAPI.updateSymptom(this.symptom_data.id, this.symptom_data)
+        approve: "await_drug"
+      };
+      await QueueAPI.updateQueue(this.id, form);
+      await SymptomAPI.updateSymptom(this.symptom_data.id, this.symptom_data);
 
-      await this.fetch()
-      this.dialog_loading = await false
+      await this.fetch();
+      this.dialog_loading = await false;
     }
   }
 };

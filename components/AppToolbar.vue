@@ -113,6 +113,8 @@
           </v-simple-table>
         </v-card-text>
         <v-card-actions>
+          <v-btn color="blue" :href="`/registration/certificate/${symptom_id}`" target="_blank" text v-if="cert">ใบรับรองแพทย์</v-btn>
+          <v-btn color="blue" :href="`/registration/appointment/${symptom_id}`" target="_blank" text v-if="appo">ใบนัด</v-btn>
           <v-spacer></v-spacer>
           <v-btn color="grey darken-1" @click="dialog_drug = false">
             ยกเลิก
@@ -161,7 +163,10 @@ export default {
       dialog_drug: false,
       drug_list: [],
       loading: false,
-      q_id: null
+      q_id: null,
+      symptom_id: '',
+      cert: false,
+      appo: false
     };
   },
   mounted() {
@@ -312,6 +317,16 @@ export default {
       const res_q = await QueueApi.getQueue(id)
       // this.dialog_drug = await true
       const response = await SymptomAPI.getSymptom(res_q.data.data.symptom)
+
+      this.symptom_id = response.data.data.id
+
+      if (response.data.data.certificate == true) {
+        this.cert = true
+      }
+      if (response.data.data.appointment == true) {
+        this.appo = true
+      }
+
 
       await response.data.data.drugPush.forEach(async e => {
         if (e.status != true) {
