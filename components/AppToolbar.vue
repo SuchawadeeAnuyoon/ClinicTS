@@ -180,7 +180,7 @@ export default {
       // console.log(this.me)
       this.name = `${me.title} ${me.first} ${me.last}`;
 
-      if (me.role == 'nurse') {
+      if (me.role == 'nurse' || me.role == 'assistant') {
         this.role = false
       } else {
         this.role = true
