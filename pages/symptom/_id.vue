@@ -193,7 +193,7 @@
                       color="blue"
                       :disabled="item.status == true"
                       @click="
-                        add_drug(item._id, item.medical_name, item.drug_amount)
+                        add_drug(item._id, item.medical_name, item.drug_amount, item.price_for_unit)
                       "
                       >เพิ่ม</v-btn
                     >
@@ -270,6 +270,7 @@ export default {
         { text: "คงเหลือ", value: "total" },
         { text: "รุ่น", value: "number" },
         { text: "หน่วย", value: "unit" },
+        { text: "ราคาต่อหน่วย", value: "price_for_unit" },
         { text: "จำนวน", value: "drug_amount", width: "100", align: "center" },
         { text: "", value: "add" }
       ],
@@ -328,16 +329,19 @@ export default {
       const res_supplies = await MedicalSupplies.getAllMedicalSupplies();
       this.supplies_data = await res_supplies.data.data;
 
+      console.log(this.supplies_data)
+
       this.drug_data = await symptomData.drugPush;
 
       this.loading = await false;
     },
-    async add_drug(sid, name, amount) {
+    async add_drug(sid, name, amount, price_for_unit) {
       let form_data = await {
         supply_id: sid,
         name_drug: name,
         amount,
-        symptom_id: this.symptom_data.id
+        symptom_id: this.symptom_data.id,
+        price_for_unit
       };
       const response = await DrugListAPI.createDrugList(form_data);
 

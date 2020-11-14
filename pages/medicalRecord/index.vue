@@ -391,6 +391,7 @@ export default {
   methods: {
     async fetch() {
       this.data_list = [];
+      this.form_data = {}
 
       await MedicalRecordAPI.getAllMedicalRecord().then(response => {
         let i = 0;
