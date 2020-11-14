@@ -22,9 +22,14 @@
 
         <v-list>
           <v-list-item v-for="item in wait" :key="item.id">
-            <v-list-item-title>{{ item.queue }}: {{item.medicalRecode.first}} {{item.medicalRecode.last}}</v-list-item-title>
+            <v-list-item-title
+              >{{ item.queue }}: {{ item.medicalRecode.first }}
+              {{ item.medicalRecode.last }}</v-list-item-title
+            >
             <v-list-item-action class="mr-8">
-              <v-btn color="indigo" dark small @click="view(item._id)">เรียกดู</v-btn>
+              <v-btn color="indigo" dark small @click="view(item._id)"
+                >เรียกดู</v-btn
+              >
             </v-list-item-action>
           </v-list-item>
         </v-list>
@@ -72,9 +77,19 @@
 
         <v-list>
           <v-list-item v-for="item in queue" :key="item.id">
-            <v-list-item-title>{{ item.queue }}: {{item.medicalRecode.first}} {{item.medicalRecode.last}}</v-list-item-title>
+            <v-list-item-title
+              >{{ item.queue }}: {{ item.medicalRecode.first }}
+              {{ item.medicalRecode.last }}</v-list-item-title
+            >
             <v-list-item-action class="mr-8">
-              <v-btn v-if="role" color="indigo" small dark :to="`/symptom/${item._id}`">เรียกดู</v-btn>
+              <v-btn
+                v-if="role"
+                color="indigo"
+                small
+                dark
+                :to="`/symptom/${item._id}`"
+                >เรียกดู</v-btn
+              >
             </v-list-item-action>
           </v-list-item>
         </v-list>
@@ -95,32 +110,64 @@
     >
       <v-card>
         <v-card-text>
+          <v-container fluid>
+            <v-form ref="form">
+              <v-row>
+                <v-col cols="12" sm="12">
+                  <v-text-field
+                    v-model="payment.treatment_cost"
+                    label="ค่ารักษา"
+                    :rules="rules.payment"
+                    dense
+                    @keypress="onlyForCurrency"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-container>
+
           <v-simple-table>
             <thead>
               <tr>
                 <th>ชื่อยา</th>
                 <th>จำนวน</th>
+                <th>ราคา</th>
                 <th>สั่งโดย</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="list in drug_list" :key="list._id">
-                <th>{{list.name_drug}}</th>
-                <th>{{list.amount}}</th>
-                <th>{{list.order_by_name}}</th>
+                <th>{{ list.name_drug }}</th>
+                <th>{{ list.amount }}</th>
+                <th>{{ list.price }}</th>
+                <th>{{ list.order_by_name }}</th>
               </tr>
             </tbody>
           </v-simple-table>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="blue" :href="`/registration/certificate/${symptom_id}`" target="_blank" text v-if="cert">ใบรับรองแพทย์</v-btn>
-          <v-btn color="blue" :href="`/registration/appointment/${symptom_id}`" target="_blank" text v-if="appo">ใบนัด</v-btn>
+          <v-btn
+            color="blue"
+            :href="`/registration/certificate/${symptom_id}`"
+            target="_blank"
+            text
+            v-if="cert"
+            >ใบรับรองแพทย์</v-btn
+          >
+          <v-btn
+            color="blue"
+            :href="`/registration/appointment/${symptom_id}`"
+            target="_blank"
+            text
+            v-if="appo"
+            >ใบนัด</v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn color="grey darken-1" @click="dialog_drug = false">
             ยกเลิก
           </v-btn>
           <v-btn color="blue darken-1" @click="save()">
-            บันทึก
+            จ่ายยา
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -148,6 +195,7 @@ import * as QueueApi from ".././utils/queueAPI";
 import * as MedicalSuppliesAPI from ".././utils/medicalSuppliesAPI";
 import * as SymptomAPI from ".././utils/symptomAPI";
 import * as DrugListAPI from ".././utils/drugListAPI";
+import * as PaymentAPI from ".././utils/paymentAPI";
 import momentFormat from ".././utils/moment";
 import moment from "moment";
 export default {
@@ -164,11 +212,19 @@ export default {
       drug_list: [],
       loading: false,
       q_id: null,
-      symptom_id: '',
+      symptom_id: "",
       cert: false,
-      appo: false
+      appo: false,
+      drug_price: null,
+      payment: {
+        treatment_title: "ค่ารักษา"
+      },
+      rules: {
+        payment: []
+      }
     };
   },
+  computed: {},
   mounted() {
     this.fetch();
     this.getQueue();
@@ -180,21 +236,21 @@ export default {
       // console.log(this.me)
       this.name = `${me.title} ${me.first} ${me.last}`;
 
-      if (me.role == 'nurse' || me.role == 'assistant') {
-        this.role = false
+      if (me.role == "nurse" || me.role == "assistant") {
+        this.role = false;
       } else {
-        this.role = true
+        this.role = true;
       }
 
       const response = await QueueApi.getAllQueue();
+
       let data_q = await response.data.data;
       await data_q.forEach(async e => {
-
-        if (e.approve == 'wait') {
+        if (e.approve == "wait") {
           await this.queue.push(e);
         }
-        if (e.approve == 'await_drug') {
-          await this.wait.push(e)
+        if (e.approve == "await_drug") {
+          await this.wait.push(e);
         }
       });
 
@@ -212,23 +268,22 @@ export default {
         if (total <= 20 || ex <= 30) {
           if (total <= 20 && ex > 30) {
             n.push({
-                id: e._id,
+              id: e._id,
               name: e.medical_name,
               msg: `จะหมดคลัง เหลือ ${e.total} ${e.unit}`
             });
             // console.log(unit);
           } else if (ex <= 30 && total > 20) {
             n.push({
-                id: e._id,
+              id: e._id,
               name: e.medical_name,
-              msg: `จะหมดอายุในอีก ${ex + 1} วัน คือ ${momentFormat.format_local(
-                e.expire
-              )}`
+              msg: `จะหมดอายุในอีก ${ex +
+                1} วัน คือ ${momentFormat.format_local(e.expire)}`
             });
             // console.log(ex);
           } else {
             n.push({
-                id: e._id,
+              id: e._id,
               name: e.medical_name,
               msg: `จะหมดคลัง เหลือ ${e.total} ${
                 e.unit
@@ -253,19 +308,18 @@ export default {
         const response = await QueueApi.getAllQueue();
         let data_q = await response.data.data;
         data_q.forEach(e => {
-          if (e.approve == 'wait') {
+          if (e.approve == "wait") {
             q.push(e);
           }
-          if (e.approve == 'await_drug') {
+          if (e.approve == "await_drug") {
             w.push(e);
           }
         });
         this.queue = await q;
-        this.wait = await w
+        this.wait = await w;
       }, 30 * 1000);
     },
     async suppliesNoti() {
-
       setInterval(async () => {
         const response = await MedicalSuppliesAPI.getAllMedicalSupplies();
         let supplies = response.data.data;
@@ -311,55 +365,97 @@ export default {
     },
 
     async view(id) {
-      this.q_id = await id
-      this.loading = await true
-      this.drug_list = await []
-      const res_q = await QueueApi.getQueue(id)
+      this.q_id = await id;
+      this.loading = await true;
+      this.drug_list = await [];
+      this.drug_price = 0;
+      const res_q = await QueueApi.getQueue(id);
       // this.dialog_drug = await true
-      const response = await SymptomAPI.getSymptom(res_q.data.data.symptom)
+      const response = await SymptomAPI.getSymptom(res_q.data.data.symptom);
 
-      this.symptom_id = response.data.data.id
+      this.symptom_id = response.data.data.id;
 
       if (response.data.data.certificate == true) {
-        this.cert = true
+        this.cert = true;
       }
       if (response.data.data.appointment == true) {
-        this.appo = true
+        this.appo = true;
       }
-
 
       await response.data.data.drugPush.forEach(async e => {
         if (e.status != true) {
           // console.log(e.status)
-          await this.drug_list.push(e)
+          this.drug_price += e.price;
+          await this.drug_list.push(e);
         } else {
-          this.drug_list = await []
+          this.drug_list = await [];
         }
-      })
+      });
 
-      this.loading = await false
+      this.loading = await false;
 
-      this.dialog_drug = await true
-
+      this.dialog_drug = await true;
+      // console.log(this.drug_price)
     },
     async save() {
-      this.loading = await true
-      let form = await {
-        approve: 'success'
+      if (!this.payment.treatment_cost) {
+        this.rules = {
+          payment: [v => !!v || "กรุณากรอกค่ารักษา"]
+        };
+        this.$refs.form.validate();
+      } else {
+        // this.loading = await true;
+        let form = await {
+          approve: "success"
+        };
+
+        this.payment.symptom = await {
+          _id: this.symptom_id
+        };
+        this.payment.total_price =
+          (await parseFloat(this.payment.treatment_cost)) + this.drug_price;
+
+        // this.payment = await {
+        //   symptom: {
+        //     _id: this.symptom_id
+        //   },
+        //   total_price: parseFloat(this.payment.treatment_cost) + this.drug_price
+        // }
+
+        console.log(this.payment);
+
+        this.drug_list.forEach(async e => {
+          await DrugListAPI.paidDrugList(e._id);
+        });
+
+        await QueueApi.updateQueue(this.q_id, form);
+        const response = await PaymentAPI.createPayment(this.payment);
+        this.loading = await false;
+        this.dialog_drug = await false;
+
+        // console.log(response.data.data)
+        if (response.data.success == true) {
+          this.$router.push({
+            path: `/payment/${response.data.data._id}`
+          });
+        }
       }
+    },
+    onlyForCurrency($event) {
+      let keyCode = $event.keyCode ? $event.keyCode : $event.which;
 
-      this.drug_list.forEach(async e => {
-        await DrugListAPI.paidDrugList(e._id)
-
-      })
-
-      const response = await QueueApi.updateQueue(this.q_id, form)
-      this.loading = await false
-      this.dialog_drug = await false
-
-      // console.log(response.data.data)
-      if (response.data.success == true) {
-        this.$router.push({path: `/medicalrecord/${response.data.data.medicalRecode}`})
+      if (
+        (keyCode < 48 || keyCode > 57) &&
+        (keyCode !== 46 || this.payment.treatment_cost.indexOf(".") != -1)
+      ) {
+        $event.preventDefault();
+      }
+      if (
+        this.payment.treatment_cost != null &&
+        this.payment.treatment_cost.indexOf(".") > -1 &&
+        this.payment.treatment_cost.split(".")[1].length > 1
+      ) {
+        $event.preventDefault();
       }
     }
   }

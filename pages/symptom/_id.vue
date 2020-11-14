@@ -329,8 +329,6 @@ export default {
       const res_supplies = await MedicalSupplies.getAllMedicalSupplies();
       this.supplies_data = await res_supplies.data.data;
 
-      console.log(this.supplies_data)
-
       this.drug_data = await symptomData.drugPush;
 
       this.loading = await false;
