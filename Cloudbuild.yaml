@@ -1,0 +1,12 @@
+steps:
+ # build the container
+ - name: 'gcr.io/cloud-builders/docker'
+   args: ['build', '--network=cloudbuild','-t', 'gcr.io/thasung-clinic/server', '.']
+ # push the container image to Container Registry
+ - name: 'gcr.io/cloud-builders/docker'
+   args: ['push', 'gcr.io/thasung-clinic/server']
+ # Deploy container image to Cloud Run
+ - name: 'gcr.io/cloud-builders/gcloud'
+   args: ['run', 'deploy', 'thasung-server', '--image', 'gcr.io/thasung-clinic/server', '--region', 'asia-northeast1', '--platform', 'managed', '--allow-unauthenticated']
+images:
+- 'gcr.io/thasung-clinic/server'
