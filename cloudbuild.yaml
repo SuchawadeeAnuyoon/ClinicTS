@@ -24,7 +24,7 @@ steps:
       [
         'build',
         '-f',
-        'DockerFile',
+        'Dockerfile',
         '-t',
         'gcr.io/thasung-clinic/server',
         '--cache-from',
