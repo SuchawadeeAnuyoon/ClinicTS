@@ -395,11 +395,8 @@ export default {
       this.form_data = {
         nationality: 'ไทย'
       }
-      let params = {
-        limit: 1000
-      }
 
-      await MedicalRecordAPI.getAllMedicalRecord(params).then(response => {
+      await MedicalRecordAPI.getAllMedicalRecord().then(response => {
         let i = 0;
         let res = response.data.data;
 
