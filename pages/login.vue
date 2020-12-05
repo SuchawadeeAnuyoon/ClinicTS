@@ -46,13 +46,13 @@
                         >เข้าสู่ระบบ</v-btn
                       >
                     </v-card-actions>
-                    <br />
+                    <!-- <br />
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <nuxt-link color="primary" to="/forgot"
                         >ลืมรหัสผ่าน</nuxt-link
                       >
-                    </v-card-actions>
+                    </v-card-actions> -->
                   </v-form>
                 </v-card>
               </v-flex>
