@@ -80,6 +80,10 @@ let getYear = date => {
     let y = moment(date).year() + 543
     return `${y}`
 }
+let getYearUTC = date => {
+    let y = moment(date).year()
+    return `${y}`
+}
 export default {
     format,
     format_local,
@@ -95,5 +99,6 @@ export default {
     format_local_time_PS,
     format_local_full_PS,
     format_calendar_title,
-    format_datepicker_appo
+    format_datepicker_appo,
+    getYearUTC
 }

@@ -979,11 +979,16 @@ export default {
 
       list.forEach(async e => {
         if (e.from == "medical-supply") {
-          let data_y = moment.getYear(e.data.date_add);
+
+          let data_y = moment.getYearUTC(e.data.date_add);
           let data_m = moment.getMonth(e.data.date_add);
+
+          // console.log(data_y)
+          // console.log(this.currentYear)
 
           if (e.data.type4 == true && this.currentYear == data_y) {
             let id;
+
             if (e.data.medical_name == "Diazepam 2 mg") {
               id = "d1";
             }
@@ -1017,7 +1022,7 @@ export default {
           }
           // console.log(new Date(e.m).getMonth())
         } else if (e.from == "drug-list") {
-          let data_y = moment.getYear(e.time);
+          let data_y = moment.getYearUTC(e.time);
           let data_m = moment.getMonth(e.time);
           if (
             e.data.type4 == true &&
@@ -1057,6 +1062,7 @@ export default {
             });
           }
         }
+
       });
 
       let year = [];
@@ -1072,6 +1078,7 @@ export default {
       this.years = year;
 
       this.group(data_use);
+
     },
     async group(data_list) {
       let list = await this.month.map(m => data_list.filter(e => e.m === m));
@@ -1103,7 +1110,7 @@ export default {
         // console.log(`test: ${i}`)
         // console.log(sumsArray)
       });
-      console.log(this.list_active[10].d1);
+      // console.log(this.list_active[10].d1);
       this.m1 = await this.list_active[0];
       this.m2 = await this.list_active[1];
       this.m3 = await this.list_active[2];
