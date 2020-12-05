@@ -57,7 +57,7 @@
               <v-row>
                 <v-col cols="12" sm="6" md="7">
                   <v-text-field
-                    label="ชื่อยาทางการแพทย์"
+                    label="ชื่อยาทางการแพทย์*"
                     required
                     v-model="form_data.medical_name"
                     :rules="rules.medical_name"
@@ -66,7 +66,7 @@
 
                 <v-col cols="12" sm="6" md="5">
                   <v-text-field
-                    label="ชื่อยาสามัญ"
+                    label="ชื่อยาสามัญ*"
                     required
                     v-model="form_data.name"
                     :rules="rules.from"
@@ -75,7 +75,7 @@
 
                 <v-col cols="12" sm="6" md="2">
                   <v-text-field
-                    label="จำนวน"
+                    label="จำนวน*"
                     required
                     v-model="form_data.total"
                     :rules="rules.total"
@@ -84,8 +84,8 @@
 
                 <v-col cols="12" sm="6" md="2">
                   <v-select
-                    :items="['เม็ด', 'แผง', 'กระปุก', 'ขวด', 'ซอง', 'โดส']"
-                    label="หน่วย"
+                    :items="['เม็ด', 'แผง', 'หลอด', 'ขวด', 'ซอง', 'โดส', 'แคปซูล']"
+                    label="หน่วย*"
                     required
                     v-model="form_data.unit"
                     :rules="rules.unit"
@@ -105,7 +105,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         :value="setMomentAdd"
-                        label="วัน/เดือน/ปีเข้าคลัง"
+                        label="วัน/เดือน/ปีเข้าคลัง*"
                         prepend-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
@@ -146,7 +146,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         :value="setMomentExpire"
-                        label="วัน/เดือน/ปีเข้าคลัง"
+                        label="วัน/เดือน/ปีหมดอายุ*"
                         prepend-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
@@ -177,7 +177,7 @@
 
                 <v-col cols="12" sm="6" md="3">
                   <v-text-field
-                    label="ราคาต่อหน่วย"
+                    label="ราคาต่อหน่วย*"
                     required
                     v-model="form_data.price_for_unit"
                     :rules="rules.price_for_unit"
@@ -196,7 +196,7 @@
               <v-row>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
-                    label="เลขที่รุ่นที่/ครั้งที่ผลิด"
+                    label="เลขที่รุ่นที่/ครั้งที่ผลิด*"
                     required
                     v-model="form_data.number"
                     :rules="rules.number"
@@ -205,7 +205,7 @@
 
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
-                    label="ชื่อผู้ผลิต และแหล่งผลิต"
+                    label="ชื่อผู้ผลิต และแหล่งผลิต*"
                     required
                     v-model="form_data.creator"
                     :rules="rules.creator"
@@ -214,7 +214,7 @@
 
                 <v-col cols="12" sm="6" md="12">
                   <v-text-field
-                    label="แหล่งที่มา"
+                    label="แหล่งที่มา*"
                     required
                     v-model="form_data.from"
                     :rules="rules.from"

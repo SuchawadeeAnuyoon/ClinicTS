@@ -565,6 +565,7 @@ export default {
       }
     },
     async update() {
+      this.medical_record_data.birth = await this.birth
       const response = await MedicalRecordAPI.updateMedicalRecord(
         this.medical_record_data,
         this.id

@@ -54,7 +54,7 @@
                 <v-col cols="12" sm="2">
                   <v-select
                     :items="['นาย', 'นาง', 'นางสาว', 'ดช.', 'ดญ.']"
-                    label="คำนำหน้าชื่อ"
+                    label="คำนำหน้าชื่อ*"
                     required
                     v-model="form_data.title"
                     :rules="rules.title"
@@ -62,7 +62,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="5">
                   <v-text-field
-                    label="ชื่อ"
+                    label="ชื่อ*"
                     required
                     v-model="form_data.first"
                     :rules="rules.first"
@@ -70,7 +70,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="5">
                   <v-text-field
-                    label="นามสกุล"
+                    label="นามสกุล*"
                     required
                     v-model="form_data.last"
                     :rules="rules.last"
@@ -78,7 +78,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
-                    label="เลขประจำตัวประชาชน"
+                    label="เลขประจำตัวประชาชน*"
                     required
                     maxlength="13"
                     @keypress="onlynumber"
@@ -89,7 +89,7 @@
                 <v-col cols="12" sm="2">
                   <v-select
                     :items="['ชาย', 'หญิง']"
-                    label="เพศ"
+                    label="เพศ*"
                     required
                     v-model="form_data.sex"
                     :rules="rules.sex"
@@ -108,7 +108,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         :value="setMoment"
-                        label="วัน/เดือน/ปีเกิด"
+                        label="วัน/เดือน/ปีเกิด*"
                         prepend-icon="mdi-calendar"
                         readonly
                         v-bind="attrs"
@@ -138,7 +138,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
                   <v-text-field
-                    label="สัญชาติ"
+                    label="สัญชาติ*"
                     required
                     v-model="form_data.nationality"
                     :rules="rules.nationality"
@@ -146,7 +146,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="3">
                   <v-text-field
-                    label="ที่อยู่"
+                    label="ที่อยู่*"
                     required
                     v-model="form_data.address"
                     :rules="rules.address"
@@ -154,7 +154,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
                   <v-text-field
-                    label="หมู่"
+                    label="หมู่*"
                     required
                     v-model="form_data.moo"
                     :rules="rules.moo"
@@ -162,7 +162,7 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
                   <v-text-field
-                    label="ถนน"
+                    label="ถนน*"
                     required
                     v-model="form_data.road"
                   ></v-text-field>
@@ -182,7 +182,7 @@
                     item-text="PROVINCE_NAME"
                     item-value="PROVINCE_NAME"
                     v-model="form_data.province"
-                    label="จังหวัด"
+                    label="จังหวัด*"
                     :rules="rules.province"
                   >
                     <template v-slot:item="data">
@@ -203,7 +203,7 @@
                     item-text="DISTRICT_NAME"
                     item-value="DISTRICT_NAME"
                     v-model="form_data.distric"
-                    label="อำเภอ"
+                    label="อำเภอ*"
                     :rules="rules.distric"
                   >
                     <template v-slot:item="data">
@@ -224,7 +224,7 @@
                     item-text="SUB_DISTRICT_NAME"
                     item-value="SUB_DISTRICT_NAME"
                     v-model="form_data.tambon"
-                    label="ตำบล"
+                    label="ตำบล*"
                     :rules="rules.tambon"
                   >
                     <template v-slot:item="data">
@@ -242,7 +242,7 @@
 
                 <v-col cols="12" sm="6" md="3">
                   <v-text-field
-                    label="รหัสไปรษณีย์"
+                    label="รหัสไปรษณีย์*"
                     required
                     v-model="form_data.zip"
                     :rules="rules.zip"
@@ -258,7 +258,7 @@
 
                 <v-col cols="12" sm="6" md="3">
                   <v-text-field
-                    label="เบอร์โทรติดต่อ"
+                    label="เบอร์โทรติดต่อ*"
                     required
                     maxlength="10"
                     @keypress="onlynumber"
@@ -269,14 +269,14 @@
 
                 <v-col cols="12" sm="6" md="12">
                   <v-text-field
-                    label="โรคประจำตัว"
+                    label="โรคประจำตัว*"
                     required
                     v-model="form_data.disease"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="12">
                   <v-text-field
-                    label="ประวัติการแพ้ยา"
+                    label="ประวัติการแพ้ยา*"
                     required
                     v-model="form_data.drug_allergy"
                   ></v-text-field>
@@ -346,7 +346,8 @@ export default {
         tambon: [],
         zip: [],
         phone: [],
-      }
+      },
+      filter: {}
     };
   },
   computed: {
@@ -391,9 +392,14 @@ export default {
   methods: {
     async fetch() {
       this.data_list = [];
-      this.form_data = {}
+      this.form_data = {
+        nationality: 'ไทย'
+      }
+      let params = {
+        limit: 1000
+      }
 
-      await MedicalRecordAPI.getAllMedicalRecord().then(response => {
+      await MedicalRecordAPI.getAllMedicalRecord(params).then(response => {
         let i = 0;
         let res = response.data.data;
 

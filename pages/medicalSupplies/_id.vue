@@ -79,7 +79,7 @@
 
                   <v-col cols="12" sm="6" md="2">
                     <v-select
-                      :items="['เม็ด', 'แผง', 'กระปุก', 'ขวด', 'ซอง', 'โดส']"
+                      :items="['เม็ด', 'แผง', 'หลอด', 'ขวด', 'ซอง', 'โดส', 'แคปซูล']"
                       label="หน่วย"
                       :readonly="readonly"
                       v-model="medical_supply_data.unit"
