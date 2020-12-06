@@ -263,7 +263,7 @@ export default {
         res = await response.data.data
         this.form = await {
           title: res.medicalRecord_id.title,
-          name: res.medicalRecord_id.first,
+          first: res.medicalRecord_id.first,
           last: res.medicalRecord_id.last,
           id: res.medicalRecord_id.citizen_id,
           address: res.medicalRecord_id.address,

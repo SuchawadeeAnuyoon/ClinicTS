@@ -629,19 +629,20 @@ export default {
       m2: false,
       province: Province,
       district: [],
-      tambon: []
+      tambon: [],
+      today: new Date()
     };
   },
   computed: {
     setMoment() {
       return this.form_doc.date
         ? moment.format_local_PS(this.form_doc.date)
-        : "";
+        : moment.format_local_PS(this.today);
     },
     setMoment2() {
       return this.form_sick.date
         ? moment.format_local_PS(this.form_sick.date)
-        : "";
+        : moment.format_local_PS(this.today);
     }
   },
   mounted() {
@@ -653,6 +654,7 @@ export default {
         const response = await SymptomAPI.getSymptom(this.id);
 
         this.form_doc = await response.data.data;
+        this.form_doc.data = moment.format_local(this.today)
         this.form_sick = await response.data.data;
         this.checkProvince();
       }
