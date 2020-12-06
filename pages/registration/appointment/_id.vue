@@ -156,6 +156,7 @@
                     v-model="form.date"
                     @input="menu2 = false"
                     locale="th"
+                    :min="past"
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -241,7 +242,8 @@ export default {
       tambon: [],
       date: new Date().toISOString().substr(0, 10),
       menu2: false,
-      menu3: false
+      menu3: false,
+      past: new Date().toISOString().slice(0, 10)
     };
   },
   computed: {

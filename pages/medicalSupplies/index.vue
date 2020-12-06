@@ -117,6 +117,7 @@
                       v-model="date.add"
                       no-title
                       scrollable
+                      :min="today"
                       locale="th"
                     >
                       <v-spacer></v-spacer>
@@ -158,6 +159,7 @@
                       v-model="date.expire"
                       no-title
                       scrollable
+                      :min="today"
                       locale="th"
                     >
                       <v-spacer></v-spacer>
@@ -293,7 +295,8 @@ export default {
         number: [],
         creator: [],
         from: [],
-      }
+      },
+      today: new Date().toISOString().slice(0,10),
     };
   },
   computed: {
@@ -317,6 +320,7 @@ export default {
   methods: {
     async fetch() {
       let me = await this.$auth.user.data;
+      console.log(this.today)
 
       // console.log(me.role)
       if (me.role == "assistant") {

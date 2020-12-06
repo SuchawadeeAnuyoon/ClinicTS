@@ -202,6 +202,7 @@
                           height="400"
                           color="primary"
                           locale="th"
+                          :min="today"
                         ></v-date-picker>
                       </v-flex>
 
@@ -259,6 +260,7 @@
                           height="400"
                           color="primary"
                           locale="th"
+                          :min="today"
                         ></v-date-picker>
                       </v-flex>
 
@@ -333,7 +335,8 @@ export default {
       end: null
     },
     menu: false,
-    menu2: false
+    menu2: false,
+    today: new Date().toISOString().slice(0,10)
   }),
   mounted() {
     this.$refs.calendar.checkChange();

@@ -174,6 +174,7 @@
                         v-model="form_doc.date"
                         @input="menu2 = false"
                         locale="th"
+                        :min="past"
                       ></v-date-picker>
                     </v-menu>
                   </v-col>
@@ -559,6 +560,7 @@
                         v-model="form_sick.date"
                         @input="m2 = false"
                         locale="th"
+                        :min="past"
                       ></v-date-picker>
                     </v-menu>
                   </v-col>
@@ -630,7 +632,8 @@ export default {
       province: Province,
       district: [],
       tambon: [],
-      today: new Date()
+      today: new Date(),
+      past: new Date().toISOString().slice(0 ,10)
     };
   },
   computed: {
