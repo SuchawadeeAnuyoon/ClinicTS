@@ -90,7 +90,7 @@ const Certificate_doc = (data) => {
     }
 
     doc.text('อำเภอ', 400, 130)
-    if (!data.distric) {
+    if (!data.medicalRecord_id.distric) {
         doc.text('............................................', 430, 130)
     } else {
         doc.text(data.medicalRecord_id.distric, 440, 130)
@@ -448,10 +448,10 @@ const Certificate_sick = (data) => {
     }
 
     doc.text('อำเภอ', 310, 250)
-    if (!data.medicalRecord_id.district) {
+    if (!data.medicalRecord_id.distric) {
         doc.text('................................', 340, 250)
     } else {
-        doc.text(data.medicalRecord_id.district, 340, 250)
+        doc.text(data.medicalRecord_id.distric, 340, 250)
     }
 
     doc.text('จังหวัด', 425, 250)
@@ -463,10 +463,10 @@ const Certificate_sick = (data) => {
 
     // เนื้อหาบรรทัดที่7
     doc.text('เลขประจำตัวประชาชน', 40, 270)
-    if (!data.medicalRecord_id.id) {
+    if (!data.medicalRecord_id.citizen_id) {
         doc.text('..................................', 140, 270)
     } else {
-        doc.text(data.medicalRecord_id.id, 140, 270)
+        doc.text(data.medicalRecord_id.citizen_id, 140, 270)
     }
 
     doc.text('เมื่อวันที่', 230, 270)
