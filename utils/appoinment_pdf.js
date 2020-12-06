@@ -38,10 +38,10 @@ const Appoinment=(data) => {
   }
 
   doc.text('ชื่อ', 240, 180)
-  if(!data.name) {
+  if(!data.first) {
     doc.text('..........................', 260, 180)
   } else {
-    doc.text(data.name, 260, 180)
+    doc.text(data.first, 260, 180)
   }
 
   doc.text('นามสกุล', 350, 180)
