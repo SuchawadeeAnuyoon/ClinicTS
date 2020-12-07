@@ -319,7 +319,6 @@
                           <th>อาการเบื้องต้น</th>
                           <th>อาการที่วินิจฉัย</th>
                           <th>วัน เวลาที่วินิจฉัย</th>
-                          <th>ยาที่ได้รับ</th>
                           <th>บันทึกโดย</th>
                         </tr>
                       </thead>
@@ -329,7 +328,6 @@
                           <td>{{ list.initial }}</td>
                           <td>{{ list.predicate }}</td>
                           <td>{{ list.predicate_at }}</td>
-                          <td>{{ list.name_predicate }}</td>
                           <td>{{ list.name_create }}</td>
                         </tr>
                       </tbody>
