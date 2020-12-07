@@ -73,7 +73,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="6" :md="form_data.unit == 'อื่นๆ' ? 1 : 2">
+                <v-col cols="12" sm="6" md="2">
                   <v-text-field
                     label="จำนวน*"
                     required
@@ -82,7 +82,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="6" :md="form_data.unit == 'อื่นๆ' ? 1 : 2">
+                <v-col cols="12" sm="6" md="2">
                   <v-select
                     :items="['เม็ด', 'แผง', 'หลอด', 'ขวด', 'ซอง', 'โดส', 'แคปซูล', 'อื่นๆ']"
                     label="หน่วย*"
@@ -99,7 +99,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="6" :md="form_data.unit == 'อื่นๆ' ? 6 : 4">
                   <v-menu
                     ref="menu"
                     v-model="menu"
@@ -141,7 +141,7 @@
                     </v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="6" :md="form_data.unit == 'อื่นๆ' ? 5 : 4">
                   <v-menu
                     ref="menu2"
                     v-model="menu2"
@@ -193,7 +193,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="6">
+                <v-col cols="12" sm="6" md="4">
                   <v-checkbox
                     dense
                     v-model="form_data.type4"
