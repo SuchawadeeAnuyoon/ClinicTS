@@ -73,7 +73,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="6" md="2">
+                <v-col cols="12" sm="6" :md="form_data.unit == 'อื่นๆ' ? 1 : 2">
                   <v-text-field
                     label="จำนวน*"
                     required
@@ -82,14 +82,21 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="6" md="2">
+                <v-col cols="12" sm="6" :md="form_data.unit == 'อื่นๆ' ? 1 : 2">
                   <v-select
-                    :items="['เม็ด', 'แผง', 'หลอด', 'ขวด', 'ซอง', 'โดส', 'แคปซูล']"
+                    :items="['เม็ด', 'แผง', 'หลอด', 'ขวด', 'ซอง', 'โดส', 'แคปซูล', 'อื่นๆ']"
                     label="หน่วย*"
                     required
                     v-model="form_data.unit"
                     :rules="rules.unit"
                   ></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="2" v-if="form_data.unit == 'อื่นๆ'">
+                  <v-text-field
+                    label="ระบุ.."
+                    v-model="unit_other"
+                  ></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="6" md="4">
@@ -297,6 +304,7 @@ export default {
         from: [],
       },
       today: new Date().toISOString().slice(0,10),
+      unit_other: ''
     };
   },
   computed: {
@@ -375,6 +383,9 @@ export default {
       } else {
         this.form_data.date_add = moment.format(this.date.add);
         this.form_data.expire = moment.format(this.date.expire);
+        if (this.form_data.unit == 'อื่นๆ') {
+          this.form_data.unit = this.unit_other
+        }
 
         const response = await MedicalSupplies.newMedicalSupply(this.form_data);
 

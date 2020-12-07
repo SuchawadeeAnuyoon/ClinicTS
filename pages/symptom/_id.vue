@@ -10,14 +10,6 @@
       <v-card v-if="!loading">
         <v-card-title
           >บันทึกอาการ
-          <v-btn
-            small
-            class="mx-3"
-            color="green"
-            @click="save()"
-            :disabled="dis_btn"
-            >บันทึก</v-btn
-          >
         </v-card-title>
 
         <v-card-text>
@@ -138,7 +130,7 @@
 
               <v-col cols="12">
                 <v-text-field
-                  label="อาการหลังการวินิจฉัย"
+                  label="ผลการวินิจฉัย"
                   dense
                   hide-details
                   v-model="symptom_data.predicate"
@@ -224,6 +216,16 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-card-actions>
+
+          <v-btn
+            class="mx-auto"
+            color="green"
+            @click="save()"
+            :disabled="dis_btn"
+            >บันทึก</v-btn
+          >
+        </v-card-actions>
       </v-card>
     </v-container>
 

@@ -217,7 +217,8 @@ export default {
       appo: false,
       drug_price: null,
       payment: {
-        treatment_title: "ค่ารักษา"
+        treatment_title: "ค่ารักษา",
+        treatment_cost: 100
       },
       rules: {
         payment: []

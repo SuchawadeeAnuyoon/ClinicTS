@@ -128,7 +128,6 @@
         <v-card-text>
           <v-container>
             <v-row>
-
               <v-col cols="12" sm="12" md="3">
                 <v-text-field
                   label="ชื่อคนไข้"
@@ -138,6 +137,13 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="12" md="9">
+                <!-- <v-color-picker
+                  type="hex"
+                  hide-canvas
+                  hide-inputs
+                  mode="hex"
+                  flat
+                ></v-color-picker> -->
                 <v-radio-group v-model="form_data.color" row>
                   <v-radio
                     label="แพทย์ประจำโรงพยาบาล"
@@ -336,8 +342,18 @@ export default {
     },
     menu: false,
     menu2: false,
-    today: new Date().toISOString().slice(0,10)
+    today: new Date().toISOString().slice(0, 10)
   }),
+  computed: {
+    color: {
+        get () {
+          return 'hex'
+        },
+        set (v) {
+          this['hex'] = v
+        },
+    }
+  },
   mounted() {
     this.$refs.calendar.checkChange();
   },
