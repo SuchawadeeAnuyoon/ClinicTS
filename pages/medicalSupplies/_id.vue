@@ -492,29 +492,6 @@ export default {
 
       this.medical_supply_data.total = parseInt(this.medical_supply_data.total) + parseInt(this.add_amount)
 
-
-
-
-
-      // const response = await MedicalSuppliesAPI.updateAmountMidicalSupply(
-      //     form,
-      //     this.id
-      //   );
-
-      //   if (response.data.success == true) {
-      //     this.readonly = await true
-      //     this.dialog_update = await false
-
-      //     this.snackbar = await {
-      //       bool: true,
-      //       color: 'green',
-      //       msg: 'แก้ไขข้อมูลเสร็จสิ้น'
-      //     }
-
-      //     await this.fetch()
-      //     await this.fecthActivities()
-      //   }
-
     },
     async update(form) {
       this.dialog_update = await true
