@@ -383,7 +383,7 @@ export default {
       dialog_update: false,
       dialog_add_amount: false,
       dialog_delete: false,
-      add_amount: null,
+      add_amount: 0,
       snackbar: {
         bool: false,
         color: '',
@@ -407,6 +407,7 @@ export default {
   methods: {
     async fetch() {
       this.me = await this.$auth.user.data;
+      this.add_amount = 0
       const response = await MedicalSuppliesAPI.getOneMidicalSupply(this.id);
 
       this.medical_supply_data = await response.data.data;
@@ -472,7 +473,7 @@ export default {
         let form = await {
           medical_name: supply_data.medical_name,
           name: supply_data.name,
-          amount: 0,
+          amount: parseInt(this.add_amount),
           expire: moment.format(this.date.expire),
           date_add: moment.format(this.date.add),
           from: supply_data.from,
@@ -484,29 +485,35 @@ export default {
     },
     async addAmount() {
       this.dialog_add_amount = await false
-      this.dialog_update = await true
+      // this.dialog_update = await true
       let form = await {
         amount: parseInt(this.add_amount)
       }
 
-      const response = await MedicalSuppliesAPI.updateAmountMidicalSupply(
-          form,
-          this.id
-        );
+      this.medical_supply_data.total = parseInt(this.medical_supply_data.total) + parseInt(this.add_amount)
 
-        if (response.data.success == true) {
-          this.readonly = await true
-          this.dialog_update = await false
 
-          this.snackbar = await {
-            bool: true,
-            color: 'green',
-            msg: 'แก้ไขข้อมูลเสร็จสิ้น'
-          }
 
-          await this.fetch()
-          await this.fecthActivities()
-        }
+
+
+      // const response = await MedicalSuppliesAPI.updateAmountMidicalSupply(
+      //     form,
+      //     this.id
+      //   );
+
+      //   if (response.data.success == true) {
+      //     this.readonly = await true
+      //     this.dialog_update = await false
+
+      //     this.snackbar = await {
+      //       bool: true,
+      //       color: 'green',
+      //       msg: 'แก้ไขข้อมูลเสร็จสิ้น'
+      //     }
+
+      //     await this.fetch()
+      //     await this.fecthActivities()
+      //   }
 
     },
     async update(form) {
