@@ -10,6 +10,7 @@ export default {
   },
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
+  // id="gsoftbiz.pdpa-scripts" async src="https://staging.propdpa.com/script.js" data-id="05448790-50fc-11eb-9bc3-81d5d41370a5" charset="utf-8">
   head: {
     titleTemplate: '%s - thasung-clinic',
     title: 'thasung-clinic',
@@ -17,6 +18,15 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' }
+    ],
+    script: [
+      {
+        id: "gsoftbiz.pdpa-scripts",
+        src: "https://staging.propdpa.com/script.js",
+        "data-id": "05448790-50fc-11eb-9bc3-81d5d41370a5",
+        charset: "utf-8",
+        async: true
+      }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
