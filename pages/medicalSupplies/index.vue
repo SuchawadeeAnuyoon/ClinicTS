@@ -14,9 +14,9 @@
           </v-flex>
           <v-spacer></v-spacer>
           <!-- <div> -->
-            <v-btn v-if="role" color="blue lighten-2" @click="dialog_add = true"
-              >เพิ่มข้อมูลเวชภัณฑ์</v-btn
-            >
+          <v-btn v-if="role" color="blue lighten-2" @click="dialog_add = true"
+            >เพิ่มข้อมูลเวชภัณฑ์</v-btn
+          >
           <!-- </div> -->
         </v-toolbar>
 
@@ -84,7 +84,16 @@
 
                 <v-col cols="12" sm="6" md="2">
                   <v-select
-                    :items="['เม็ด', 'แผง', 'หลอด', 'ขวด', 'ซอง', 'โดส', 'แคปซูล', 'อื่นๆ']"
+                    :items="[
+                      'เม็ด',
+                      'แผง',
+                      'หลอด',
+                      'ขวด',
+                      'ซอง',
+                      'โดส',
+                      'แคปซูล',
+                      'อื่นๆ'
+                    ]"
                     label="หน่วย*"
                     required
                     v-model="form_data.unit"
@@ -95,7 +104,7 @@
                 <v-col cols="12" sm="6" md="2" v-if="form_data.unit == 'อื่นๆ'">
                   <v-text-field
                     label="ระบุ.."
-                    v-model="unit_other"
+                    v-model="form_data.other_unit"
                   ></v-text-field>
                 </v-col>
 
@@ -260,7 +269,6 @@
 </template>
 
 <script>
-import * as MedicalSupplies from "../../utils/medicalSuppliesAPI";
 import moment from "../../utils/moment";
 export default {
   layout: "dashboard",
@@ -301,10 +309,10 @@ export default {
         price_for_unit: [],
         number: [],
         creator: [],
-        from: [],
+        from: []
       },
-      today: new Date().toISOString().slice(0,10),
-      unit_other: ''
+      today: new Date().toISOString().slice(0, 10),
+      unit_other: ""
     };
   },
   computed: {
@@ -320,30 +328,32 @@ export default {
     },
     setMomentExpire() {
       return this.date.expire ? moment.format_local_PS(this.date.expire) : "";
+    },
+    user() {
+      return this.$store.getters["me/getUser"];
+    },
+    list_medical_supplies() {
+      return this.$store.getters["medicalSupplies/getList"];
     }
   },
-  mounted() {
+  async mounted() {
+    await this.$store.dispatch("medicalSupplies/fetch");
     this.fetch();
   },
   methods: {
     async fetch() {
-      let me = await this.$auth.user.data;
-      console.log(this.today)
-
-      // console.log(me.role)
+      let me = await this.user;
       if (me.role == "assistant") {
         this.role = false;
       } else {
         this.role = true;
       }
       this.data_list = [];
-      const response = await MedicalSupplies.getAllMedicalSupplies();
-      const res = await response.data.data;
-      let i = 0;
-      await res.forEach(e => {
+
+      this.list_medical_supplies.forEach((e, i) => {
         this.data_list.push({
           id: e._id,
-          no: ++i,
+          no: i + 1,
           medical_name: e.medical_name,
           total: e.total,
           unit: e.unit,
@@ -383,22 +393,28 @@ export default {
       } else {
         this.form_data.date_add = moment.format(this.date.add);
         this.form_data.expire = moment.format(this.date.expire);
-        if (this.form_data.unit == 'อื่นๆ') {
-          this.form_data.unit = this.unit_other
+        if (this.form_data.unit == "อื่นๆ") {
+          this.form_data.unit = this.unit_other;
         }
 
-        const response = await MedicalSupplies.newMedicalSupply(this.form_data);
-
-        if (response.data.success == false) {
-          alert(response.data.errMessage);
-        } else {
-          this.fetch();
-          this.dialog_add = false;
-          this.form_data = {};
+        await this.$api.createMedicalSupplies(this.form_data).then(response => {
           this.snackbar.bool = true;
-          (this.snackbar.color = "green"),
-            (this.snackbar.msg = "เพิ่มข้อมูลสำเร็จ");
-        }
+          this.form_data = {};
+          this.dialog_add = false;
+          this.fetch();
+          this.$toast.open({
+            message: "เพิ่มข้อมูลสำเร็จ",
+            type: "success",
+            duration: 6000
+          });
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        })
       }
     }
   }

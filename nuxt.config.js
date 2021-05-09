@@ -2,34 +2,26 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
-  ssr: true,
+  ssr: false,
 
   server: {
-    port: process.env.PORT || 8000,
-    host: process.env.HOST || '0.0.0.0'
+    port: process.env.PORT||8000,
+    host: process.env.HOST||'0.0.0.0'
   },
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   // <script id="gsoftbiz.pdpa-scripts" async src="https://staging.propdpa.com/script.js" data-id="1e1a03d0-548f-11eb-aa46-5b2000bb4e70" charset="utf-8"></script>
   head: {
-    titleTemplate: '%s - thasung-clinic',
-    title: 'thasung-clinic',
+    title: 'ท่าซุงคลินิก',
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      {charset: 'utf-8'},
+      {name: 'viewport',content: 'width=device-width, initial-scale=1'},
+      {hid: 'description',name: 'description',content: ''}
     ],
     script: [
-      {
-        id: "gsoftbiz.pdpa-scripts",
-        src: "https://staging.propdpa.com/script.js",
-        "data-id": "1e1a03d0-548f-11eb-aa46-5b2000bb4e70",
-        charset: "utf-8",
-        async: true
-      }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {rel: 'icon',type: 'image/x-icon',href: '/logo.ong'},
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Sarabun:wght@100;200;300;400;500;600;700;800&display=swap",
@@ -44,11 +36,14 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    {src: "~/plugins/api.js",ssr: false},
+    '@/plugins/axios',
+    '@/plugins/api',
+    '@/plugins/notification',
   ],
+  loading: false,
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
-  components: true,
+  components: false,
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
@@ -60,49 +55,46 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth',
-    '@nuxtjs/proxy',
   ],
 
-  auth: {
-    redirect: {
-      login: '/login'
-    },
-    strategies: {
-      local: {
-        token: {
-          property: 'token'
-        },
-        autoRefresh: {
-          enable: true
-        },
-        endpoints: {
-          login: {url: '/api/v1/login',method: 'post'},
-          logout: {url: '/api/v1/logout',method: 'get'},
-          user: {url: '/api/v1/me',method: 'get',propertyName: ''},
-        },
-      }
-    }
-  },
+  // auth: {
+  //   redirect: {
+  //     login: '/login'
+  //   },
+  //   strategies: {
+  //     local: {
+  //       token: {
+  //         property: 'token'
+  //       },
+  //       autoRefresh: {
+  //         enable: true
+  //       },
+  //       endpoints: {
+  //         login: {url: '/api/v1/login',method: 'post'},
+  //         logout: {url: '/api/v1/logout',method: 'get'},
+  //         user: {url: '/api/v1/me',method: 'get',propertyName: ''},
+  //       },
+  //     }
+  //   }
+  // },
   // tetraflex.gsoftbiz.com/api/v1
+
+  axios: {
+    basrURL: process.env.NODE_ENV=='production'
+      ? '/'
+      :process.env.API||`https://thasung-api-vzrb2.ondigitalocean.app/`,
+    credentials: true,
+    proxy: true
+  },
   proxy: [
     [
       "/api",
       {
-        target: process.env.API||`https://thasung.herokuapp.com`,
+        target: process.env.API||`https://thasung-api-vzrb2.ondigitalocean.app/`,
         pathRewrite: {"^/api": "/api"}
       }
     ]
   ],
-  axios: {
-    basrURL: process.env.API||`https://thasung.herokuapp.com`,
-    credentials: true,
-    proxy: true
-  },
-
-  router: {
-    base: '/'
-  },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
@@ -124,5 +116,10 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    babel:{
+      plugins: [
+        ['@babel/plugin-proposal-private-methods', { loose: true }]
+      ]
+    }
   }
 }

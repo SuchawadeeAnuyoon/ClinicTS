@@ -9,8 +9,8 @@
   >
     <v-toolbar elevation="3" color="white" height="60">
       <v-row class="text-center mx-auto">
-        <v-avatar size="36" color="white">
-          <img src="/logo.jpg" alt />
+        <v-avatar size="50" color="white">
+          <img src="/logo.png" alt />
         </v-avatar>
         <v-spacer></v-spacer>
         <div>
@@ -157,6 +157,9 @@ export default {
       set(val) {
         this.$store.commit("drawer", val);
       }
+    },
+    user() {
+      return this.$store.getters["me/getUser"];
     }
   },
   mounted() {
@@ -164,7 +167,8 @@ export default {
   },
   methods: {
     async fetch() {
-      this.me = await this.$auth.user.data;
+      // console.log(this.user)
+      this.me = this.user
     },
     logout() {
       this.$auth.logout();

@@ -52,7 +52,7 @@
 
         <v-list>
           <v-list-item v-for="item in noti" :key="item.id">
-            <v-card flat width="250" :to="`/medicalSupplies/${item.id}`">
+            <v-card flat width="270" :to="`/medicalSupplies/${item.id}`">
               <v-card-text>{{ item.name }} {{ item.msg }}</v-card-text>
             </v-card>
           </v-list-item>
@@ -191,11 +191,6 @@
 </template>
 
 <script>
-import * as QueueApi from ".././utils/queueAPI";
-import * as MedicalSuppliesAPI from ".././utils/medicalSuppliesAPI";
-import * as SymptomAPI from ".././utils/symptomAPI";
-import * as DrugListAPI from ".././utils/drugListAPI";
-import * as PaymentAPI from ".././utils/paymentAPI";
 import momentFormat from ".././utils/moment";
 import moment from "moment";
 export default {
@@ -225,16 +220,31 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+    me() {
+      this.$store.dispatch("me/me");
+      return this.$store.getters["me/getUser"];
+    },
+    queues() {
+      // this.$store.dispatch("queues/fetch");
+      return this.$store.getters["queues/getList"];
+    },
+    list_medical_supplies() {
+      // this.$store.dispatch("medicalSupplies/fetch");
+      return this.$store.getters["medicalSupplies/getList"];
+    }
+  },
   mounted() {
+    // this.$store.dispatch('loading/setLoading', true)
     this.fetch();
+
     this.getQueue();
     this.suppliesNoti();
   },
   methods: {
     async fetch() {
-      let me = await this.$auth.user.data;
-      // console.log(this.me)
+      // console.log(this.list_medical_supplies);\
+      let me = this.me;
       this.name = `${me.title} ${me.first} ${me.last}`;
 
       if (me.role == "nurse" || me.role == "assistant") {
@@ -243,9 +253,7 @@ export default {
         this.role = true;
       }
 
-      const response = await QueueApi.getAllQueue();
-
-      let data_q = await response.data.data;
+      let data_q = this.queues;
       await data_q.forEach(async e => {
         if (e.approve == "wait") {
           await this.queue.push(e);
@@ -255,8 +263,8 @@ export default {
         }
       });
 
-      const response2 = await MedicalSuppliesAPI.getAllMedicalSupplies();
-      let supplies = response2.data.data;
+      // const response2 = await MedicalSuppliesAPI.getAllMedicalSupplies();
+      let supplies = this.list_medical_supplies;
       let n = [];
 
       supplies.forEach(async e => {
@@ -275,22 +283,36 @@ export default {
             });
             // console.log(unit);
           } else if (ex <= 30 && total > 20) {
+            let msg = "";
+            if (ex < 0) msg = `หมดอายุแล้ว ${Math.abs(ex + 1)} วัน`;
+            else
+              msg = `จะหมดอายุในอีก ${ex +
+                1} วัน คือ ${momentFormat.format_local(e.expire)}`;
             n.push({
               id: e._id,
               name: e.medical_name,
-              msg: `จะหมดอายุในอีก ${ex +
-                1} วัน คือ ${momentFormat.format_local(e.expire)}`
+              msg: msg
             });
-            // console.log(ex);
           } else {
+            let msg = "";
+            if (ex < 0)
+              msg = `หมดอายุแล้ว ${Math.abs(
+                ex + 1
+              )} วัน และจะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
+                e.expire
+              )}`;
+            else
+              msg = `จะหมดอายุในอีก ${ex +
+                1} วัน คือ ${momentFormat.format_local(
+                e.expire
+              )} และจะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
+                e.expire
+              )}`;
+
             n.push({
               id: e._id,
               name: e.medical_name,
-              msg: `จะหมดคลัง เหลือ ${e.total} ${
-                e.unit
-              } และจะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
-                e.expire
-              )}`
+              msg: msg
             });
             // console.log(`${unit} and ${ex}`);
           }
@@ -304,10 +326,10 @@ export default {
     },
     getQueue() {
       setInterval(async () => {
-        let q = await [];
-        let w = await [];
-        const response = await QueueApi.getAllQueue();
-        let data_q = await response.data.data;
+        let q = [];
+        let w = [];
+        this.$store.dispatch("queues/fetch");
+        let data_q = this.queues;
         data_q.forEach(e => {
           if (e.approve == "wait") {
             q.push(e);
@@ -316,14 +338,16 @@ export default {
             w.push(e);
           }
         });
-        this.queue = await q;
-        this.wait = await w;
+        this.queue = q;
+        this.wait = w;
       }, 30 * 1000);
     },
     async suppliesNoti() {
       setInterval(async () => {
-        const response = await MedicalSuppliesAPI.getAllMedicalSupplies();
-        let supplies = response.data.data;
+        // const response = await MedicalSuppliesAPI.getAllMedicalSupplies();
+        this.$store.dispatch("medicalSupplies/fetch");
+
+        let supplies = this.list_medical_supplies;
         let n = [];
 
         supplies.forEach(async e => {
@@ -341,22 +365,36 @@ export default {
                 msg: `จะหมดคลัง เหลือ ${e.total} ${e.unit}`
               });
             } else if (ex <= 30 && total > 20) {
+              let msg = "";
+              if (ex < 0) msg = `หมดอายุแล้ว ${Math.abs(ex + 1)} วัน`;
+              else
+                msg = `จะหมดอายุในอีก ${ex +
+                  1} วัน คือ ${momentFormat.format_local(e.expire)}`;
               n.push({
-                id: e.id,
+                id: e._id,
                 name: e.medical_name,
-                msg: `จะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
-                  e.expire
-                )}`
+                msg: msg
               });
             } else {
-              n.push({
-                id: e.id,
-                name: e.medical_name,
-                msg: `จะหมดคลัง เหลือ ${e.total} ${
-                  e.unit
-                } และจะหมดอายุในอีก ${ex} คือ ${momentFormat.format_local(
+              let msg = "";
+              if (ex < 0)
+                msg = `หมดอายุแล้ว ${Math.abs(
+                  ex + 1
+                )} วัน และจะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
                   e.expire
-                )}`
+                )}`;
+              else
+                msg = `จะหมดอายุในอีก ${ex +
+                  1} วัน คือ ${momentFormat.format_local(
+                  e.expire
+                )} และจะหมดอายุในอีก ${ex} วัน คือ ${momentFormat.format_local(
+                  e.expire
+                )}`;
+
+              n.push({
+                id: e._id,
+                name: e.medical_name,
+                msg: msg
               });
             }
           }
@@ -366,37 +404,41 @@ export default {
     },
 
     async view(id) {
-      this.q_id = await id;
-      this.loading = await true;
-      this.drug_list = await [];
+      this.q_id = id;
+      this.loading = true;
+      this.drug_list = [];
       this.drug_price = 0;
-      const res_q = await QueueApi.getQueue(id);
-      // this.dialog_drug = await true
-      const response = await SymptomAPI.getSymptom(res_q.data.data.symptom);
 
-      this.symptom_id = response.data.data.id;
+      let res_queue = {};
 
-      if (response.data.data.certificate == true) {
-        this.cert = true;
-      }
-      if (response.data.data.appointment == true) {
-        this.appo = true;
-      }
-
-      await response.data.data.drugPush.forEach(async e => {
-        if (e.status != true) {
-          // console.log(e.status)
-          this.drug_price += e.price;
-          await this.drug_list.push(e);
-        } else {
-          this.drug_list = await [];
-        }
+      await this.$api.getQueue(id).then(response => {
+        res_queue = response.data.data;
       });
 
-      this.loading = await false;
+      await this.$api.getSymptom(res_queue.symptom).then(response => {
+        this.symptom_id = response.data.data.id;
 
-      this.dialog_drug = await true;
-      // console.log(this.drug_price)
+        if (response.data.data.certificate == true) {
+          this.cert = true;
+        }
+        if (response.data.data.appointment == true) {
+          this.appo = true;
+        }
+
+        response.data.data.drugPush.forEach(e => {
+          if (e.status != true) {
+            // console.log(e.status)
+            this.drug_price += e.price;
+            this.drug_list.push(e);
+          } else {
+            this.drug_list = [];
+          }
+        });
+
+        this.loading = false;
+
+        this.dialog_drug = true;
+      });
     },
     async save() {
       if (!this.payment.treatment_cost) {
@@ -423,23 +465,40 @@ export default {
         //   total_price: parseFloat(this.payment.treatment_cost) + this.drug_price
         // }
 
-        console.log(this.payment);
+        // console.log(this.payment);
 
         this.drug_list.forEach(async e => {
-          await DrugListAPI.paidDrugList(e._id);
+          // await DrugListAPI.paidDrugList(e._id);
+          await this.$api.getPayment(e._id);
         });
 
-        await QueueApi.updateQueue(this.q_id, form);
-        const response = await PaymentAPI.createPayment(this.payment);
-        this.loading = await false;
-        this.dialog_drug = await false;
+        // await QueueApi.updateQueue(this.q_id, form);
+        await this.$api.updateQueue(this.q_id, form);
+
+        await this.$api
+          .createPayment(this.payment)
+          .thne(response => {
+            this.loading = false;
+            this.dialog_drug = false;
+            this.$router.push({ path: `/payment/${response.data.data.id}` });
+          })
+          .catch(error => {
+            self.$toast.open({
+              message: error.response.data.errMessage,
+              type: "error",
+              duration: 6000
+            });
+          });
+        // const response = await PaymentAPI.createPayment(this.payment);
+        // this.loading = await false;
+        // this.dialog_drug = await false;
 
         // console.log(response.data.data)
-        if (response.data.success == true) {
-          this.$router.push({
-            path: `/payment/${response.data.data._id}`
-          });
-        }
+        // if (response.data.success == true) {
+        //   this.$router.push({
+        //     path: `/payment/${response.data.data._id}`
+        //   });
+        // }
       }
     },
     onlyForCurrency($event) {

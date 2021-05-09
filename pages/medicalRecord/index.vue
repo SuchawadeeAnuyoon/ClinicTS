@@ -9,7 +9,6 @@
               label="ค้นหาเวชระเบียน"
               v-model="search"
               dense
-              :rules="[checkS]"
             ></v-text-field>
           </v-flex>
           <v-spacer></v-spacer>
@@ -300,7 +299,6 @@
 </template>
 
 <script>
-import * as MedicalRecordAPI from "../../utils/medicalRecordAPI";
 import Province from "../../utils/province.json";
 import District from "../../utils/district.json";
 import Tambon from "../../utils/tambon.json";
@@ -317,7 +315,8 @@ export default {
         { text: "ลำดับที่", value: "no" },
         { text: "เลขบัตรประจำตัวประชาชน", value: "citizen_id" },
         { text: "ชื่อ", value: "first" },
-        { text: "สกุล", value: "last" }
+        { text: "สกุล", value: "last" },
+        { text: "บันทึกโดย", value: "record_by"}
       ],
       data_list: [],
       dialog_add: false,
@@ -345,7 +344,7 @@ export default {
         distric: [],
         tambon: [],
         zip: [],
-        phone: [],
+        phone: []
       },
       filter: {}
     };
@@ -383,9 +382,14 @@ export default {
       } else {
         return true;
       }
+    },
+    list_medical_record() {
+      return this.$store.getters["medicalRecords/getList"];
     }
   },
-  mounted() {
+  async mounted() {
+
+    await this.$store.dispatch("medicalRecords/fetch");
     this.fetch();
     // console.log(this.province);
   },
@@ -393,21 +397,20 @@ export default {
     async fetch() {
       this.data_list = [];
       this.form_data = {
-        nationality: 'ไทย'
-      }
+        nationality: "ไทย"
+      };
 
-      await MedicalRecordAPI.getAllMedicalRecord().then(response => {
-        let i = 0;
-        let res = response.data.data;
+      // console.log(this.list_medical_record)
 
-        res.forEach(e => {
-          this.data_list.push({
-            no: ++i,
-            id: e._id,
-            citizen_id: e.citizen_id,
-            first: e.first,
-            last: e.last
-          });
+      this.list_medical_record.forEach((e, i) => {
+        console.log(e.record_by)
+        this.data_list.push({
+          no: i+1,
+          id: e._id,
+          citizen_id: e.citizen_id,
+          first: e.first,
+          last: e.last,
+          record_by: `${e.record_by.title} ${e.record_by.first} ${e.record_by.last}`
         });
       });
     },
@@ -444,20 +447,28 @@ export default {
           distric: [value => !!value || "กรุณาเลือกอำเภอ"],
           tambon: [value => !!value || "กรุณาเลือกตำบล"],
           zip: [value => !!value || "กรุณากรอกรหัสไปรษณีย์"],
-          phone: [value => !!value || "กรุณากรอกหมายเลขโทรศัพท์"],
-        }
+          phone: [value => !!value || "กรุณากรอกหมายเลขโทรศัพท์"]
+        };
         this.$refs.form.validate();
       } else {
-        this.form_data.birth = await moment.format(this.form_data.birth);
-        const response = await MedicalRecordAPI.newMedicalRecord(
-          this.form_data
-        );
-        if (response.data.success == false) {
-          alert(response.data.errMessage);
-        } else {
-          this.fetch();
-          this.dialog_add = false;
-        }
+        this.form_data.birth = moment.format(this.form_data.birth);
+        await this.$api.createMedicalRecords(this.form_data)
+          .then(response => {
+            this.$toast.open({
+              message: 'เพิ่มข้อมูลเวชระเบียนเรียบร้อย',
+              type: "success",
+              duration: 6000
+            });
+            this.dialog_add = false;
+            this.fetch();
+          })
+          .catch(error => {
+            this.$toast.open({
+              message: error.response.data.errMessage,
+              type: "error",
+              duration: 6000
+            });
+          })
       }
     },
     onlynumber($event) {

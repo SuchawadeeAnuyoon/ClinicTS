@@ -407,8 +407,6 @@
 </template>
 
 <script>
-import * as MedicalRecordAPI from "../../utils/medicalRecordAPI";
-import * as SympyomAPI from "../../utils/symptomAPI";
 import moment from "../../utils/moment";
 import Province from "../../utils/province.json";
 import District from "../../utils/district.json";
@@ -457,23 +455,16 @@ export default {
   },
   methods: {
     async fecth() {
-      const response = await MedicalRecordAPI.getOneMedicalRecord(this.id);
-      this.medical_record_data = await response.data.data;
-      this.birth = await this.medical_record_data.birth;
-      this.contact = await `${this.medical_record_data.address} หมู่ที่ ${this.medical_record_data.moo} ถนน ${this.medical_record_data.road} ซอย ${this.medical_record_data.soi} ตำบล ${this.medical_record_data.tambon} อำเภอ ${this.medical_record_data.distric} จังหวัด ${this.medical_record_data.province} รหัสไปรษณีย์ ${this.medical_record_data.zip}`;
-      this.phone = await `เบอร์ติดต่อ ${this.medical_record_data.phone}`;
+      await this.$api.getMedicalRecord(this.id).then(response => {
+        this.medical_record_data = response.data.data;
+        this.birth = this.medical_record_data.birth;
+        this.contact = `${this.medical_record_data.address} หมู่ที่ ${this.medical_record_data.moo} ถนน ${this.medical_record_data.road} ซอย ${this.medical_record_data.soi} ตำบล ${this.medical_record_data.tambon} อำเภอ ${this.medical_record_data.distric} จังหวัด ${this.medical_record_data.province} รหัสไปรษณีย์ ${this.medical_record_data.zip}`;
+        this.phone = `เบอร์ติดต่อ ${this.medical_record_data.phone}`;
+      });
 
       // Symptom
       this.symptom = [];
-      await this.medical_record_data.SymptomPush.forEach(e => {
-        // if (!e.predicate) {
-        //   this.symptom.push({
-        //     initial: e.initial,
-        //     create_at: moment.format_local_time(e.create_at),
-        //     name_create: e.name_create
-        //   });
-        // } else {
-        // console.log(e)
+      this.medical_record_data.SymptomPush.forEach(e => {
         this.symptom.push({
           initial: e.initial,
           create_at: moment.format_local_time_PS(e.create_at),
@@ -498,17 +489,25 @@ export default {
         initial: this.initial
       };
 
-      const response = await SympyomAPI.createSymptom(data);
-
-      await this.fecth();
-      this.dialog_load = await false;
-      this.dialog_symotom = await false;
-
-      this.snackbar = await {
-        bool: true,
-        msg: "เพิ่มอาการเบื้องต้นและคิวเรียบร้อย",
-        color: "green"
-      };
+      await this.$api
+        .addInitialSymptom(data)
+        .then(response => {
+          this.dialog_load = false;
+          this.dialog_symotom = false;
+          this.fecth();
+          this.$toast.open({
+            message: "เพิ่มอาการเบื้องต้นและคิวเรียบร้อย",
+            type: "success",
+            duration: 6000
+          });
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        });
     },
     async checkProvince() {
       await this.province.forEach(async e => {
@@ -563,24 +562,28 @@ export default {
       }
     },
     async update() {
-      this.medical_record_data.birth = await this.birth
-      const response = await MedicalRecordAPI.updateMedicalRecord(
-        this.medical_record_data,
-        this.id
-      );
+      this.medical_record_data.birth = await this.birth;
 
-      if (response.data.sucess == true) {
-        this.readonly = await true;
-        this.fecth();
-        this.dialog_load = await false;
-        this.snackbar = await {
-          bool: true,
-          msg: "แก้ไขข้อมูลเสร็จสิ้น",
-          color: "green"
-        };
-      } else {
-        alert(response.data.errMessage);
-      }
+      await this.$api
+        .updateMedicalRecords(this.id, this.medical_record_data)
+        .then(response => {
+          this.readonly = true;
+          this.dialog_load = false;
+          this.fecth();
+
+          this.$toast.open({
+            message: "แก้ไขข้อมูลเสร็จสิ้น",
+            type: "success",
+            duration: 6000
+          });
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        });
     },
     customFilterP(item, queryText, itemText) {
       const textOne = item.PROVINCE_NAME.toLowerCase();

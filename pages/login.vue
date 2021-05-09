@@ -85,15 +85,39 @@ export default {
     async login() {
       this.model.email = this.model.email ? this.model.email.toLowerCase() : "";
 
-      try {
-        let response = await this.$auth.loginWith("local", {
-          data: this.model
-        });
+      let self = this;
 
-        this.$router.push({ path: "home" });
-      } catch (err) {
-        console.log(err);
+      const res = await self.$store.dispatch("me/login", {
+        email: self.model.email,
+        password: self.model.password
+      });
+
+
+
+      if (res instanceof Error) {
+        self.$toast.open({
+          message: res.response.data.errMessage,
+          type: "error",
+          duration: 6000
+        });
+      } else {
+        self.$toast.open({
+          message: 'เข้าสู่ระบบสำเร็จ',
+          type: "success",
+          duration: 6000
+        });
+        self.$router.push({ path: "home" });
       }
+
+      // try {
+      //   let response = await this.$auth.loginWith("local", {
+      //     data: this.model
+      //   });
+
+      //   this.$router.push({ path: "home" });
+      // } catch (err) {
+      //   console.log(err);
+      // }
     }
   }
 };

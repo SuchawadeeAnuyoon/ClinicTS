@@ -26,14 +26,18 @@
                 <v-row>
                   <div class="mr-5">ข้อมูลเวชภัณฑ์</div>
                   <v-btn
-                  v-if="me.role != 'assistant'"
+                    v-if="me.role != 'assistant'"
                     small
                     :color="btn_edit.color"
                     @click="edit(readonly)"
                     >{{ btn_edit.text }}</v-btn
                   >
                   <div v-if="!readonly">
-                    <v-btn small class="ml-2" color="error" @click="dialog_delete = true"
+                    <v-btn
+                      small
+                      class="ml-2"
+                      color="error"
+                      @click="dialog_delete = true"
                       >ลบ</v-btn
                     >
                     <v-btn
@@ -79,12 +83,35 @@
 
                   <v-col cols="12" sm="6" md="2">
                     <v-select
-                      :items="['เม็ด', 'แผง', 'หลอด', 'ขวด', 'ซอง', 'โดส', 'แคปซูล']"
+                      :items="[
+                        'เม็ด',
+                        'แผง',
+                        'หลอด',
+                        'ขวด',
+                        'ซอง',
+                        'โดส',
+                        'แคปซูล',
+                        'อื่นๆ'
+                      ]"
                       label="หน่วย"
                       :readonly="readonly"
                       v-model="medical_supply_data.unit"
                       dense
                     ></v-select>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="2"
+                    v-if="medical_supply_data.unit === 'อื่นๆ'"
+                  >
+                    <v-text-field
+                      label="หน่วยยาระบุ..."
+                      :readonly="readonly"
+                      v-model="medical_supply_data.other_unit"
+                      dense
+                    ></v-text-field>
                   </v-col>
 
                   <v-col cols="12" sm="6" md="3">
@@ -191,29 +218,26 @@
                       :readonly="readonly"
                     ></v-checkbox>
                   </v-col>
-
-
                 </v-row>
 
                 <v-row v-if="medical_supply_data.type4 == true">
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      label="เลขที่รุ่นที่/ครั้งที่ผลิด"
+                      required
+                      dense
+                      v-model="medical_supply_data.number"
+                    ></v-text-field>
+                  </v-col>
 
                   <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    label="เลขที่รุ่นที่/ครั้งที่ผลิด"
-                    required
-                    dense
-                    v-model="medical_supply_data.number"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    label="ชื่อผู้ผลิตและแหล่งผลิต"
-                    required
-                    dense
-                    v-model="medical_supply_data.creator"
-                  ></v-text-field>
-                </v-col>
+                    <v-text-field
+                      label="ชื่อผู้ผลิตและแหล่งผลิต"
+                      required
+                      dense
+                      v-model="medical_supply_data.creator"
+                    ></v-text-field>
+                  </v-col>
 
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
@@ -251,7 +275,13 @@
                             <td>{{ list.activities }}</td>
                             <td>{{ list.medical_name }}</td>
                             <td>{{ list.amount }}</td>
-                            <td>{{ list.unit }}</td>
+                            <td>
+                              {{
+                                list.unit === "อื่นๆ"
+                                  ? list.other_unit
+                                  : list.unit
+                              }}
+                            </td>
                             <td>{{ list.price_for_unit }}</td>
                             <td>{{ list.price_total }}</td>
                             <td>{{ list.time }}</td>
@@ -285,7 +315,7 @@
     </v-dialog>
 
     <v-dialog v-model="dialog_add_amount" max-width="20%">
-      <v-card flat >
+      <v-card flat>
         <v-card-title>เพิ่มจำนวนเวชภัณฑ์</v-card-title>
         <v-card-text>
           <v-container>
@@ -308,17 +338,19 @@
             ยกเลิก
           </v-btn>
           <v-btn color="blue darken-1" text @click="addAmount()">
-             เพิ่ม
+            เพิ่ม
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-dialog v-model="dialog_delete" max-width="25%">
-      <v-card flat >
+      <v-card flat>
         <v-card-title>ลบเวชภัณฑ์</v-card-title>
         <v-card-text>
-          <p>ต้องการลบเวชภัณฑ์: {{medical_supply_data.medical_name}} ใช่หรือไม่</p>
+          <p>
+            ต้องการลบเวชภัณฑ์: {{ medical_supply_data.medical_name }} ใช่หรือไม่
+          </p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -326,7 +358,7 @@
             ยกเลิก
           </v-btn>
           <v-btn color="red" text @click="Delete(id)">
-             ตกลง
+            ตกลง
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -341,16 +373,13 @@
       rounded="pill"
       top
     >
-      {{snackbar.msg}}
+      {{ snackbar.msg }}
     </v-snackbar>
   </div>
 </template>
 
 <script>
-import * as MedicalSuppliesAPI from "../../utils/medicalSuppliesAPI";
-import * as ActivitiesAPI from "../../utils/activitiesAPI";
 import moment from "../../utils/moment";
-import { months } from "moment";
 export default {
   layout: "dashboard",
   middleware: "auth",
@@ -386,42 +415,44 @@ export default {
       add_amount: 0,
       snackbar: {
         bool: false,
-        color: '',
-        msg: ''
+        color: "",
+        msg: ""
       },
-      me: {}
+      me: {},
+      unitOther: ""
     };
   },
   computed: {
     setMomentAdd() {
-      return this.date.add ? moment.format_local_PS(this.date.add) : ''
+      return this.date.add ? moment.format_local_PS(this.date.add) : "";
     },
     setMomentExpire() {
-      return this.date.expire ? moment.format_local_PS(this.date.expire) : ''
+      return this.date.expire ? moment.format_local_PS(this.date.expire) : "";
+    },
+    list_activities() {
+      return this.$store.getters["activities/getList"];
+    },
+    user() {
+      return this.$store.getters["me/getUser"];
     }
   },
-  mounted() {
+  async mounted() {
+    await this.$store.dispatch("activities/fetch");
     this.fetch();
     this.fecthActivities();
   },
   methods: {
     async fetch() {
-      this.me = await this.$auth.user.data;
-      this.add_amount = 0
-      const response = await MedicalSuppliesAPI.getOneMidicalSupply(this.id);
+      this.me = this.user;
+      this.add_amount = 0;
+      await this.$api.getMedicalSupply(this.id).then(response => {
+        this.medical_supply_data = response.data.data;
+      });
 
-      this.medical_supply_data = await response.data.data;
-
-      // this.date.add = await moment.format_local(this.medical_supply_data.date_add)
-      this.date = await {
+      this.date = {
         add: moment.format_datepicker(this.medical_supply_data.date_add),
         expire: moment.format_datepicker(this.medical_supply_data.expire)
       };
-
-      // this.datepicker = await {
-      //   add: moment.format_datepicker(this.medical_supply_data.date_add),
-      //   expire: moment.format_datepicker(this.medical_supply_data.expire)
-      // };
 
       this.loading = await false;
     },
@@ -429,8 +460,7 @@ export default {
       this.$router.push({ path: "/medicalsupplies" });
     },
     async fecthActivities() {
-      const response = await ActivitiesAPI.getAllActivities();
-      let activities = await response.data.data;
+      let activities = this.list_activities;
       let act_list = await [];
 
       await activities.forEach(async e => {
@@ -443,6 +473,7 @@ export default {
             activitor: `${e.act_by.title} ${e.act_by.first} ${e.act_by.last}`,
             amount: e.data.amount,
             unit: e.data.unit,
+            other_unit: e.data.other_unit,
             price_for_unit: e.data.price_for_unit,
             price_total: e.data.price_total
           });
@@ -477,48 +508,67 @@ export default {
           expire: moment.format(this.date.expire),
           date_add: moment.format(this.date.add),
           from: supply_data.from,
-          price_for_unit: supply_data.price_for_unit
+          price_for_unit: supply_data.price_for_unit,
+          unit: supply_data.unit,
+          other_unit: supply_data.other_unit
         };
 
-        await this.update(form)
+        await this.update(form);
       }
     },
     async addAmount() {
-      this.dialog_add_amount = await false
+      this.dialog_add_amount = await false;
       // this.dialog_update = await true
       let form = await {
         amount: parseInt(this.add_amount)
-      }
+      };
 
-      this.medical_supply_data.total = parseInt(this.medical_supply_data.total) + parseInt(this.add_amount)
-
+      this.medical_supply_data.total =
+        parseInt(this.medical_supply_data.total) + parseInt(this.add_amount);
     },
     async update(form) {
-      this.dialog_update = await true
-      const response = await MedicalSuppliesAPI.updateMidicalSupply(
-          form,
-          this.id
-        );
+      this.dialog_update = await true;
 
-        if (response.data.success == true) {
-          this.readonly = await true
-          this.dialog_update = await false
+      await this.$api
+        .updateMedicalSupplies(this.id, form)
+        .then(response => {
+          this.readonly = true;
+          this.dialog_update = false;
 
-          this.snackbar = await {
-            bool: true,
-            color: 'green',
-            msg: 'แก้ไขข้อมูลเสร็จสิ้น'
-          }
-
-          await this.fetch()
-          await this.fecthActivities()
-        }
+          this.$toast.open({
+            message: "แก้ไขข้อมูลสำเร็จ",
+            type: "success",
+            duration: 6000
+          });
+          this.fetch();
+          this.fecthActivities();
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "success",
+            duration: 6000
+          });
+        });
     },
     async Delete(id) {
-      this.dialog_update = await true
-      const response = await MedicalSuppliesAPI.deleteMidicalSupply(id)
-
-      await this.$router.push({ path: '/medicalsupplies'})
+      this.dialog_delete = true;
+      await this.$api.deleteMedicalSupplies(id).then(response => {
+        this.$toast.open({
+          message: "ลบข้อมูลสำเร็จ",
+          type: "success",
+          duration: 6000
+        });
+        this.dialog_delete = false;
+        this.$router.push({ path: "/medicalsupplies" });
+      })
+      .catch(error => {
+        this.$toast.open({
+          message: error.response.data.errMessage,
+          type: "error",
+          duration: 6000
+        });
+      })
     }
   }
 };

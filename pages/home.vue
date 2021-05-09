@@ -160,11 +160,7 @@
                     color="orange"
                     value="orange"
                   ></v-radio>
-                  <v-radio
-                    label="อื่นๆ"
-                    color="red"
-                    value="red"
-                  ></v-radio>
+                  <v-radio label="อื่นๆ" color="red" value="red"></v-radio>
                 </v-radio-group>
               </v-col>
               <v-col cols="12" sm="12" md="12">
@@ -309,7 +305,6 @@
 </template>
 
 <script>
-import * as AppointmentAPI from "../utils/appointmentAPI";
 import moment from "../utils/moment";
 export default {
   layout: "dashboard",
@@ -346,12 +341,12 @@ export default {
   }),
   computed: {
     color: {
-        get () {
-          return 'hex'
-        },
-        set (v) {
-          this['hex'] = v
-        },
+      get() {
+        return "hex";
+      },
+      set(v) {
+        this["hex"] = v;
+      }
     }
   },
   mounted() {
@@ -359,21 +354,34 @@ export default {
   },
   methods: {
     async fetch() {
-      this.form_data = await {};
+      this.form_data = {};
       const events = [];
-      const response = await AppointmentAPI.getAllAppointment();
-      await response.data.data.forEach(async e => {
-        await events.push({
-          id: e._id,
-          name: e.medical_name,
-          start: moment.fotmat_to_calendar(e.start),
-          end: moment.fotmat_to_calendar(e.end),
-          color: e.color,
-          description: e.description
+
+      await this.$api.getAppointments().then(response => {
+        response.data.data.forEach(e => {
+          events.push({
+            id: e._id,
+            name: e.medical_name,
+            start: moment.fotmat_to_calendar(e.start),
+            end: moment.fotmat_to_calendar(e.end),
+            color: e.color,
+            description: e.description
+          });
         });
       });
+      // const response = await AppointmentAPI.getAllAppointment();
+      // await response.data.data.forEach(async e => {
+      //   await events.push({
+      //     id: e._id,
+      //     name: e.medical_name,
+      //     start: moment.fotmat_to_calendar(e.start),
+      //     end: moment.fotmat_to_calendar(e.end),
+      //     color: e.color,
+      //     description: e.description
+      //   });
+      // });
 
-      this.events = await events;
+      this.events = events;
     },
     viewDay({ date }) {
       this.focus = date;
@@ -416,16 +424,33 @@ export default {
     },
     async add() {
       // console.log(this.form_data)
-      this.form_data.start = await new Date(
-        moment.format(this.form_data.start)
-      );
-      this.form_data.end = await new Date(moment.format(this.form_data.end));
-      const respone = await AppointmentAPI.newAppoinrment(this.form_data);
+      this.form_data.start = new Date(moment.format(this.form_data.start));
+      this.form_data.end = new Date(moment.format(this.form_data.end));
 
-      if (respone.data.success == true) {
-        this.dialog_add = await false;
-        await this.fetch();
-      }
+      await this.$api
+        .createAppointments(this.form_data)
+        .then(response => {
+          this.dialog_add = false;
+          this.$toast.open({
+            message: "เพิ่มการนัดหมายเรียบร้อย",
+            type: "success",
+            duration: 6000
+          });
+          this, fetch();
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        });
+      // const respone = await AppointmentAPI.newAppoinrment(this.form_data);
+
+      // if (respone.data.success == true) {
+      //   this.dialog_add = await false;
+      //   await this.fetch();
+      // }
     },
     setDateStart() {
       this.form_data.start = `${this.date.start} ${this.time.start}`;
@@ -436,12 +461,35 @@ export default {
       this.menu2 = false;
     },
     async deleteEvent(id) {
-      const respone = await AppointmentAPI.deleteAppoinrment(id);
+      await this.$api
+        .deleteAppointments(id)
+        .then(response => {
+          this.$toast.open({
+            message: "ลบการนัดหมายเรียบร้อย",
+            type: "success",
+            duration: 6000
+          });
+          this.selectedOpen = false;
+          this.fetch();
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        });
+      // const respone = await AppointmentAPI.deleteAppoinrment(id);
 
-      if (respone.data.success == true) {
-        this.selectedOpen = await false;
-        await this.fetch();
-      }
+      // if (respone.data.success == true) {
+      //   this.selectedOpen = await false;
+      //   this.$toast.open({
+      //     message: "เพิ่มการนัดหมายเรียบร้อย",
+      //     type: "success",
+      //     duration: 6000
+      //   });
+      //   await this.fetch();
+      // }
     }
   }
 };
