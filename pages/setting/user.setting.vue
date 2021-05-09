@@ -43,8 +43,14 @@
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn color="grey" icon v-bind="attrs" v-on="on" @click="Delete(item.id, item.name)">
-                    <v-icon>mdi-close</v-icon>
+                  <v-btn
+                    color="grey"
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="Delete(item.id, item.name)"
+                  >
+                    <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </template>
                 <span>ลบผู้ใช้</span>
@@ -165,13 +171,13 @@
           <v-container>
             <div class="text-center mt-10" v-if="view_loading">
               <v-progress-circular
-              align-center
-              class="my-4"
-              centered
-              indeterminate
-              color="primary"
-              :size="50"
-            ></v-progress-circular>
+                align-center
+                class="my-4"
+                centered
+                indeterminate
+                color="primary"
+                :size="50"
+              ></v-progress-circular>
             </div>
             <div v-if="list_activities == 0 && !view_loading">
               <p class="text-center">ไม่มีรายการงาน</p>
@@ -216,10 +222,10 @@
     </v-dialog>
 
     <v-dialog v-model="dialog_delete" max-width="30%">
-      <v-card flat >
+      <v-card flat>
         <v-card-title>ลบผู้ใช้</v-card-title>
         <v-card-text>
-          <p>ต้องการลบผู้ใช้: {{user_name}} ใช่หรือไม่</p>
+          <p>ต้องการลบผู้ใช้: {{ user_name }} ใช่หรือไม่</p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -227,7 +233,7 @@
             ยกเลิก
           </v-btn>
           <v-btn color="red" text @click="Delete_user()">
-             ตกลง
+            ตกลง
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -249,8 +255,6 @@
 </template>
 
 <script>
-import * as UserApi from "../../utils/userAPI";
-import * as ActivitiesAPI from "../../utils/activitiesAPI";
 import moment from "../../utils/moment";
 import { months } from "moment";
 export default {
@@ -281,21 +285,23 @@ export default {
       view_name: "",
       view_loading: false,
       dialog_delete: false,
-      user_name: '',
+      user_name: "",
       user_id: null,
       role_item: [
-        {name: 'แพทย์', value: 'doctor'},
-        {name: 'พยาบาล', value: 'nurse'},
-        {name: 'ผู้ช่วยพยาบาล', value: 'assistant'},
-      ],
+        { name: "แพทย์", value: "doctor" },
+        { name: "พยาบาล", value: "nurse" },
+        { name: "ผู้ช่วยพยาบาล", value: "assistant" }
+      ]
     };
   },
   computed: {
-    listFilter () {
-      let text = this.search.trim()
+    listFilter() {
+      let text = this.search.trim();
       return this.list_user.filter(item => {
-        return item.name.indexOf(text) > -1 || item.doctor_id.indexOf(text) > -1
-      })
+        return (
+          item.name.indexOf(text) > -1 || item.doctor_id.indexOf(text) > -1
+        );
+      });
     }
   },
   mounted() {
@@ -303,77 +309,98 @@ export default {
   },
   methods: {
     async fetch() {
-      const response = await UserApi.getAllUser();
-      let list = await [];
-      this.form_data = await {}
+      // const response = await UserApi.getAllUser();
+      let list = [];
+      this.form_data = {};
 
-      await response.data.data.forEach(async e => {
-        await list.push({
-          id: e.id,
-          name: `${e.title} ${e.first} ${e.last}`,
-          role: e.role,
-          doctor_id: e.doctor_id,
-          email: e.email,
-          time: moment.format_local_time_PS(e.create_at)
+      await this.$api.getUsers().then(response => {
+        response.data.data.forEach(e => {
+          list.push({
+            id: e.id,
+            name: `${e.title} ${e.first} ${e.last}`,
+            role: e.role,
+            doctor_id: e.doctor_id,
+            email: e.email,
+            time: moment.format_local_time_PS(e.create_at)
+          });
         });
       });
 
-      this.list_user = await list;
+      this.list_user = list;
     },
     async newUser() {
-      this.dialog_load = await true;
-      this.form_data.password = await "P@ssw0rd";
-      // console.log((this.form_data))
-      const response = await UserApi.newUser(this.form_data);
-
-      if (response.data.success === false) {
-        alert(response.data.errMessage);
-      } else {
-        this.dialog_add = await false;
-        this.snackbar = await {
-          bool: true,
-          color: "green",
-          msg: "เพิ่มข้อมูลผู้ใช้เสร็จสิ้น"
-        };
-        await this.fetch();
-        this.dialog_load = await false;
-      }
-    },
-    async view(id, name) {
-      this.view_name = await name;
-      this.view_loading = await true
-      this.dialog_view = await true;
-      const response = await ActivitiesAPI.getAllActivities();
-      const list = [];
-
-      await response.data.data.forEach(async e => {
-        if (id === e.act_by.id) {
-          await list.push({
-            id: e.id,
-            activity: e.activities,
-            data: e.data,
-            time: moment.format_local_time(e.time),
-            from: e.from
+      this.dialog_load = true;
+      this.form_data.password = "P@ssw0rd";
+      await this.$api.newUser(this.form_data)
+        .then(response => {
+          this.$toast.open({
+            message: "เพิ่มข้อมูลผู้ใช้เสร็จสิ้น",
+            type: "success",
+            duration: 6000
           });
-        }
-      });
-
-      this.list_activities = await list;
-      this.view_loading = await false
+          this.dialog_add = false
+          this.fetch()
+          this.dialog_load = false
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+          this.dialog_load =false
+        })
 
     },
+    // async view(id, name) {
+    //   this.view_name = await name;
+    //   this.view_loading = await true;
+    //   this.dialog_view = await true;
+    //   const response = await ActivitiesAPI.getAllActivities();
+    //   const list = [];
+
+    //   await response.data.data.forEach(async e => {
+    //     if (id === e.act_by.id) {
+    //       await list.push({
+    //         id: e.id,
+    //         activity: e.activities,
+    //         data: e.data,
+    //         time: moment.format_local_time(e.time),
+    //         from: e.from
+    //       });
+    //     }
+    //   });
+
+    //   this.list_activities = await list;
+    //   this.view_loading = await false;
+    // },
     async Delete(id, name) {
-      this.user_id = await id
+      this.user_id = await id;
       this.user_name = await name;
       this.dialog_delete = await true;
     },
     async Delete_user() {
-      this.dialog_load = await true
-      const response = await UserApi.deleteUser(this.user_id)
+      this.dialog_load = await true;
+      await this.$api.deleteUser(this.user_id)
+        .then(response => {
+          this.$toast.open({
+            message: "ลบข้อมูลผู้ใช้สำเร็จ",
+            type: "success",
+            duration: 6000
+          });
+          this.fetch();
+          this.dialog_delete = false;
+          this.dialog_load = false;
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+          this.dialog_load =false
+        })
 
-      await this.fetch()
-      this.dialog_delete = await false
-      this.dialog_load = await false
     }
   }
 };

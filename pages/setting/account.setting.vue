@@ -219,8 +219,8 @@ export default {
   },
   methods: {
     async fetch() {
-      const response = await UserAPI.getMe()
-      this.me = await response.data.data
+      // const response = await UserAPI.getMe()
+      this.me = this.$store.getters["me/getUser"]
       // console.log(this.me)
     },
     edit(status) {
@@ -247,34 +247,53 @@ export default {
         phone: this.me.phone
       }
 
-      const response = await UserAPI.updateMe(form)
+      await this.$api.updateMe(form)
+        .then(response => {
+          this.$toast.open({
+            message: "แก้ไขข้อมูลสำเร็จ",
+            type: "success",
+            duration: 6000
+          });
 
-      if (response.data.success == true) {
-        this.dialog_loading = await false
-        this.fetch()
-        this.read = await true
-      }
-
-      // console.log(form)
+          this.$store.dispatch("me/me")
+          this.fetch()
+          this.dialog_loading = false
+          this.read = true
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "success",
+            duration: 6000
+          });
+        })
     },
     async changePassword() {
-      this.dialog_loading = await true
+      this.dialog_loading = true
       let form = {};
-      form = await {
+      form = {
         currentPassword: this.password_old,
         newPassword: this.password_new
       };
 
-      const response = await UserAPI.changePasswordMe(form);
-
-      if (response.data.success == true) {
-        this.dialog_loading = await false
-        this.fetch()
-      } else {
-        this.dialog_loading = await false
-        alert(response.data.errMessage)
-      }
-
+      await this.$api.changePassword(form)
+        .then(response => {
+          this.$toast.open({
+            message: "เปลี่ยนหรัสผ่านสำเร็จ",
+            type: "success",
+            duration: 6000
+          });
+          this.dialog_loading = false
+          this.fetch()
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "success",
+            duration: 6000
+          });
+          this.dialog_loading = false
+        })
     }
   }
 };
