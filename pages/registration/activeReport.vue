@@ -1091,8 +1091,13 @@ export default {
       // })
       let list = [];
       let data_use = [];
-      const response = await ActivitiesAPI.getAllActivities();
-      list = await response.data.data;
+      // const response = await ActivitiesAPI.getAllActivities();
+      // list = await response.data.data;
+
+      await this.$api.getActivities()
+        .then(response => {
+          list = response.data.data
+        })
 
       list.forEach(async e => {
         if (e.from == "medical-supply") {

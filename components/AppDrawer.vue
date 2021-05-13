@@ -171,7 +171,8 @@ export default {
       this.me = this.user
     },
     logout() {
-      this.$auth.logout();
+      this.$store.dispatch("me/logout")
+      location.reload()
     }
   }
 };

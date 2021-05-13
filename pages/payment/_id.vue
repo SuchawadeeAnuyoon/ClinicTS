@@ -94,8 +94,6 @@
 </template>
 
 <script>
-import * as PaymentAPI from "../../utils/paymentAPI";
-import * as SymptomAPI from "../../utils/symptomAPI";
 import moment from "../../utils/moment";
 export default {
   middleware: "auth",
@@ -121,15 +119,20 @@ export default {
   methods: {
     async fetch() {
       this.loading = await true;
-      const response = await PaymentAPI.getPayment(this.id);
 
-      this.payment_data = await response.data.data;
+      await this.$api.getPayment(this.id)
+        .then(response => {
+          this.payment_data = response.data.data;
+        })
 
-      const res_symptom = await SymptomAPI.getSymptom(
-        this.payment_data.symptom
-      );
+      // const res_symptom = await SymptomAPI.getSymptom(
+      //   this.payment_data.symptom
+      // );
 
-      this.symptom_data = await res_symptom.data.data;
+      await this.$api.getSymptom(this.payment_data.symptom)
+        .then(response => {
+          this.symptom_data = response.data.data;
+        })
       this.medical_record_data = await this.symptom_data.medicalRecord_id;
       this.drug_data = await this.symptom_data.drugPush;
 
@@ -141,27 +144,28 @@ export default {
 
       this.loading = await false;
 
-      console.log(this.payment_data);
+      // console.log(this.payment_data);
     },
     back() {
       this.$router.push({ path: '/home'})
     },
     async pay() {
-      const response = await PaymentAPI.updatePay(this.id)
 
-      if (response.data.success == true) {
-        this.snackbar = await {
-          bool: true,
-          color: 'green',
-          msg: 'การชำระเงินเสร็จสิ้น'
-        }
-      } else {
-        this.snackbar = await {
-          bool: true,
-          color: 'red',
-          msg: response.data.message
-        }
-      }
+      await this.$api.updatePayment(this.id)
+        .then(response => {
+          this.$toast.open({
+            message: "การชำระเงินเสร็จสิ้น",
+            type: "success",
+            duration: 6000
+          });
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        })
 
       await this.fetch()
     }

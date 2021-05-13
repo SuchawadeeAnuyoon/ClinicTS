@@ -168,7 +168,12 @@ export default ({ app }, inject) => {
       })
     },
     paidDrug: (id) => {
-      return app.$axios.get(`${basePath}/druglist/${id}`, {
+      return app.$axios.put(`${basePath}/druglist/${id}`, {}, {
+        headers: headerAuthJson
+      })
+    },
+    deleteDrugList: (id) => {
+      return app.$axios.delete(`${basePath}/druglist/${id}`, {
         headers: headerAuthJson
       })
     },
@@ -203,6 +208,11 @@ export default ({ app }, inject) => {
     },
     getPayment: (id) => {
       return app.$axios.get(`${basePath}/payment/${id}`, {
+        headers: headerAuthJson
+      })
+    },
+    updatePayment: (id) => {
+      return app.$axios.patch(`${basePath}/payment/${id}`, {}, {
         headers: headerAuthJson
       })
     }

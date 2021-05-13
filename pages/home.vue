@@ -24,7 +24,7 @@
                 </v-icon>
               </v-btn>
               <v-toolbar-title v-if="$refs.calendar">
-                {{ $refs.calendar.title }}
+                {{ titleCalendar }}
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn
@@ -78,7 +78,8 @@
               @click:more="viewDay"
               @click:date="viewDay"
               @change="fetch"
-            ></v-calendar>
+            >
+            </v-calendar>
             <v-menu
               v-model="selectedOpen"
               :close-on-content-click="false"
@@ -137,31 +138,16 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="12" md="9">
-                <!-- <v-color-picker
-                  type="hex"
+                <!-- <div>{{showColor}}</div> -->
+                <v-color-picker
+                  dot-size="25"
                   hide-canvas
+                  hide-sliders
                   hide-inputs
-                  mode="hex"
-                  flat
-                ></v-color-picker> -->
-                <v-radio-group v-model="form_data.color" row>
-                  <v-radio
-                    label="แพทย์ประจำโรงพยาบาล"
-                    color="green"
-                    value="green"
-                  ></v-radio>
-                  <v-radio
-                    label="นัดติดตามอาการ"
-                    color="indigo"
-                    value="indigo"
-                  ></v-radio>
-                  <v-radio
-                    label="นัดฉีดวัคซีน"
-                    color="orange"
-                    value="orange"
-                  ></v-radio>
-                  <v-radio label="อื่นๆ" color="red" value="red"></v-radio>
-                </v-radio-group>
+                  type="hex"
+                  swatches-max-height="200"
+                  v-model="color"
+                ></v-color-picker>
               </v-col>
               <v-col cols="12" sm="12" md="12">
                 <v-text-field
@@ -337,20 +323,39 @@ export default {
     },
     menu: false,
     menu2: false,
-    today: new Date().toISOString().slice(0, 10)
+    today: new Date().toISOString().slice(0, 10),
+    titleCalendar: "",
+    hex: '#0034FF',
   }),
   computed: {
     color: {
       get() {
-        return "hex";
+        return this["hex"];
       },
       set(v) {
         this["hex"] = v;
       }
+    },
+    showColor() {
+      if (typeof this.color === "string") return this.color;
+
+      return JSON.stringify(
+        Object.keys(this.color).reduce((color, key) => {
+          color[key] = Number(this.color[key].toFixed(2));
+          return color;
+        }, {}),
+        null,
+        2
+      );
     }
   },
   mounted() {
     this.$refs.calendar.checkChange();
+    this.titleCalendar = `${moment.getMonthDoc(
+      this.$refs.calendar.times.now.month
+    )} ${this.$refs.calendar.times.now.year + 543}`;
+
+    // console.log(title)
   },
   methods: {
     async fetch() {
@@ -426,6 +431,7 @@ export default {
       // console.log(this.form_data)
       this.form_data.start = new Date(moment.format(this.form_data.start));
       this.form_data.end = new Date(moment.format(this.form_data.end));
+      this.form_data.color = this.showColor
 
       await this.$api
         .createAppointments(this.form_data)
@@ -436,7 +442,7 @@ export default {
             type: "success",
             duration: 6000
           });
-          this, fetch();
+          this.fetch();
         })
         .catch(error => {
           this.$toast.open({

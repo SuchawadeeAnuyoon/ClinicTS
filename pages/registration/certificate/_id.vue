@@ -606,7 +606,6 @@ import Province from "../../../utils/province.json";
 import District from "../../../utils/district.json";
 import Tambon from "../../../utils/tambon.json";
 import moment from "../../../utils/moment";
-import * as SymptomAPI from "../../../utils/symptomAPI";
 export default {
   layout: "dashboard",
   middleware: "auth",
@@ -624,7 +623,7 @@ export default {
         body: true
       },
       form_sick: {
-        medicalRecord_id: {},
+        medicalRecord_id: {}
       },
       date: new Date().toISOString().substr(0, 10),
       menu2: false,
@@ -633,7 +632,7 @@ export default {
       district: [],
       tambon: [],
       today: new Date(),
-      past: new Date().toISOString().slice(0 ,10)
+      past: new Date().toISOString().slice(0, 10)
     };
   },
   computed: {
@@ -654,12 +653,12 @@ export default {
   methods: {
     async fetch() {
       if (this.id != undefined) {
-        const response = await SymptomAPI.getSymptom(this.id);
-
-        this.form_doc = await response.data.data;
-        this.form_doc.data = moment.format_local(this.today)
-        this.form_sick = await response.data.data;
-        this.checkProvince();
+        await this.$api.getSymptom(this.id).then(response => {
+          this.form_doc = response.data.data;
+          this.form_doc.data = moment.format_local(this.today);
+          this.form_sick = response.data.data;
+          this.checkProvince();
+        });
       }
     },
     onlyForCurrency($event) {

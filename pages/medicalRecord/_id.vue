@@ -471,7 +471,7 @@ export default {
           name_create: e.name_create,
           predicate: e.predicate,
           name_predicate: e.name_predicate,
-          predicate_at: moment.format_local_time_PS(e.predicate_at)
+          predicate_at: e.predicate_at ? moment.format_local_time_PS(e.predicate_at) : ''
         });
         // }
       });

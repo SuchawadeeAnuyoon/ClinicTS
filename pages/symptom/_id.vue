@@ -8,9 +8,7 @@
         ></v-progress-circular>
       </div>
       <v-card v-if="!loading">
-        <v-card-title
-          >บันทึกอาการ
-        </v-card-title>
+        <v-card-title>บันทึกอาการ </v-card-title>
 
         <v-card-text>
           <div class="mx-3">
@@ -185,7 +183,12 @@
                       color="blue"
                       :disabled="item.status == true"
                       @click="
-                        add_drug(item._id, item.medical_name, item.drug_amount, item.price_for_unit)
+                        add_drug(
+                          item._id,
+                          item.medical_name,
+                          item.drug_amount,
+                          item.price_for_unit
+                        )
                       "
                       >เพิ่ม</v-btn
                     >
@@ -217,7 +220,6 @@
           </v-row>
         </v-container>
         <v-card-actions>
-
           <v-btn
             class="mx-auto"
             color="green"
@@ -299,6 +301,9 @@ export default {
       return this.supplies_data.filter(item => {
         return item.medical_name.indexOf(text) > -1;
       });
+    },
+    list_medical_supplies() {
+      return this.$store.getters["medicalSupplies/getList"];
     }
   },
   mounted() {
@@ -307,65 +312,109 @@ export default {
   },
   methods: {
     async fetch() {
-      const res_queue = await QueueAPI.getQueue(this.id);
-      this.symptom_id = await res_queue.data.data.symptom;
+      await this.$api.getQueue(this.id).then(response => {
+        this.symptom_id = response.data.data.symptom;
 
-      const res_symptom = await SymptomAPI.getSymptom(this.symptom_id);
-      this.symptom_data = await res_symptom.data.data;
-      this.medical_data = await this.symptom_data.medicalRecord_id;
-      this.medical_data.birth = await moment.format_local_PS(
-        this.medical_data.birth
-      );
+        if (response.data.data.approve == "success") {
+          this.dis_btn = true;
+        } else {
+          this.dis_btn = false;
+        }
+      });
 
-      if (res_queue.data.data.approve == "success") {
-        this.dis_btn = await true;
-      } else {
-        this.dis_btn = await false;
-      }
+      await this.$api.getSymptom(this.symptom_id).then(response => {
+        this.medical_data = response.data.data.medicalRecord_id;
+        this.symptom_data = response.data.data
+      });
+
+      await this.$store.dispatch("medicalSupplies/fetch");
+
+      this.medical_data.birth = moment.format_local_PS(this.medical_data.birth);
 
       this.fetchDrug();
     },
     async fetchDrug() {
-      const res_symptom = await SymptomAPI.getSymptom(this.symptom_id);
-      let symptomData = await res_symptom.data.data;
-      const res_supplies = await MedicalSupplies.getAllMedicalSupplies();
-      this.supplies_data = await res_supplies.data.data;
+      this.supplies_data =[]
+      await this.$api.getSymptom(this.symptom_id).then(response => {
+        this.drug_data = response.data.data.drugPush;
+      });
 
-      this.drug_data = await symptomData.drugPush;
+      await this.list_medical_supplies.forEach(e => {
+        this.supplies_data.push({
+          ...e,
+          drug_amount: null
+        })
+      })
 
-      this.loading = await false;
+      // console.log(this.supplies_data)
+
+      // const res_supplies = this.list_medical_supplies
+      this.loading = false;
+
     },
     async add_drug(sid, name, amount, price_for_unit) {
-      let form_data = await {
+      let form_data = {
         supply_id: sid,
         name_drug: name,
-        amount,
-        symptom_id: this.symptom_data.id,
-        price_for_unit
+        amount: amount,
+        symptom_id: {
+          _id: this.symptom_id
+        },
+        price_for_unit: price_for_unit
       };
-      const response = await DrugListAPI.createDrugList(form_data);
 
-      if (response.data.success == false) {
-        alert(response.data.errMessage);
-      }
+      await this.$api.createDrugList(form_data)
+        .then(response => {
+          // this.$toast.open({
+          //   message: "แก้ไขข้อมูลสำเร็จ",
+          //   type: "success",
+          //   duration: 6000
+          // });
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        });
 
       await this.fetchDrug();
     },
     async drugDelete(id) {
-      const response = await DrugListAPI.deleteDrugList(id);
-
-      await this.fetchDrug();
+      // const response = await DrugListAPI.deleteDrugList(id);
+      await this.$api.deleteDrugList(id).then(response => {
+        this.fetchDrug();
+      });
     },
     async save() {
       this.dialog_loading = await true;
       let form = await {
         approve: "await_drug"
       };
-      await QueueAPI.updateQueue(this.id, form);
-      await SymptomAPI.updateSymptom(this.symptom_data.id, this.symptom_data);
 
-      await this.fetch();
-      this.dialog_loading = await false;
+      await this.$api.updateQueue(this.id, form);
+      // await QueueAPI.updateQueue(this.id, form);
+      await this.$api
+        .updateSymptom(this.symptom_id, form)
+        .then(response => {
+          this.$toast.open({
+            message: "บันทึกข้อมูลสำเร็จ",
+            type: "success",
+            duration: 6000
+          });
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: "success",
+            duration: 6000
+          });
+        });
+      // await SymptomAPI.updateSymptom(this.symptom_data.id, this.symptom_data);
+
+      this.fetch();
+      this.dialog_loading = false;
     }
   }
 };

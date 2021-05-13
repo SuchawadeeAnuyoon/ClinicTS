@@ -12,7 +12,7 @@ export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   // <script id="gsoftbiz.pdpa-scripts" async src="https://staging.propdpa.com/script.js" data-id="1e1a03d0-548f-11eb-aa46-5b2000bb4e70" charset="utf-8"></script>
   head: {
-    title: 'ท่าซุงคลินิก',
+    title: 'ท่าซุงคลินิกเวชกรรม',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport',content: 'width=device-width, initial-scale=1'},
@@ -21,7 +21,7 @@ export default {
     script: [
     ],
     link: [
-      {rel: 'icon',type: 'image/x-icon',href: '/logo.ong'},
+      {rel: 'icon',type: 'image/x-icon',href: '/logo.ico'},
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Sarabun:wght@100;200;300;400;500;600;700;800&display=swap",
