@@ -222,7 +222,7 @@ export default {
   },
   computed: {
     me() {
-      this.$store.dispatch("me/me");
+      // this.$store.dispatch("me/me");
       return this.$store.getters["me/getUser"];
     },
     queues() {
@@ -328,7 +328,7 @@ export default {
       setInterval(async () => {
         let q = [];
         let w = [];
-        this.$store.dispatch("queues/fetch");
+        await this.$store.dispatch("queues/fetch");
         let data_q = this.queues;
         data_q.forEach(e => {
           if (e.approve == "wait") {
@@ -340,12 +340,12 @@ export default {
         });
         this.queue = q;
         this.wait = w;
-      }, 30 * 1000);
+      } ,60000);
     },
     async suppliesNoti() {
       setInterval(async () => {
         // const response = await MedicalSuppliesAPI.getAllMedicalSupplies();
-        this.$store.dispatch("medicalSupplies/fetch");
+        await this.$store.dispatch("medicalSupplies/fetch");
 
         let supplies = this.list_medical_supplies;
         let n = [];
@@ -400,7 +400,7 @@ export default {
           }
         });
         this.noti = n;
-      }, 60 * 1000);
+      }, 600000);
     },
 
     async view(id) {
@@ -427,7 +427,7 @@ export default {
 
         response.data.data.drugPush.forEach(e => {
           if (e.status != true) {
-            // console.log(e.status)
+            console.log(e._id)
             this.drug_price += e.price;
             this.drug_list.push(e);
           } else {
@@ -469,18 +469,17 @@ export default {
 
         this.drug_list.forEach(async e => {
           // await DrugListAPI.paidDrugList(e._id);
-          await this.$api.getPayment(e._id);
+          await this.$api.paidDrug(e._id);
         });
 
-        // await QueueApi.updateQueue(this.q_id, form);
         await this.$api.updateQueue(this.q_id, form);
 
         await this.$api
           .createPayment(this.payment)
-          .thne(response => {
+          .then(response => {
             this.loading = false;
             this.dialog_drug = false;
-            this.$router.push({ path: `/payment/${response.data.data.id}` });
+            this.$router.push({ path: `/payment/${response.data.data._id}` });
           })
           .catch(error => {
             self.$toast.open({
@@ -489,16 +488,6 @@ export default {
               duration: 6000
             });
           });
-        // const response = await PaymentAPI.createPayment(this.payment);
-        // this.loading = await false;
-        // this.dialog_drug = await false;
-
-        // console.log(response.data.data)
-        // if (response.data.success == true) {
-        //   this.$router.push({
-        //     path: `/payment/${response.data.data._id}`
-        //   });
-        // }
       }
     },
     onlyForCurrency($event) {
