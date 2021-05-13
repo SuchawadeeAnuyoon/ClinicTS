@@ -79,10 +79,15 @@ export default {
   // },
   // tetraflex.gsoftbiz.com/api/v1
 
+  // axios: {
+  //   basrURL: process.env.NODE_ENV=='production'
+  //     ? '/'
+  //     :process.env.API||`https://thasung-api-vzrb2.ondigitalocean.app/`,
+  //   credentials: true,
+  //   proxy: true
+  // },
   axios: {
-    basrURL: process.env.NODE_ENV=='production'
-      ? '/'
-      :process.env.API||`https://thasung-api-vzrb2.ondigitalocean.app/`,
+    basrURL: process.env.API||`https://thasung-api-vzrb2.ondigitalocean.app/`,
     credentials: true,
     proxy: true
   },
