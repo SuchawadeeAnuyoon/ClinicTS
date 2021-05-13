@@ -87,7 +87,7 @@ export default {
   //   proxy: true
   // },
   axios: {
-    basrURL: process.env.API||`https://thasung-api-vzrb2.ondigitalocean.app/`,
+    basrURL: `https://thasung-api-vzrb2.ondigitalocean.app/`,
     credentials: true,
     proxy: true
   },
@@ -95,7 +95,7 @@ export default {
     [
       "/api",
       {
-        target: process.env.API||`https://thasung-api-vzrb2.ondigitalocean.app/`,
+        target: `https://thasung-api-vzrb2.ondigitalocean.app/`,
         pathRewrite: {"^/api": "/api"}
       }
     ]
