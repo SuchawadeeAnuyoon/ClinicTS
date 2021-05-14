@@ -87,8 +87,8 @@ export default {
   //   proxy: true
   // },
   axios: {
-    basrURL: `https://thasung-api-vzrb2.ondigitalocean.app/`,
-    credentials: true,
+    // basrURL: `https://thasung-api-vzrb2.ondigitalocean.app/`,
+    // credentials: true,
     proxy: true
   },
   proxy: [
