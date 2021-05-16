@@ -24,7 +24,7 @@
                 </v-icon>
               </v-btn>
               <v-toolbar-title v-if="$refs.calendar">
-                {{ titleCalendar }}
+                {{ title }}
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn
@@ -347,13 +347,14 @@ export default {
         null,
         2
       );
+    },
+    title() {
+      let text = this.$refs.calendar.title.split(' ')
+      return `${text[0]} ${parseInt(text[1]) + 543}`
     }
   },
   mounted() {
     this.$refs.calendar.checkChange();
-    let text = this.$refs.calendar.title.split(" ");
-
-    this.titleCalendar = `${text[0]} ${parseInt(text[1]) + 543}`;
   },
   methods: {
     async fetch() {
@@ -398,15 +399,9 @@ export default {
     },
     prev() {
       this.$refs.calendar.prev();
-      let text = this.$refs.calendar.title.split(" ");
-
-      this.titleCalendar = `${text[0]} ${parseInt(text[1]) + 543}`;
     },
     next() {
       this.$refs.calendar.next();
-      let text = this.$refs.calendar.title.split(" ");
-
-      this.titleCalendar = `${text[0]} ${parseInt(text[1]) + 543}`;
     },
     showEvent({ nativeEvent, event }) {
       const open = () => {
