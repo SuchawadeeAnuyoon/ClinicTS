@@ -325,7 +325,7 @@ export default {
     menu2: false,
     today: new Date().toISOString().slice(0, 10),
     titleCalendar: "",
-    hex: '#0034FF',
+    hex: "#0034FF"
   }),
   computed: {
     color: {
@@ -351,11 +351,9 @@ export default {
   },
   mounted() {
     this.$refs.calendar.checkChange();
-    this.titleCalendar = `${moment.getMonthDoc(
-      this.$refs.calendar.times.now.month
-    )} ${this.$refs.calendar.times.now.year + 543}`;
+    let text = this.$refs.calendar.title.split(" ");
 
-    // console.log(title)
+    this.titleCalendar = `${text[0]} ${parseInt(text[1]) + 543}`;
   },
   methods: {
     async fetch() {
@@ -400,9 +398,15 @@ export default {
     },
     prev() {
       this.$refs.calendar.prev();
+      let text = this.$refs.calendar.title.split(" ");
+
+      this.titleCalendar = `${text[0]} ${parseInt(text[1]) + 543}`;
     },
     next() {
       this.$refs.calendar.next();
+      let text = this.$refs.calendar.title.split(" ");
+
+      this.titleCalendar = `${text[0]} ${parseInt(text[1]) + 543}`;
     },
     showEvent({ nativeEvent, event }) {
       const open = () => {
@@ -431,7 +435,7 @@ export default {
       // console.log(this.form_data)
       this.form_data.start = new Date(moment.format(this.form_data.start));
       this.form_data.end = new Date(moment.format(this.form_data.end));
-      this.form_data.color = this.showColor
+      this.form_data.color = this.showColor;
 
       await this.$api
         .createAppointments(this.form_data)

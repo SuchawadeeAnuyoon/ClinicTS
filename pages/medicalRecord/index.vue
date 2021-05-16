@@ -95,7 +95,13 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-menu
+                  <v-text-field
+                    label="วัน/เดือน/ปีเกิด*"
+                    required
+                    v-model="form_data.birth"
+                    :rules="rules.birth"
+                  ></v-text-field>
+                  <!-- <v-menu
                     ref="menu"
                     v-model="menu"
                     :close-on-content-click="false"
@@ -109,7 +115,6 @@
                         :value="setMoment"
                         label="วัน/เดือน/ปีเกิด*"
                         prepend-icon="mdi-calendar"
-                        readonly
                         v-bind="attrs"
                         v-on="on"
                         :rules="rules.birth"
@@ -133,7 +138,7 @@
                         ตกลง
                       </v-btn>
                     </v-date-picker>
-                  </v-menu>
+                  </v-menu> -->
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
                   <v-text-field
@@ -360,13 +365,6 @@ export default {
         );
       });
     },
-
-    setMoment() {
-      return this.form_data.birth
-        ? moment.format_local_PS(this.form_data.birth)
-        : "";
-    },
-
     check() {
       let res = ThaiID.checkIDCard(this.form_data.citizen_id);
       if (res == false) {
@@ -389,7 +387,7 @@ export default {
   },
   async mounted() {
 
-    await this.$store.dispatch("medicalRecords/fetch");
+    
     this.fetch();
     // console.log(this.province);
   },
@@ -399,7 +397,7 @@ export default {
       this.form_data = {
         nationality: "ไทย"
       };
-
+      await this.$store.dispatch("medicalRecords/fetch");
       // console.log(this.list_medical_record)
 
       this.list_medical_record.forEach((e, i) => {
@@ -451,7 +449,7 @@ export default {
         };
         this.$refs.form.validate();
       } else {
-        this.form_data.birth = moment.format(this.form_data.birth);
+        // this.form_data.birth = moment.format(this.form_data.birth); 
         await this.$api.createMedicalRecords(this.form_data)
           .then(response => {
             this.$toast.open({
@@ -459,8 +457,8 @@ export default {
               type: "success",
               duration: 6000
             });
-            this.dialog_add = false;
             this.fetch();
+            this.dialog_add = false;
           })
           .catch(error => {
             this.$toast.open({

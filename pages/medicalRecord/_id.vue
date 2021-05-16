@@ -66,7 +66,13 @@
                   </v-col>
 
                   <v-col cols="12" sm="3" md="3">
-                    <v-menu
+                    <v-text-field
+                      label="วัน/เดือน/ปีเกิด"
+                      v-model="medical_record_data.birth"
+                      :readonly="readonly"
+                      dense
+                    ></v-text-field>
+                    <!-- <v-menu
                       ref="menu"
                       v-model="menu"
                       :close-on-content-click="false"
@@ -105,7 +111,7 @@
                           ตกลง
                         </v-btn>
                       </v-date-picker>
-                    </v-menu>
+                    </v-menu> -->
                   </v-col>
 
                   <v-col cols="12" sm="3" md="2">
@@ -562,7 +568,7 @@ export default {
       }
     },
     async update() {
-      this.medical_record_data.birth = await this.birth;
+      // this.medical_record_data.birth = await this.birth;
 
       await this.$api
         .updateMedicalRecords(this.id, this.medical_record_data)
