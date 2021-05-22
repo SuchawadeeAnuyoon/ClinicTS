@@ -390,7 +390,10 @@ export default {
     async save() {
       this.dialog_loading = await true;
       let form = await {
-        approve: "await_drug"
+        approve: "await_drug",
+        predicate: this.symptom_data.predicate,
+        certificate: this.symptom_data.certificate,
+        appointment: this.symptom_data.appointment
       };
 
       await this.$api.updateQueue(this.id, form);

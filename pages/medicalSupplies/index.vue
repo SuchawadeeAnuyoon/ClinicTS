@@ -397,24 +397,27 @@ export default {
           this.form_data.unit = this.unit_other;
         }
 
-        await this.$api.createMedicalSupplies(this.form_data).then(response => {
-          this.snackbar.bool = true;
-          this.form_data = {};
-          this.dialog_add = false;
-          this.fetch();
-          this.$toast.open({
-            message: "เพิ่มข้อมูลสำเร็จ",
-            type: "success",
-            duration: 6000
+        await this.$api
+          .createMedicalSupplies(this.form_data)
+          .then(response => {
+            this.fetch();
+            this.snackbar.bool = true;
+            this.form_data = {};
+            this.dialog_add = false;
+            
+            this.$toast.open({
+              message: "เพิ่มข้อมูลสำเร็จ",
+              type: "success",
+              duration: 6000
+            });
+          })
+          .catch(error => {
+            this.$toast.open({
+              message: error.response.data.errMessage,
+              type: "error",
+              duration: 6000
+            });
           });
-        })
-        .catch(error => {
-          this.$toast.open({
-            message: error.response.data.errMessage,
-            type: "error",
-            duration: 6000
-          });
-        })
       }
     }
   }

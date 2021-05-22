@@ -235,7 +235,7 @@ export default {
     return {
       form: {
         date: moment.format_datepicker_appo(new Date()),
-        time: '08:00'
+        time: "08:00"
       },
       province: Province,
       district: [],
@@ -248,36 +248,37 @@ export default {
   },
   computed: {
     setMoment() {
-      return this.form.date
-        ? moment.format_local_PS(this.form.date)
-        : "";
-    },
+      return this.form.date ? moment.format_local_PS(this.form.date) : "";
+    }
   },
   mounted() {
     this.fetch();
   },
   methods: {
     async fetch() {
-
       if (this.id != undefined) {
-        let res = {}
-        const response = await SymptomAPI.getSymptom(this.id);
-        res = await response.data.data
-        this.form = await {
-          title: res.medicalRecord_id.title,
-          first: res.medicalRecord_id.first,
-          last: res.medicalRecord_id.last,
-          id: res.medicalRecord_id.citizen_id,
-          address: res.medicalRecord_id.address,
-          moo: res.medicalRecord_id.moo,
-          tambon: res.medicalRecord_id.tambon,
-          district: res.medicalRecord_id.distric,
-          province: res.medicalRecord_id.province,
-          phone: res.medicalRecord_id.phone,
-          date: moment.format_datepicker_appo(new Date()),
-          time: '08:00'
-        }
-        this.checkProvince();
+        let res = {};
+        // const response = await SymptomAPI.getSymptom(this.id);
+        this.$api.getSymptom(this.id).then(response => {
+          res = response.data.data;
+          this.form = {
+            title: res.medicalRecord_id.title,
+            first: res.medicalRecord_id.first,
+            last: res.medicalRecord_id.last,
+            id: res.medicalRecord_id.citizen_id,
+            address: res.medicalRecord_id.address,
+            moo: res.medicalRecord_id.moo,
+            tambon: res.medicalRecord_id.tambon,
+            district: res.medicalRecord_id.distric,
+            province: res.medicalRecord_id.province,
+            phone: res.medicalRecord_id.phone,
+            date: moment.format_datepicker_appo(new Date()),
+            time: "08:00"
+          };
+          this.checkProvince();
+        });
+
+        // this.checkProvince();
       }
     },
     onlynumber($event) {

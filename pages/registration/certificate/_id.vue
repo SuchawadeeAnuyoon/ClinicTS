@@ -708,6 +708,38 @@ export default {
       }
     },
     cert_doc() {
+      if (this.form_doc.deseat && !this.form_doc.medicalRecord_id.disease) {
+        this.$toast.open({
+          message: 'กรุณาระบุรายละเอียดโรคประจำตัว',
+          type: 'error',
+          duration: 5000
+        })
+        return
+      }
+      if (this.form_doc.aciden && !this.form_doc.aciden_detail) {
+        this.$toast.open({
+          message: 'กรุณาระบุรายละเอียดอุบัติเหตุ และผ่าตัด',
+          type: 'error',
+          duration: 5000
+        })
+        return
+      }
+      if (this.form_doc.heal && !this.form_doc.heal_detail) {
+        this.$toast.open({
+          message: 'กรุณาระบุรายละเอียดการรักษาในโรงพยาบาล',
+          type: 'error',
+          duration: 5000
+        })
+        return
+      }
+      if (!this.form_doc.body && !this.form_doc.body_detail) {
+        this.$toast.open({
+          message: 'กรุณาระบุรายละเอียดสภาพร่างกายที่ผิดปกติ',
+          type: 'error',
+          duration: 5000
+        })
+        return
+      }
       this.form_doc.day = moment.getDate(this.form_doc.date);
       this.form_doc.month = moment.getMonthDoc(this.form_doc.date);
       this.form_doc.year = moment.getYear(this.form_doc.year);
@@ -715,6 +747,7 @@ export default {
       Certificate_pdf.Certificate_doc(this.form_doc);
     },
     cert_sick() {
+      // if (form_doc.)
       this.form_sick.day = moment.getDate(this.form_sick.date);
       this.form_sick.month = moment.getMonthDoc(this.form_sick.date);
       this.form_sick.year = moment.getYear(this.form_sick.year);

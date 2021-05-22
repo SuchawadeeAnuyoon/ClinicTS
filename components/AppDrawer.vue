@@ -12,9 +12,9 @@
         <v-avatar size="50" color="white">
           <img src="/logo.png" alt />
         </v-avatar>
-        <v-spacer></v-spacer>
-        <div>
-          <h1 class="text-center name-hospital">ท่าซุงคลินิกเวชกรรม</h1>
+        <!-- <v-spacer></v-spacer> -->
+        <div class="mx-auto py-3">
+          <h2 class="text-center name-hospital just">ท่าซุงคลินิกเวชกรรม</h2>
         </div>
       </v-row>
     </v-toolbar>

@@ -119,7 +119,7 @@
                     label="ค่ารักษา"
                     :rules="rules.payment"
                     dense
-                    @keypress="onlyForCurrency"
+                    type="number"
                   ></v-text-field>
                 </v-col>
               </v-row>
