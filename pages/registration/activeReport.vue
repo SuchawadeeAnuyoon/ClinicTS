@@ -28,7 +28,7 @@
 
             <div
               class="mx-5"
-              v-if="i == 0 && (m1.d1 || m1.d2 || m1.d3 || m1.d4 || m1.d5 || m1.d6)"
+              v-if="i == 0 && m1.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -43,7 +43,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m1.d1">
+                  <tr v-for="(item, i) in m1" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m1.d1">
                     <td>{{ m1.d1.name }}</td>
                     <td>{{ m1.d1.number }}</td>
                     <td>{{ m1.d1.creator }}</td>
@@ -96,14 +105,14 @@
                     <td>{{ m1.d6.add }}</td>
                     <td>{{ m1.d6.paid }}</td>
                     <td>{{ m1.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 1 && (m2.d1 || m2.d2 || m2.d3 || m2.d4 || m2.d5 || m2.d6)"
+              v-if="i == 1 && m2.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -118,7 +127,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m2.d1">
+                  <tr v-for="(item, i) in m2" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m2.d1">
                     <td>{{ m2.d1.name }}</td>
                     <td>{{ m2.d1.number }}</td>
                     <td>{{ m2.d1.creator }}</td>
@@ -171,14 +189,14 @@
                     <td>{{ m2.d6.add }}</td>
                     <td>{{ m2.d6.paid }}</td>
                     <td>{{ m2.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 2 && (m3.d1 || m3.d2 || m3.d3 || m3.d4 || m3.d5 | m3.d6)"
+              v-if="i == 2 && m3.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -193,7 +211,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m3.d1">
+                  <tr v-for="(item, i) in m3" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m3.d1">
                     <td>{{ m3.d1.name }}</td>
                     <td>{{ m3.d1.number }}</td>
                     <td>{{ m3.d1.creator }}</td>
@@ -246,14 +273,14 @@
                     <td>{{ m3.d6.add }}</td>
                     <td>{{ m3.d6.paid }}</td>
                     <td>{{ m3.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 3 && (m4.d1 || m4.d2 || m4.d3 || m4.d4 || m4.d5 || m4.d6)"
+              v-if="i == 3 && m4.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -268,6 +295,15 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <tr v-for="(item, i) in m4" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
                   <tr v-if="m4.d1">
                     <td>{{ m4.d1.name }}</td>
                     <td>{{ m4.d1.number }}</td>
@@ -328,7 +364,7 @@
 
             <div
               class="mx-5"
-              v-if="i == 4 && (m5.d1 || m5.d2 || m5.d3 || m5.d4 || m5.d5 || m5.d6)"
+              v-if="i == 4 && m5.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -343,7 +379,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m5.d1">
+                  <tr v-for="(item, i) in m5" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m5.d1">
                     <td>{{ m5.d1.name }}</td>
                     <td>{{ m5.d1.number }}</td>
                     <td>{{ m5.d1.creator }}</td>
@@ -396,14 +441,14 @@
                     <td>{{ m5.d6.add }}</td>
                     <td>{{ m5.d6.paid }}</td>
                     <td>{{ m5.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 5 && (m6.d1 || m6.d2 || m6.d3 || m6.d4 || m6.d5 || m6.d6)"
+              v-if="i == 5 && m6.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -418,7 +463,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m6.d1">
+                  <tr v-for="(item, i) in m6" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m6.d1">
                     <td>{{ m6.d1.name }}</td>
                     <td>{{ m6.d1.number }}</td>
                     <td>{{ m6.d1.creator }}</td>
@@ -471,14 +525,14 @@
                     <td>{{ m6.d6.add }}</td>
                     <td>{{ m6.d6.paid }}</td>
                     <td>{{ m6.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 6 && (m7.d1 || m7.d2 || m7.d3 || m7.d4 || m7.d5 || m7.d6)"
+              v-if="i == 6 && m7.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -493,7 +547,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m7.d1">
+                  <tr v-for="(item, i) in m7" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m7.d1">
                     <td>{{ m7.d1.name }}</td>
                     <td>{{ m7.d1.number }}</td>
                     <td>{{ m7.d1.creator }}</td>
@@ -546,14 +609,14 @@
                     <td>{{ m7.d6.add }}</td>
                     <td>{{ m7.d6.paid }}</td>
                     <td>{{ m7.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 7 && (m8.d1 || m8.d2 || m8.d3 || m8.d4 || m8.d5 || m8.d6)"
+              v-if="i == 7 && m8.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -568,7 +631,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m8.d1">
+                  <tr v-for="(item, i) in m8" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m8.d1">
                     <td>{{ m8.d1.name }}</td>
                     <td>{{ m8.d1.number }}</td>
                     <td>{{ m8.d1.creator }}</td>
@@ -621,14 +693,14 @@
                     <td>{{ m8.d6.add }}</td>
                     <td>{{ m8.d6.paid }}</td>
                     <td>{{ m8.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 8 && (m9.d1 || m9.d2 || m9.d3 || m9.d4 || m9.d5 || m9.d6)"
+              v-if="i == 8 && m9.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -643,7 +715,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m9.d1">
+                  <tr v-for="(item, i) in m9" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m9.d1">
                     <td>{{ m9.d1.name }}</td>
                     <td>{{ m9.d1.number }}</td>
                     <td>{{ m9.d1.creator }}</td>
@@ -696,14 +777,14 @@
                     <td>{{ m9.d6.add }}</td>
                     <td>{{ m9.d6.paid }}</td>
                     <td>{{ m9.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 9 && (m10.d1 || m10.d2 || m10.d3 || m10.d4 || m10.d5 || m10.d6)"
+              v-if="i == 9 && m10.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -718,7 +799,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m10.d1">
+                  <tr v-for="(item, i) in m10" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m10.d1">
                     <td>{{ m10.d1.name }}</td>
                     <td>{{ m10.d1.number }}</td>
                     <td>{{ m10.d1.creator }}</td>
@@ -771,14 +861,14 @@
                     <td>{{ m10.d6.add }}</td>
                     <td>{{ m10.d6.paid }}</td>
                     <td>{{ m10.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 10 && (m11.d1 || m11.d2 || m11.d3 || m11.d4 || m11.d5 || m11.d6)"
+              v-if="i == 10 && m11.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -793,7 +883,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m11.d1">
+                  <tr v-for="(item, i) in m11" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m11.d1">
                     <td>{{ m11.d1.name }}</td>
                     <td>{{ m11.d1.number }}</td>
                     <td>{{ m11.d1.creator }}</td>
@@ -846,14 +945,14 @@
                     <td>{{ m11.d6.add }}</td>
                     <td>{{ m11.d6.paid }}</td>
                     <td>{{ m11.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
 
             <div
               class="mx-5"
-              v-if="i == 11 && (m12.d1 || m12.d2 || m12.d3 || m12.d4 || m12.d5 || m12.d6)"
+              v-if="i == 11 && m12.length != 0"
             >
               <v-simple-table>
                 <thead>
@@ -868,7 +967,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="m12.d1">
+                  <tr v-for="(item, i) in m12" :key="i">
+                    <td>{{item.name}}</td>
+                    <td>{{item.number}}</td>
+                    <td>{{item.creator}}</td>
+                    <td>{{item.from}}</td>
+                    <td>{{item.add}}</td>
+                    <td>{{item.paid}}</td>
+                    <td>{{item.total}}</td>
+                  </tr>
+                  <!-- <tr v-if="m12.d1">
                     <td>{{ m12.d1.name }}</td>
                     <td>{{ m12.d1.number }}</td>
                     <td>{{ m12.d1.creator }}</td>
@@ -921,7 +1029,7 @@
                     <td>{{ m12.d6.add }}</td>
                     <td>{{ m12.d6.paid }}</td>
                     <td>{{ m12.d6.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </v-simple-table>
             </div>
@@ -1099,8 +1207,8 @@ export default {
           list = response.data.data
         })
 
-      list.forEach(async e => {
-        if (e.from == "medical-supply") {
+      await list.forEach(async e => {
+        if (e.from == "medical-supply" ||  e.from == "drug-list") {
 
           let data_y = moment.getYearUTC(e.data.date_add);
           let data_m = moment.getMonth(e.data.date_add);
@@ -1110,32 +1218,32 @@ export default {
 
           if (e.data.type4 == true && this.currentYear == data_y) {
             let id;
-          console.log(e.data.medical_name)
+          // console.log(e.data.medical_name)
 
-            if (e.data.medical_name == "Diazepam 2 mg") {
-              id = "d1";
-            }
-            if (e.data.medical_name == "Diazepam 5 mg") {
-              id = "d2";
-            }
-            if (e.data.medical_name == "Diazepam injection") {
-              id = "d3";
-            }
-            if (e.data.medical_name == "Lorazepam 0.5 mg") {
-              id = "d4";
-            }
-            if (e.data.medical_name == "Phenobarb elixir") {
-              id = "d5";
-            }
-            if (e.data.medical_name == "Phenobarb 60 mg") {
-              id = "d6";
-            }
+          //   if (e.data.medical_name == "Diazepam 2 mg") {
+          //     id = "d1";
+          //   }
+          //   if (e.data.medical_name == "Diazepam 5 mg") {
+          //     id = "d2";
+          //   }
+          //   if (e.data.medical_name == "Diazepam injection") {
+          //     id = "d3";
+          //   }
+          //   if (e.data.medical_name == "Lorazepam 0.5 mg") {
+          //     id = "d4";
+          //   }
+          //   if (e.data.medical_name == "Phenobarb elixir") {
+          //     id = "d5";
+          //   }
+          //   if (e.data.medical_name == "Phenobarb 60 mg") {
+          //     id = "d6";
+          //   }
             data_use.push({
-              id,
+              id: e.data.medical_name,
               name: e.data.medical_name,
               total: e.data.total,
-              add: e.data.amount,
-              paid: 0,
+              add: e.from == "medical-supply" ? e.data.amount : 0,
+              paid: e.from == "drug-list" ? e.data.amount : 0,
               m: data_m,
               y: data_y,
               number: e.data.number,
@@ -1144,47 +1252,48 @@ export default {
             });
           }
           // console.log(new Date(e.m).getMonth())
-        } else if (e.from == "drug-list") {
-          let data_y = moment.getYearUTC(e.time);
-          let data_m = moment.getMonth(e.time);
-          if (
-            e.data.type4 == true &&
-            e.data.status == true &&
-            this.currentYear == data_y
-          ) {
-            let id;
-            if (e.data.medical_name == "Diazepam 2 mg") {
-              id = "d1";
-            }
-            if (e.data.medical_name == "Diazepam 5 mg") {
-              id = "d2";
-            }
-            if (e.data.medical_name == "Diazepam injection") {
-              id = "d3";
-            }
-            if (e.data.medical_name == "Lorazepam 0.5 mg") {
-              id = "d4";
-            }
-            if (e.data.medical_name == "Phenobarb elixir") {
-              id = "d5";
-            }
-            if (e.data.medical_name == "Phenobarb 60 mg") {
-              id = "d6";
-            }
-            data_use.push({
-              id,
-              name: e.data.medical_name,
-              total: e.data.total,
-              add: 0,
-              paid: e.data.amount,
-              m: data_m,
-              y: data_y,
-              number: e.data.number,
-              creator: e.data.creator,
-              from: e.data.from
-            });
-          }
-        }
+        } 
+        // else if (e.from == "drug-list") {
+        //   let data_y = moment.getYearUTC(e.time);
+        //   let data_m = moment.getMonth(e.time);
+        //   if (
+        //     e.data.type4 == true &&
+        //     e.data.status == true &&
+        //     this.currentYear == data_y
+        //   ) {
+        //     let id;
+        //     if (e.data.medical_name == "Diazepam 2 mg") {
+        //       id = "d1";
+        //     }
+        //     if (e.data.medical_name == "Diazepam 5 mg") {
+        //       id = "d2";
+        //     }
+        //     if (e.data.medical_name == "Diazepam injection") {
+        //       id = "d3";
+        //     }
+        //     if (e.data.medical_name == "Lorazepam 0.5 mg") {
+        //       id = "d4";
+        //     }
+        //     if (e.data.medical_name == "Phenobarb elixir") {
+        //       id = "d5";
+        //     }
+        //     if (e.data.medical_name == "Phenobarb 60 mg") {
+        //       id = "d6";
+        //     }
+        //     data_use.push({
+        //       id,
+        //       name: e.data.medical_name,
+        //       total: e.data.total,
+        //       add: 0,
+        //       paid: e.data.amount,
+        //       m: data_m,
+        //       y: data_y,
+        //       number: e.data.number,
+        //       creator: e.data.creator,
+        //       from: e.data.from
+        //     });
+        //   }
+        // }
 
       });
 
@@ -1198,13 +1307,49 @@ export default {
         });
       }
 
+      let list_id = []
+
+      await data_use.forEach(e => {
+        if (!list_id.includes(e.id)) {
+          list_id.push(e.id)
+        }
+      })
+
+      let list_data = []
+      list_id.forEach(e => {
+        list_data.push({
+          id: e,
+          add: 0,
+          paid: 0
+        })
+      })
+
+      await data_use.forEach(e => {
+        list_data.forEach(list => {
+          if (e.id == list.id) {
+            list.add += e.add
+            list.paid += e.paid
+            list.total = e.total
+            list.name = e.name
+            list.m = e.m
+            list.y = e.y
+            list.number = e.number
+            list.creator = e.creator
+            list.from = e.from
+          }
+        })
+      })
+
+      // console.log(list_data)
+
       this.years = year;
 
-      this.group(data_use);
+      this.group(list_data);
 
     },
     async group(data_list) {
       let list = await this.month.map(m => data_list.filter(e => e.m === m));
+      // console.log(list)
 
       await list.forEach(async (e, i) => {
         let sumsArray = {};
@@ -1233,7 +1378,9 @@ export default {
         // console.log(`test: ${i}`)
         // console.log(sumsArray)
       });
-      // console.log(this.list_active[10].d1);
+      this.list_active = list;
+
+      // console.log(this.list_active[4]);
       this.m1 = await this.list_active[0];
       this.m2 = await this.list_active[1];
       this.m3 = await this.list_active[2];
@@ -1246,6 +1393,7 @@ export default {
       this.m10 = await this.list_active[9];
       this.m11 = await this.list_active[10];
       this.m12 = await this.list_active[11];
+      // console.log(this.m5)
       this.loading = await true;
     }
   }

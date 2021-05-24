@@ -326,15 +326,19 @@
                           <th>ผลการวินิจฉัย</th>
                           <th>วัน เวลาที่วินิจฉัย</th>
                           <th>บันทึกโดย</th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="list in symptom" :key="list.id">
+                        <tr v-for="list in symptoms" :key="list.id">
                           <td>{{ list.create_at }}</td>
                           <td>{{ list.initial }}</td>
                           <td>{{ list.predicate }}</td>
                           <td>{{ list.predicate_at }}</td>
                           <td>{{ list.name_create }}</td>
+                          <td >
+                            <div class="view" @click="viewClick(list)">View</div>
+                          </td>
                         </tr>
                       </tbody>
                     </v-simple-table>
@@ -398,6 +402,87 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      v-model="dialog_history"
+      persistent
+      :overlay="false"
+      max-width="70%"
+      transition="dialog-transition"
+    >
+      <v-card>
+        <v-card-title>
+          <div>ประวัติการรักษา ({{symptom.create_at}})</div>
+        </v-card-title>
+        <v-card-text>
+          <!-- {{symptom}} -->
+          <div>
+            <!-- <div>ชื่อ-สกุล: <span class="font-weight-bold py-2">{{medical_record_data.title}} {{medical_record_data.first}} {{medical_record_data.last}}</span></div>
+            <div>อาการเบื้องต้น: <span class="font-weight-bold" style="margin-right: auto;">{{symptom.initial}}</span>บันทึกโดย: <span class="font-weight-bold py-2">{{symptom.create_by}}</span></div>
+            <div>วินิจฉัยโดย: <span class="font-weight-bold py-2">{{symptom.name_predicate}}</span></div> -->
+            <table style="width: 100%">
+              <tbody>
+                <tr>
+                  <td style="width: 15%">ชื่อ-สกุล:</td>
+                  <td colspan="3" class="font-weight-bold">{{medical_record_data.title}} {{medical_record_data.first}} {{medical_record_data.last}}</td>
+                </tr>
+                <div style="padding: 3px 0;"></div>
+                <tr>
+                  <td style="width: 15%">อาการเบื้องต้น:</td>
+                  <td class="font-weight-bold">{{symptom.initial}}</td>
+                  <td style="width: 15%">บันทึกโดย:</td>
+                  <td class="font-weight-bold">{{symptom.create_by}}</td>
+                </tr>
+                <tr>
+                  <td style="width: 15%">เวลาลงบันทึก:</td>
+                  <td colspan="3" class="font-weight-bold">{{symptom.create_at}}</td>
+                </tr>
+                <div style="padding: 3px 0;"></div>
+                <tr>
+                  <td style="width: 15%">อาการวินิจฉัย:</td>
+                  <td class="font-weight-bold">{{symptom.predicate}}</td>
+                  <td style="width: 15%">วินิจฉัยโดย:</td>
+                  <td class="font-weight-bold">{{symptom.name_predicate}}</td>
+                </tr>
+                <tr>
+                  <td style="width: 15%">เวลาลงการวินิจฉัย:</td>
+                  <td colspan="3" class="font-weight-bold">{{symptom.predicate_at}}</td>
+                </tr>
+                <div style="padding: 3px 0;"></div>
+              </tbody>
+            </table>
+
+            <div>รายการเวชภัณฑ์</div>
+            <!-- <table> -->
+              <table style="width: 100%;">
+                <thead>
+                  <th class="text-left">ชื่อยา</th>
+                  <th>จำนวน</th>
+                  <th>ราคาต่อหน่วย</th>
+                  <th class="text-left">ออกโดย</th>
+                  <th class="text-left">วันที่</th>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, i) in symptom.drugPush" :key="i">
+                    <td>{{item.name_drug}}</td>
+                    <td class="text-center">{{item.amount}}</td>
+                    <td class="text-center">{{item.price_for_unit}}</td>
+                    <td>{{item.order_by_name}}</td>
+                    <td>{{item.order_at}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            <!-- </table> -->
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="dialog_history = false">
+            ตกลง
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-snackbar
       :timeout="5000"
       v-model="snackbar.bool"
@@ -432,7 +517,8 @@ export default {
       birth: "",
       contact: "",
       phone: "",
-      symptom: [],
+      symptoms: [],
+      symptom: {},
       initial: "",
       readonly: true,
       btn_edit: {
@@ -448,7 +534,8 @@ export default {
       district: [],
       tambon: [],
       test: "test",
-      menu: false
+      menu: false,
+      dialog_history: false
     };
   },
   computed: {
@@ -469,9 +556,10 @@ export default {
       });
 
       // Symptom
-      this.symptom = [];
+      this.symptoms = [];
       this.medical_record_data.SymptomPush.forEach(e => {
-        this.symptom.push({
+        this.symptoms.push({
+          id: e._id,
           initial: e.initial,
           create_at: moment.format_local_time_PS(e.create_at),
           name_create: e.name_create,
@@ -636,7 +724,36 @@ export default {
           this.medical_record_data.zip = await e.ZIPCODE;
         }
       });
+    },
+    async viewClick(item) {
+      // console.log(item.id)
+      await this.$api.getSymptom(item.id)
+        .then(async response => {
+          this.symptom = response.data.data
+          this.symptom.create_by = response.data.data.name_create
+          this.symptom.name_predicate = response.data.data.name_predicate
+          this.symptom.drugPush = response.data.data.drugPush
+          this.symptom.create_at = moment.format_local_time_PS(response.data.data.create_at)
+          this.symptom.predicate_at = moment.format_local_time_PS(response.data.data.predicate_at)
+
+          await this.symptom.drugPush.forEach(e => {
+            e.order_at = moment.format_local_time_PS(e.order_at)
+          })
+        })
+
+      this.dialog_history = true
     }
   }
 };
 </script>
+
+<style>
+.view {
+  cursor: pointer;
+  color: rgb(58, 105, 233);
+  width: fit-content;
+}
+.view:hover {
+  border-bottom: 1px solid rgb(59, 105, 233)
+}
+</style>

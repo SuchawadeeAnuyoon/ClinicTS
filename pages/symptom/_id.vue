@@ -329,7 +329,7 @@ export default {
 
       await this.$store.dispatch("medicalSupplies/fetch");
 
-      this.medical_data.birth = moment.format_local_PS(this.medical_data.birth);
+      // this.medical_data.birth = moment.format_local_PS(this.medical_data.birth);
 
       this.fetchDrug();
     },

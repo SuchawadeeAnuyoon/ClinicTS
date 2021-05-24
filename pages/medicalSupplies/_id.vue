@@ -283,7 +283,7 @@
                               }}
                             </td>
                             <td>{{ list.price_for_unit }}</td>
-                            <td>{{ list.price_total }}</td>
+                            <td>{{ list.price_total ? list.price_total : list.amount*list.price_for_unit }}</td>
                             <td>{{ list.time }}</td>
                             <td>{{ list.activitor }}</td>
                           </tr>
@@ -464,16 +464,18 @@ export default {
       let act_list = await [];
 
       await activities.forEach(async e => {
-        if (e.from === "medical-supply" && e.data_id == this.id) {
+        if (e.data._id == this.id || e.data.supply_id == this.id && e.data.status) {
+          // console.log(e.data._id)
+          console.log(this.id)
           await act_list.push({
             id: e._id,
-            medical_name: e.data.medical_name,
+            medical_name: e.data.medical_name ? e.data.medical_name : e.data.name_drug,
             activities: e.activities,
             time: moment.format_local_time_PS(e.time),
             activitor: `${e.act_by.title} ${e.act_by.first} ${e.act_by.last}`,
             amount: e.data.amount,
             unit: e.data.unit,
-            other_unit: e.data.other_unit,
+            other_unit: e.data.other_unit ,
             price_for_unit: e.data.price_for_unit,
             price_total: e.data.price_total
           });

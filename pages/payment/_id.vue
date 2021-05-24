@@ -74,7 +74,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="grey darken-2" text outlined @click="back">กลับ</v-btn>
-          <v-btn color="green darken-2" text outlined @click="pay">เสร็จสิ้น</v-btn>
+          <v-btn v-if="!payment_data.status" color="green darken-2" text outlined @click="pay">เสร็จสิ้น</v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
