@@ -30,12 +30,19 @@
                 <v-divider class="my-3"></v-divider>
                 <v-row>
                   <v-col cols="12" sm="2" md="2">
-                    <v-text-field
+                    <v-select
+                      :items="['นาย', 'นาง', 'นางสาว', 'ดช.', 'ดญ.']"
+                      label="คำนำหน้า*"
+                      dense
+                      :readonly="readonly"
+                      v-model="medical_record_data.title"
+                    ></v-select>
+                    <!-- <v-text-field
                       label="คำนำหน้า"
                       v-model="medical_record_data.title"
                       :readonly="readonly"
                       dense
-                    ></v-text-field>
+                    ></v-text-field> -->
                   </v-col>
 
                   <v-col cols="12" sm="5" md="5">
@@ -115,12 +122,19 @@
                   </v-col>
 
                   <v-col cols="12" sm="3" md="2">
-                    <v-text-field
+                    <v-select
+                      :items="['ชาย', 'หญิง']"
+                      label="เพศ"
+                      dense
+                      v-model="medical_record_data.sex"
+                      :readonly="readonly"
+                    ></v-select>
+                    <!-- <v-text-field
                       label="เพศ"
                       v-model="medical_record_data.sex"
                       :readonly="readonly"
                       dense
-                    ></v-text-field>
+                    ></v-text-field> -->
                   </v-col>
 
                   <v-col cols="12" sm="3" md="2">
@@ -130,6 +144,17 @@
                       :readonly="readonly"
                       dense
                     ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" sm="3" md="3">
+                    <v-select
+                      color
+                      v-model="medical_record_data.blood"
+                      :items="['A', 'B', 'AB', 'O', '-']"
+                      label="กรุ๊บเลือด"
+                      :readonly="readonly"
+                      dense
+                    ></v-select>
                   </v-col>
                 </v-row>
 
@@ -199,7 +224,7 @@
                         item-text="DISTRICT_NAME"
                         item-value="DISTRICT_NAME"
                         v-model="medical_record_data.distric"
-                        label="อำเภอ"
+                        label="อำเภอ/เขต"
                       >
                         <template v-slot:item="data">
                           <template>
@@ -221,7 +246,7 @@
                         item-text="SUB_DISTRICT_NAME"
                         item-value="SUB_DISTRICT_NAME"
                         v-model="medical_record_data.tambon"
-                        label="ตำบล"
+                        label="ตำบล/แขวง"
                       >
                         <template v-slot:item="data">
                           <template>
@@ -336,8 +361,13 @@
                           <td>{{ list.predicate }}</td>
                           <td>{{ list.predicate_at }}</td>
                           <td>{{ list.name_create }}</td>
-                          <td >
-                            <div class="view" @click="viewClick(list)">View</div>
+                          <td class="d-flex flex-row align-center">
+                            <div class="view mx-2" @click="viewClick(list)">
+                              <v-icon small color="">mdi-eye</v-icon>
+                            </div>
+                            <div class="view" @click="editHistoryClick(list)">
+                              <v-icon small color="">mdi-pencil</v-icon>
+                            </div>
                           </td>
                         </tr>
                       </tbody>
@@ -411,7 +441,7 @@
     >
       <v-card>
         <v-card-title>
-          <div>ประวัติการรักษา ({{symptom.create_at}})</div>
+          <div>ประวัติการรักษา ({{ symptom.create_at }})</div>
         </v-card-title>
         <v-card-text>
           <!-- {{symptom}} -->
@@ -423,29 +453,37 @@
               <tbody>
                 <tr>
                   <td style="width: 15%">ชื่อ-สกุล:</td>
-                  <td colspan="3" class="font-weight-bold">{{medical_record_data.title}} {{medical_record_data.first}} {{medical_record_data.last}}</td>
+                  <td colspan="3" class="font-weight-bold">
+                    {{ medical_record_data.title }}
+                    {{ medical_record_data.first }}
+                    {{ medical_record_data.last }}
+                  </td>
                 </tr>
                 <div style="padding: 3px 0;"></div>
                 <tr>
                   <td style="width: 15%">อาการเบื้องต้น:</td>
-                  <td class="font-weight-bold">{{symptom.initial}}</td>
-                  <td style="width: 15%">บันทึกโดย:</td>
-                  <td class="font-weight-bold">{{symptom.create_by}}</td>
+                  <td class="font-weight-bold">{{ symptom.initial }}</td>
                 </tr>
                 <tr>
+                  <td style="width: 15%">บันทึกโดย:</td>
+                  <td class="font-weight-bold">{{ symptom.create_by }}</td>
                   <td style="width: 15%">เวลาลงบันทึก:</td>
-                  <td colspan="3" class="font-weight-bold">{{symptom.create_at}}</td>
+                  <td colspan="3" class="font-weight-bold">
+                    {{ symptom.create_at }}
+                  </td>
                 </tr>
                 <div style="padding: 3px 0;"></div>
                 <tr>
                   <td style="width: 15%">อาการวินิจฉัย:</td>
-                  <td class="font-weight-bold">{{symptom.predicate}}</td>
-                  <td style="width: 15%">วินิจฉัยโดย:</td>
-                  <td class="font-weight-bold">{{symptom.name_predicate}}</td>
+                  <td class="font-weight-bold">{{ symptom.predicate }}</td>
                 </tr>
                 <tr>
+                  <td style="width: 15%">วินิจฉัยโดย:</td>
+                  <td class="font-weight-bold">{{ symptom.name_predicate }}</td>
                   <td style="width: 15%">เวลาลงการวินิจฉัย:</td>
-                  <td colspan="3" class="font-weight-bold">{{symptom.predicate_at}}</td>
+                  <td colspan="3" class="font-weight-bold">
+                    {{ symptom.predicate_at }}
+                  </td>
                 </tr>
                 <div style="padding: 3px 0;"></div>
               </tbody>
@@ -453,24 +491,24 @@
 
             <div>รายการเวชภัณฑ์</div>
             <!-- <table> -->
-              <table style="width: 100%;">
-                <thead>
-                  <th class="text-left">ชื่อยา</th>
-                  <th>จำนวน</th>
-                  <th>ราคาต่อหน่วย</th>
-                  <th class="text-left">ออกโดย</th>
-                  <th class="text-left">วันที่</th>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, i) in symptom.drugPush" :key="i">
-                    <td>{{item.name_drug}}</td>
-                    <td class="text-center">{{item.amount}}</td>
-                    <td class="text-center">{{item.price_for_unit}}</td>
-                    <td>{{item.order_by_name}}</td>
-                    <td>{{item.order_at}}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <table style="width: 100%;">
+              <thead>
+                <th class="text-left">ชื่อยา</th>
+                <th>จำนวน</th>
+                <th>ราคาต่อหน่วย</th>
+                <th class="text-left">ออกโดย</th>
+                <th class="text-left">วันที่</th>
+              </thead>
+              <tbody>
+                <tr v-for="(item, i) in symptom.drugPush" :key="i">
+                  <td>{{ item.name_drug }}</td>
+                  <td class="text-center">{{ item.amount }}</td>
+                  <td class="text-center">{{ item.price_for_unit }}</td>
+                  <td>{{ item.order_by_name }}</td>
+                  <td>{{ item.order_at }}</td>
+                </tr>
+              </tbody>
+            </table>
             <!-- </table> -->
           </div>
         </v-card-text>
@@ -478,6 +516,37 @@
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="dialog_history = false">
             ตกลง
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="dialog_edit_history"
+      persistent
+      :overlay="false"
+      max-width="70%"
+      transition="dialog-transition"
+    >
+      <v-card>
+        <v-card-title>
+          <div>แก้ไขประวัติการรักษา ({{ symptom_edit.create_at }})</div>
+        </v-card-title>
+        <v-card-text>
+          <div>
+            <v-text-field type="text" flat label="อาการเบื้องต้น"  v-model="symptom_edit.initial" outlined color></v-text-field>
+          </div>
+          <div>
+            <v-text-field type="text" flat label="ผลการวินิจฉัย"  v-model="symptom_edit.predicate" outlined color></v-text-field>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="gary darken-1" text @click="dialog_edit_history = false">
+            ยกเลิก
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="saveEditHistoryClick()">
+            บันทึก
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -535,7 +604,9 @@ export default {
       tambon: [],
       test: "test",
       menu: false,
-      dialog_history: false
+      dialog_history: false,
+      dialog_edit_history: false,
+      symptom_edit: {}
     };
   },
   computed: {
@@ -565,7 +636,10 @@ export default {
           name_create: e.name_create,
           predicate: e.predicate,
           name_predicate: e.name_predicate,
-          predicate_at: e.predicate_at ? moment.format_local_time_PS(e.predicate_at) : ''
+          predicate_at:
+            e.predicate_at != null
+              ? moment.format_local_time_PS(e.predicate_at)
+              : ""
         });
         // }
       });
@@ -727,21 +801,51 @@ export default {
     },
     async viewClick(item) {
       // console.log(item.id)
-      await this.$api.getSymptom(item.id)
-        .then(async response => {
-          this.symptom = response.data.data
-          this.symptom.create_by = response.data.data.name_create
-          this.symptom.name_predicate = response.data.data.name_predicate
-          this.symptom.drugPush = response.data.data.drugPush
-          this.symptom.create_at = moment.format_local_time_PS(response.data.data.create_at)
-          this.symptom.predicate_at = moment.format_local_time_PS(response.data.data.predicate_at)
+      await this.$api.getSymptom(item.id).then(async response => {
+        this.symptom = response.data.data;
+        this.symptom.create_by = response.data.data.name_create;
+        this.symptom.name_predicate = response.data.data.name_predicate;
+        this.symptom.drugPush = response.data.data.drugPush;
+        this.symptom.create_at = moment.format_local_time_PS(
+          response.data.data.create_at
+        );
+        this.symptom.predicate_at = this.symptom.predicate_at
+          ? moment.format_local_time_PS(this.symptom.predicate_at)
+          : "";
 
-          await this.symptom.drugPush.forEach(e => {
-            e.order_at = moment.format_local_time_PS(e.order_at)
+        await this.symptom.drugPush.forEach(e => {
+          e.order_at = moment.format_local_time_PS(e.order_at);
+        });
+      });
+
+      this.dialog_history = true;
+    },
+    editHistoryClick(list) {
+      this.symptom_edit = list
+      this.dialog_edit_history = true
+    },
+    async saveEditHistoryClick() {
+      let form = {
+        initial: this.symptom_edit.initial,
+        predicate: this.symptom_edit.predicate
+      }
+      await this.$api.updateSymptom(this.symptom_edit.id, form)
+        .then(response => {
+          this.$toast.open({
+            message: 'บันทึกสำเร็จ',
+            type: 'success',
+            duration: 6000
+          })
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: 'error',
+            duration: 6000
           })
         })
 
-      this.dialog_history = true
+        this.dialog_edit_history = false
     }
   }
 };
@@ -752,8 +856,5 @@ export default {
   cursor: pointer;
   color: rgb(58, 105, 233);
   width: fit-content;
-}
-.view:hover {
-  border-bottom: 1px solid rgb(59, 105, 233)
 }
 </style>

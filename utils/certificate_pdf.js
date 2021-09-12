@@ -75,7 +75,7 @@ const Certificate_doc = (data) => {
     if (!data.medicalRecord_id.address) {
         doc.text('...............', 180, 180)
     } else {
-        doc.text(data.medicalRecord_id.address, 200, 180)
+        doc.text(data.medicalRecord_id.address, 180, 180)
     }
 
     doc.text('หมู่', 220, 180)

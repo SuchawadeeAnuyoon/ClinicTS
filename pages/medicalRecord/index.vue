@@ -207,7 +207,7 @@
                     item-text="DISTRICT_NAME"
                     item-value="DISTRICT_NAME"
                     v-model="form_data.distric"
-                    label="อำเภอ*"
+                    label="อำเภอ/เขต*"
                     :rules="rules.distric"
                   >
                     <template v-slot:item="data">
@@ -228,7 +228,7 @@
                     item-text="SUB_DISTRICT_NAME"
                     item-value="SUB_DISTRICT_NAME"
                     v-model="form_data.tambon"
-                    label="ตำบล*"
+                    label="ตำบล/แขวง*"
                     :rules="rules.tambon"
                   >
                     <template v-slot:item="data">
@@ -252,13 +252,6 @@
                     :rules="rules.zip"
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col cols="12" sm="6" md="3">
-                <v-text-field
-                  label="อำเภอ"
-                  required
-                  v-model="form_data.distric"
-                ></v-text-field>
-              </v-col> -->
 
                 <v-col cols="12" sm="6" md="3">
                   <v-text-field
@@ -269,6 +262,16 @@
                     v-model="form_data.phone"
                     :rules="rules.phone"
                   ></v-text-field>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="3">
+                  <!-- <v-col cols="12" sm="6" md="3"> -->
+                    <v-select
+                      :items="['A','B','AB','O','-']"
+                      label="กรุ๊บเลือด"
+                      v-model="form_data.blood"
+                    ></v-select>
+                  <!-- </v-col> -->
                 </v-col>
 
                 <v-col cols="12" sm="6" md="12">

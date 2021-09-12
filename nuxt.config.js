@@ -95,7 +95,7 @@ export default {
     [
       "/api",
       {
-        target: `https://thasung-api-vzrb2.ondigitalocean.app/`,
+        target: `http://localhost:3000/`,
         pathRewrite: {"^/api": "/api"}
       }
     ]

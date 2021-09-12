@@ -212,7 +212,7 @@ export default ({ app }, inject) => {
       })
     },
     updatePayment: (id) => {
-      return app.$axios.patch(`${basePath}/payment/${id}`, {}, {
+      return app.$axios.put(`${basePath}/payment/${id}`, {}, {
         headers: headerAuthJson
       })
     }

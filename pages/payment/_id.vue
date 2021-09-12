@@ -16,13 +16,13 @@
               <p>นามสกุล : {{ medical_record_data.last }}</p>
             </v-col>
 
-            <v-col cols="12" sm="6" md="2" class="pa-0">
+            <!-- <v-col cols="12" sm="6" md="2" class="pa-0">
               <p>อายุ : {{ medical_record_data.age }}</p>
-            </v-col>
+            </v-col> -->
 
-            <v-col cols="12" sm="6" md="2" class="pa-0">
+            <!-- <v-col cols="12" sm="6" md="2" class="pa-0">
               <p>เพศ : {{ medical_record_data.sex }}</p>
-            </v-col>
+            </v-col> -->
           </v-row>
 
           <v-row>
@@ -36,7 +36,7 @@
           </v-row>
         </v-card-text>
       </v-card>
-      <v-divider width="60%" class="mx-auto mt-5"></v-divider>
+      <v-divider width="60%" class="mx-auto"></v-divider>
 
       <v-card flat width="60%" class="mx-auto" v-if="!loading">
         <v-card-title>ข้อมูลรายการเวชภัณฑ์
@@ -44,25 +44,30 @@
           <span class="mx-5 payment-status green--text" v-if="payment_data.status == true">ชำระเงินแล้ว</span>
         </v-card-title>
           <v-simple-table>
-            <thead>
-              <tr>
-                <th>ชื่อยา</th>
-                <th>จำนวน</th>
-                <th>ราคาต่อหน่วย</th>
-                <th>ราคา</th>
-              </tr>
-            </thead>
             <tbody>
+              <tr style="background-color: #99999999;">
+                <th style="font-weight: bold;">ชื่อยา</th>
+                <th style="font-weight: bold;">จำนวน</th>
+                <th style="font-weight: bold;">ราคาต่อหน่วย</th>
+                <th style="font-weight: bold;">ราคา</th>
+              </tr>
               <tr v-for="item in drug_data" :key="item.id">
                 <td>{{item.name_drug}}</td>
                 <td>{{item.amount}}</td>
                 <td>{{item.price_for_unit}}</td>
                 <td>{{item.price}}</td>
               </tr>
-              <tr>
+              <tr style="background-color: #99999999;">
+                <td colspan="4" style="font-weight: bold;">รายการใช้จ่าย</td>
+              </tr>
+              <tr v-for="(list, i) in payment_data.treatment" :key="i">
+                <td colspan="3" class="text-left">{{list.title}}</td>
+                <td>{{list.cost}}</td>
+              </tr>
+              <!-- <tr>
                 <td colspan="3" class="text-center">{{payment_data.treatment_title}}</td>
                 <td>{{payment_data.treatment_cost}}</td>
-              </tr>
+              </tr> -->
               <tr>
                 <td colspan="3" class="text-center">รวม</td>
                 <td>{{payment_data.total_price}}</td>
@@ -123,6 +128,7 @@ export default {
       await this.$api.getPayment(this.id)
         .then(response => {
           this.payment_data = response.data.data;
+          console.log(this.payment_data)
         })
 
       // const res_symptom = await SymptomAPI.getSymptom(

@@ -254,7 +254,7 @@
       </v-card>
     </v-dialog>
 
-    <v-snackbar
+    <!-- <v-snackbar
       :timeout="5000"
       v-model="snackbar.bool"
       :color="snackbar.color"
@@ -264,7 +264,7 @@
       top
     >
       {{ snackbar.msg }}
-    </v-snackbar>
+    </v-snackbar> -->
   </div>
 </template>
 
@@ -393,15 +393,17 @@ export default {
       } else {
         this.form_data.date_add = moment.format(this.date.add);
         this.form_data.expire = moment.format(this.date.expire);
-        if (this.form_data.unit == "อื่นๆ") {
-          this.form_data.unit = this.unit_other;
-        }
+        // if (this.form_data.unit == "อื่นๆ") {
+        //   this.form_data.unit = this.unit_other;
+        // }
+
+        // console.log(this.form_data.unit)
 
         await this.$api
           .createMedicalSupplies(this.form_data)
           .then(response => {
             this.fetch();
-            this.snackbar.bool = true;
+            // this.snackbar.bool = true;
             this.form_data = {};
             this.dialog_add = false;
             
@@ -418,6 +420,8 @@ export default {
               duration: 6000
             });
           });
+
+        this.fetch()
       }
     }
   }

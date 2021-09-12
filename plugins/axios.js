@@ -35,7 +35,7 @@ export default function ({ $axios, store, redirect, req, res }) {
   $axios.onResponseError(
     (err) =>
       new Promise(async (resolve, reject) => {
-        if (err.response.status == 401 || err.response.statusCode == 401) {
+        if (err.response.status == 401 || err.response.statusCode == 401 || err.response.data.errMessage == "jwt expired") {
           await store.commit('me/CLEAR_USER')
           redirect('/login')
         } else {

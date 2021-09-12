@@ -112,17 +112,46 @@
         <v-card-text>
           <v-container fluid>
             <v-form ref="form">
-              <v-row>
-                <v-col cols="12" sm="12">
+              <v-row v-for="(item, i) in treatments" :key="i">
+                <v-col class="pb-0" cols="12" sm="8">
+                  <v-combobox
+                    label="หัวข้อ/บริการ"
+                    dense
+                    v-model="item.title"
+                    :items="list_title_treatments"
+                  ></v-combobox>
+                  <!-- <v-text-field
+                    v-model="item.title"
+                    label="หัวข้อ/บริการ"
+                    dense
+                    type="text"
+                    required
+                  ></v-text-field> -->
+                </v-col>
+                <v-col class="pb-0" cols="12" sm="3">
                   <v-text-field
-                    v-model="payment.treatment_cost"
-                    label="ค่ารักษา"
-                    :rules="rules.payment"
+                    v-model="item.cost"
+                    label="ราคา"
                     dense
                     type="number"
+                    required
                   ></v-text-field>
                 </v-col>
+                <v-col
+                  class="pb-0"
+                  cols="12"
+                  sm="1"
+                  v-if="treatments.length > 1"
+                >
+                  <v-btn icon small @click="treatments.splice(i, 1)">
+                    <v-icon small color="red">mdi-minus</v-icon>
+                  </v-btn>
+                </v-col>
               </v-row>
+              <v-btn small @click="addTreatmentClick" color="primary">
+                <v-icon color="white" small>mdi-plus</v-icon>
+                เพิ่มรายการ
+              </v-btn>
             </v-form>
           </v-container>
 
@@ -217,7 +246,21 @@ export default {
       },
       rules: {
         payment: []
-      }
+      },
+      treatments: [],
+      list_title_treatments: [
+        "ค่าบริการทางการแพทย์",
+        "ค่าฉีดยา",
+        "ค่าทำหัตถการ",
+        "ค่าอัลตร้าซาวด์",
+        "ค่าตรวจตั้งครรภ์",
+        "ค่าตรวจหมู่เลือด",
+        "ค่าตรวจเบาหวาน",
+        "ค่รตรวจคลื่นหัวใจ",
+        "ค่าตรวจภายใน",
+        "ค่าพ่นยา",
+        "ค่าเอกซเรย์"
+      ]
     };
   },
   computed: {
@@ -340,7 +383,7 @@ export default {
         });
         this.queue = q;
         this.wait = w;
-      } ,60000);
+      }, 60000 * 5);
     },
     async suppliesNoti() {
       setInterval(async () => {
@@ -427,7 +470,7 @@ export default {
 
         response.data.data.drugPush.forEach(e => {
           if (e.status != true) {
-            console.log(e._id)
+            console.log(e._id);
             this.drug_price += e.price;
             this.drug_list.push(e);
           } else {
@@ -436,59 +479,71 @@ export default {
         });
 
         this.loading = false;
+        let treatments_new = [
+          {
+            title: "ค่าบริการทางการแพทย์",
+            cost: 100
+          }
+        ];
+
+        this.treatments = treatments_new;
 
         this.dialog_drug = true;
       });
     },
     async save() {
-      if (!this.payment.treatment_cost) {
-        this.rules = {
-          payment: [v => !!v || "กรุณากรอกค่ารักษา"]
-        };
-        this.$refs.form.validate();
-      } else {
-        // this.loading = await true;
-        let form = await {
-          approve: "success"
-        };
-
-        this.payment.symptom = await {
-          _id: this.symptom_id
-        };
-        this.payment.total_price =
-          (await parseFloat(this.payment.treatment_cost)) + this.drug_price;
-
-        // this.payment = await {
-        //   symptom: {
-        //     _id: this.symptom_id
-        //   },
-        //   total_price: parseFloat(this.payment.treatment_cost) + this.drug_price
-        // }
-
-        // console.log(this.payment);
-
-        this.drug_list.forEach(async e => {
-          // await DrugListAPI.paidDrugList(e._id);
-          await this.$api.paidDrug(e._id);
-        });
-
-        await this.$api.updateQueue(this.q_id, form);
-
-        await this.$api
-          .createPayment(this.payment)
-          .then(response => {
-            this.loading = false;
-            this.dialog_drug = false;
-            this.$router.push({ path: `/payment/${response.data.data._id}` });
-          })
-          .catch(error => {
-            self.$toast.open({
-              message: error.response.data.errMessage,
-              type: "error",
-              duration: 6000
-            });
+      // this.loading = true;
+      let err = "";
+      let total = 0;
+      this.treatments.forEach(e => {
+        total += parseFloat(e.cost);
+        if (!e.title) {
+          this.$toast.open({
+            message: "กรุณากรอกข้อมูลให้ครบ",
+            type: "error",
+            duration: 6000
           });
+          err = "true";
+        }
+      });
+      if (err) {
+        this.loading = false;
+        return;
       }
+      let form = {
+        approve: "success"
+      };
+
+      this.drug_list.forEach(async e => {
+        await this.$api.paidDrug(e._id);
+      });
+
+      this.payment = {
+        symptom: {
+          _id: this.symptom_id
+        },
+        total_price: total + this.drug_price,
+        treatment: this.treatments
+      };
+
+      // console.log(this.payment)
+
+      await this.$api.updateQueue(this.q_id, form);
+
+      await this.$api
+        .createPayment(this.payment)
+        .then(response => {
+          this.loading = false;
+          this.dialog_drug = false;
+          this.$router.push({ path: `/payment/${response.data.data._id}` });
+        })
+        .catch(error => {
+          self.$toast.open({
+            message: error.response.data.errMessage,
+            type: "error",
+            duration: 6000
+          });
+        });
     },
     onlyForCurrency($event) {
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;
@@ -506,6 +561,12 @@ export default {
       ) {
         $event.preventDefault();
       }
+    },
+    addTreatmentClick() {
+      this.treatments.push({
+        title: "",
+        cost: 0
+      });
     }
   }
 };

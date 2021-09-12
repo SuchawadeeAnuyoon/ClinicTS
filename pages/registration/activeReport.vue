@@ -14,7 +14,7 @@
                 v-model="currentYear"
                 item-text="name"
                 item-value="value"
-                @click="fetch"
+                @change="fetch"
                 dense
                 hide-details="true"
               ></v-select>

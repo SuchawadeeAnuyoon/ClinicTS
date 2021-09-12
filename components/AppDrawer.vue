@@ -122,7 +122,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-list-item class="mt-auto" @click="logout">
+      <v-list-item class="mt-auto logout" @click="logout">
         <v-list-item-icon>
           <v-icon>mdi-logout</v-icon>
         </v-list-item-icon>

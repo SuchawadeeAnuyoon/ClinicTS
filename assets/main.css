@@ -12,6 +12,17 @@ html div {
 .menu {
     font-size: 16px;
 }
+.logout {
+}
+.logout:hover {
+    background-color: #ff00001e;
+}
+.logout div {
+    color: rgb(200, 0, 0);
+}
+.logout div .v-icon {
+    color: rgb(200, 0, 0);
+}
 
 .bg {
     height: 100%;
@@ -25,7 +36,7 @@ html div {
 }
 
 .payment p {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .no-padding {

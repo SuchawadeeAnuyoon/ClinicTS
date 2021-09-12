@@ -552,6 +552,9 @@ export default {
             duration: 6000
           });
         });
+
+        this.fetch()
+        this.fecthActivities()
     },
     async Delete(id) {
       this.dialog_delete = true;
