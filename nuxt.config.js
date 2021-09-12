@@ -87,9 +87,12 @@ export default {
   //   proxy: true
   // },
   axios: {
-    // basrURL: `https://thasung-api-vzrb2.ondigitalocean.app/`,
-    // credentials: true,
-    proxy: true
+    baseURL:
+      process.env.NODE_ENV == 'production'
+        ? '/'
+        : process.env.API || 'http://localhost:3000/',
+    credentials: true,
+    proxy: true,
   },
   proxy: [
     [
