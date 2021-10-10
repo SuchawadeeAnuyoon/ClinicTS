@@ -29,6 +29,11 @@
                 item.citizen_id
               }}</nuxt-link>
             </template>
+            <template v-slot:[`item.action`]="{ item }">
+              <v-icon @click="deleteClick(item)">
+                mdi-delete
+              </v-icon>
+            </template>
           </v-data-table>
         </template>
       </v-card>
@@ -266,11 +271,11 @@
 
                 <v-col cols="12" sm="6" md="3">
                   <!-- <v-col cols="12" sm="6" md="3"> -->
-                    <v-select
-                      :items="['A','B','AB','O','-']"
-                      label="กรุ๊บเลือด"
-                      v-model="form_data.blood"
-                    ></v-select>
+                  <v-select
+                    :items="['A', 'B', 'AB', 'O', '-']"
+                    label="กรุ๊บเลือด"
+                    v-model="form_data.blood"
+                  ></v-select>
                   <!-- </v-col> -->
                 </v-col>
 
@@ -303,6 +308,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="dialogDelete" max-width="600px">
+          <v-card>
+            <div class="px-5 py-5 text-h6">คุณแน่ใจหรือไม่ที่จะลบข้อมูลเวชระเบียน "{{medical_record.first}} {{medical_record.last}}" ?</div>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="gray darken-1" text @click="dialogDelete = false">ยกเลิก</v-btn>
+              <v-btn color="red darken-1" text @click="deleteConfirmClick(medical_record)">ลบ</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
   </div>
 </template>
 
@@ -324,7 +341,8 @@ export default {
         { text: "เลขบัตรประจำตัวประชาชน", value: "citizen_id" },
         { text: "ชื่อ", value: "first" },
         { text: "สกุล", value: "last" },
-        { text: "บันทึกโดย", value: "record_by"}
+        { text: "บันทึกโดย", value: "record_by" },
+        { text: "", value: "action" }
       ],
       data_list: [],
       dialog_add: false,
@@ -354,7 +372,9 @@ export default {
         zip: [],
         phone: []
       },
-      filter: {}
+      filter: {},
+      dialogDelete: false,
+      medical_record: {}
     };
   },
   computed: {
@@ -389,8 +409,6 @@ export default {
     }
   },
   async mounted() {
-
-    
     this.fetch();
     // console.log(this.province);
   },
@@ -404,9 +422,9 @@ export default {
       // console.log(this.list_medical_record)
 
       this.list_medical_record.forEach((e, i) => {
-        console.log(e.record_by)
+        // console.log(e.record_by);
         this.data_list.push({
-          no: i+1,
+          no: i + 1,
           id: e._id,
           citizen_id: e.citizen_id,
           first: e.first,
@@ -452,11 +470,12 @@ export default {
         };
         this.$refs.form.validate();
       } else {
-        // this.form_data.birth = moment.format(this.form_data.birth); 
-        await this.$api.createMedicalRecords(this.form_data)
+        // this.form_data.birth = moment.format(this.form_data.birth);
+        await this.$api
+          .createMedicalRecords(this.form_data)
           .then(response => {
             this.$toast.open({
-              message: 'เพิ่มข้อมูลเวชระเบียนเรียบร้อย',
+              message: "เพิ่มข้อมูลเวชระเบียนเรียบร้อย",
               type: "success",
               duration: 6000
             });
@@ -469,7 +488,7 @@ export default {
               type: "error",
               duration: 6000
             });
-          })
+          });
       }
     },
     onlynumber($event) {
@@ -524,6 +543,30 @@ export default {
           this.form_data.zip = await e.ZIPCODE;
         }
       });
+    },
+    deleteClick(item) {
+      this.medical_record = item
+      this.dialogDelete = true
+    },
+    async deleteConfirmClick(item) {
+      await this.$api.deleteMedicalRecords(item.id)
+        .then(response => {
+          this.$toast.open({
+            message: 'ลบข้อมูลเวชระเบียนแล้ว',
+            type: 'success',
+            duration: 6000
+          })
+          this.dialogDelete = false
+          this.medical_record = {}
+          this.fetch()
+        })
+        .catch(error => {
+          this.$toast.open({
+            message: error.response.data.errMessage,
+            type: 'error',
+            duration: 6000
+          })
+        })
     }
   }
 };
